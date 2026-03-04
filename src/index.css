@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-family: 'DM Sans', system-ui, sans-serif; scroll-behavior: smooth; }
+  body { background-color: #FAF8F4; color: #2C2C3E; }
+  h1, h2, h3, h4, h5 { font-family: 'Cormorant', 'Cormorant Garamond', Georgia, serif; }
+
+  ::selection { background: #E8C97A; color: #2C2C3E; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #FAF8F4; }
+  ::-webkit-scrollbar-thumb { background: #C9973A; border-radius: 3px; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-terracotta text-white font-body font-medium px-6 py-3 rounded-full
+           transition-all duration-200 hover:bg-[#A8501F] hover:shadow-gold
+           active:scale-95 tracking-wide text-sm;
+  }
+  .btn-secondary {
+    @apply border border-gold text-gold font-body font-medium px-6 py-3 rounded-full
+           transition-all duration-200 hover:bg-gold hover:text-white
+           active:scale-95 tracking-wide text-sm;
+  }
+  .btn-ghost {
+    @apply text-slate-lt font-body text-sm px-4 py-2 rounded-full
+           transition-all duration-200 hover:bg-cream hover:text-slate;
+  }
+  .section-label {
+    @apply font-body text-xs tracking-[0.2em] uppercase text-gold font-medium;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-card hover:shadow-hover transition-all duration-300;
+  }
+  .tag {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-body
+           font-medium tracking-wide;
+  }
+}
+
+@layer utilities {
+  .font-display { font-family: 'Cormorant', 'Cormorant Garamond', Georgia, serif; }
+  .font-body    { font-family: 'DM Sans', system-ui, sans-serif; }
+
+  .text-balance { text-wrap: balance; }
+
+  .animate-fade-up {
+    animation: fadeUp 0.5s ease both;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease both;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease both;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Staggered children */
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s;  }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.2s;  }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.3s;  }
+
+/* Decorative ruled line */
+.ruled::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: #C9973A;
+  margin-bottom: 16px;
+}
+
+/* Wine type dot */
+.wine-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
