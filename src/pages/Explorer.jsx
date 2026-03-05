@@ -31,9 +31,17 @@ const SORT_OPTIONS = [
 ]
 
 const RETAILER_ICONS = {
-  'Tesco': '🔵', 'Sainsbury\'s': '🟠', 'Waitrose': '🟢',
-  'Asda': '🟡', 'M&S': '🟤', 'Aldi': '🔴', 'Lidl': '🟣',
-  'Morrisons': '🟡', 'Le Bon Vin': '🍷',
+  'Tesco':          '🔵',
+  "Sainsbury's":    '🟠',
+  'Waitrose':       '🟢',
+  'Asda':           '🟡',
+  'M&S':            '🟤',
+  'Aldi':           '🔴',
+  'Lidl':           '🟣',
+  'Morrisons':      '🟡',
+  'Co-op':          '🌿',
+  'Majestic':       '🍾',
+  'Le Bon Vin':     '🍷',
 }
 
 // Extract numeric price from strings like "£8.07", "from £7.99", "£120 per bottle"

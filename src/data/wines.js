@@ -9928,19 +9928,42 @@ function normalizeWine(w) {
   }
 
   // 8. whereToBuy — normalise { store, url, price } → { name, type, note }
+  //    Then canonicalise retailer names and expand compound "A / B" entries
+  const RETAILER_ALIAS = {
+    'Berry Bros. & Rudd':      'Berry Bros & Rudd',
+    'Majestic Wine':           'Majestic',
+    'Waitrose & John Lewis':   'Waitrose',
+    'Waitrose Cellar':         'Waitrose',
+    'Hedonism / Berry Bros':   'Hedonism Wines',
+    "Christie's / Sotheby's Wine": "Sotheby's Wine",
+    "Sotheby's / Christie's":  "Sotheby's Wine",
+    'Sainsbury\u2019s':        "Sainsbury's",   // U+2019 right smart quote → straight
+  }
   let whereToBuy = w.whereToBuy
   if (Array.isArray(whereToBuy)) {
-    whereToBuy = whereToBuy.map(r => {
+    const expanded = []
+    whereToBuy.forEach(r => {
+      // Normalise { store } shape
       if (r && r.store && !r.name) {
-        return {
+        r = {
           name: r.store,
           type: 'supermarket',
           note: r.price ? `Typically priced at ${r.price}. Check availability online.` : 'Check store for current availability.',
           url: r.url || null,
         }
       }
-      return r
+      if (!r || !r.name) return
+      const canonical = RETAILER_ALIAS[r.name] || r.name
+      // Split compound "Waitrose / Tesco / Sainsbury's" entries
+      if (canonical.includes(' / ')) {
+        canonical.split(' / ').forEach(part => {
+          expanded.push({ ...r, name: RETAILER_ALIAS[part] || part })
+        })
+      } else {
+        expanded.push({ ...r, name: canonical })
+      }
     })
+    whereToBuy = expanded
   } else {
     whereToBuy = []
   }
