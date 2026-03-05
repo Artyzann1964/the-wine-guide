@@ -74,7 +74,7 @@ const CRITICS = [
       { label: 'timatkin.com', url: 'https://timatkin.com', icon: '🌐' },
     ],
     colour: '#4A6741',
-    topPickIds: ['manzanilla-hidalgo', 'rioja-reserva-muga', 'barolo-conterno'],
+    topPickIds: ['waitrose-muga-rioja-reserva', 'trivento-reserve-malbec', 'barolo-conterno'],
     quote: `"Great wine should make you feel something. It's not just a beverage — it's a moment."`,
   },
   {
@@ -90,7 +90,7 @@ const CRITICS = [
       { label: 'DWWA', url: 'https://www.decanter.com/wine-news/dwwa/', icon: '🏆' },
     ],
     colour: '#C4622D',
-    topPickIds: ['bollinger-special-cuvee', 'chateau-margaux-2015', 'gaja-barbaresco'],
+    topPickIds: ['bollinger-special-cuvee', 'chateau-margaux-2015', 'waitrose-prunotto-barolo'],
     quote: `"Wine is endlessly fascinating precisely because the same grape, in the same region, in different hands, can produce something entirely different."`,
   },
   {
@@ -105,7 +105,7 @@ const CRITICS = [
       { label: 'ozclarke.com', url: 'https://www.ozclarke.com', icon: '🌐' },
     ],
     colour: '#7B2D3E',
-    topPickIds: ['marlborough-sauvignon-blanc', 'barossa-shiraz-elderton', 'malbec-acheval-ferrer'],
+    topPickIds: ['cloudy-bay-sauvignon', 'tesco-finest-barossa-shiraz', 'sainsbur-zuccardi-poligonos-altamira-malbec'],
     quote: `"The best wine isn't the most expensive. It's the one that makes you smile."`,
   },
   {
@@ -120,7 +120,7 @@ const CRITICS = [
       { label: 'matthewjukes.com', url: 'https://www.matthewjukes.com', icon: '🌐' },
     ],
     colour: '#3D5A80',
-    topPickIds: ['meursault-coche-dury', 'cotes-du-rhone-guigal', 'rioja-reserva-muga'],
+    topPickIds: ['puligny-montrachet-leflaive', 'sainsburys-ttd-cotes-du-rhone', 'baron-de-ley-rioja-reserva'],
     quote: `"Wine is about pleasure — understand what you like, and pursue it unapologetically."`,
   },
 ]
