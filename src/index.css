@@ -16,7 +16,7 @@
 @layer components {
   .btn-primary {
     @apply bg-terracotta text-white font-body font-medium px-6 py-3 rounded-full
-           transition-all duration-200 hover:bg-[#A8501F] hover:shadow-gold
+           transition-all duration-200 hover:bg-terra-dk hover:shadow-gold
            active:scale-95 tracking-wide text-sm;
   }
   .btn-secondary {

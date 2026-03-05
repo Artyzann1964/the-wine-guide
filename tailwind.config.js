@@ -4,16 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Core palette
         ivory:      '#FAF8F4',
-        gold:       '#C9973A',
-        'gold-lt':  '#E8C97A',
-        terracotta: '#C4622D',
-        'terra-lt': '#E8A07A',
-        slate:      '#2C2C3E',
-        'slate-lt': '#4A4A60',
-        sage:       '#8FAF8A',
         cream:      '#F5EFE6',
         champagne:  '#F7E7CE',
+        // Accent — gold
+        gold:       '#C9973A',
+        'gold-lt':  '#E8C97A',
+        // Accent — terracotta (CTA)
+        terracotta: '#C4622D',
+        'terra-lt': '#E8A07A',
+        'terra-dk': '#A8501F',   // hover state for terracotta buttons
+        // Text / dark backgrounds
+        slate:      '#2C2C3E',
+        'slate-lt': '#4A4A60',
+        navy:       '#1A1A2E',   // nav bar & dark-panel backgrounds
+        // Supplementary
+        sage:       '#8FAF8A',
         'wine-red': '#7B1D2E',
         blush:      '#F2C4CE',
       },

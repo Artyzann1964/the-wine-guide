@@ -167,7 +167,7 @@ export default function Home() {
                 <p className="font-body text-sm text-slate-lt">{label}</p>
               </div>
             ))}
-            <div className="card p-6 col-span-2 bg-[#1A1A2E] text-white text-center overflow-hidden">
+            <div className="card p-6 col-span-2 bg-navy text-white text-center overflow-hidden">
               <div
                 className="transition-opacity duration-400"
                 style={{ opacity: quoteFade ? 1 : 0 }}

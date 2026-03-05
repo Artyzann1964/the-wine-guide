@@ -112,7 +112,7 @@ export default function WineDetail() {
 
               {/* Tom Gilby rating — only shown when wine has gilbyRating data */}
               {wine.gilbyRating && (
-                <div className="mt-4 p-5 rounded-2xl bg-[#1A1A2E] border border-white/10">
+                <div className="mt-4 p-5 rounded-2xl bg-navy border border-white/10">
                   <div className="flex items-center gap-3 mb-2">
                     <a
                       href={wine.gilbyVideoUrl || 'https://www.youtube.com/@TomGilby'}

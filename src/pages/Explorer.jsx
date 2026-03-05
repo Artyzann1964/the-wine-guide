@@ -275,7 +275,7 @@ export default function Explorer() {
             {hasFilters && (
               <button
                 onClick={() => { setSearchParams({}); setSearch('') }}
-                className="font-body text-xs text-terracotta hover:text-[#A8501F] transition-colors"
+                className="font-body text-xs text-terracotta hover:text-terra-dk transition-colors"
               >
                 ✕ Clear all filters
               </button>

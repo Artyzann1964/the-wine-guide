@@ -283,7 +283,7 @@ export default function Critics() {
   return (
     <main className="pt-16 min-h-screen bg-ivory">
       {/* Hero */}
-      <div className="bg-[#1A1A2E] text-white py-16">
+      <div className="bg-navy text-white py-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <p className="font-body text-xs tracking-[0.2em] uppercase text-gold mb-3">Critics & Commentators</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light leading-tight mb-4">

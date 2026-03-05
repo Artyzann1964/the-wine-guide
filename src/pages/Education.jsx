@@ -668,7 +668,7 @@ function DosDontsSection() {
       </div>
 
       {/* Temperature quick ref */}
-      <div className="rounded-2xl bg-[#1A1A2E] p-6">
+      <div className="rounded-2xl bg-navy p-6">
         <h3 className="font-display font-semibold text-xl text-white mb-4">Storage Temperature at a Glance</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
@@ -908,7 +908,7 @@ function CorkscrewSection() {
         ))}
       </div>
 
-      <div className="rounded-2xl bg-[#1A1A2E] p-6">
+      <div className="rounded-2xl bg-navy p-6">
         <h3 className="font-display font-semibold text-xl text-white mb-3">Which Should You Buy?</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[

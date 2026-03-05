@@ -27,8 +27,8 @@ export default function Nav() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
       scrolled
-        ? 'bg-[#1A1A2E]/98 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.06),0_4px_32px_rgba(0,0,0,0.35)]'
-        : 'bg-[#1A1A2E]/88 backdrop-blur-sm'
+        ? 'bg-navy/98 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.06),0_4px_32px_rgba(0,0,0,0.35)]'
+        : 'bg-navy/88 backdrop-blur-sm'
     }`}>
       <nav className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
 
@@ -75,7 +75,7 @@ export default function Nav() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#1A1A2E]/98 backdrop-blur-md border-t border-white/8 animate-fade-in">
+        <div className="md:hidden bg-navy/98 backdrop-blur-md border-t border-white/8 animate-fade-in">
           <ul className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {NAV_LINKS.map(({ to, label }) => (
               <li key={to}>
