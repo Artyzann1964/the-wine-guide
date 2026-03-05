@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { wines } from '../data/wines'
 import WineCard from '../components/WineCard'
+import { RetailerLogo } from '../utils/retailerBrands'
 
 // ─── Retailer Data ────────────────────────────────────────────────────────────
 
@@ -311,7 +312,9 @@ function RetailerCard({ retailer, selected, onSelect }) {
         </span>
       )}
       <div className="flex items-start gap-2.5">
-        <span className="text-xl leading-none mt-0.5 shrink-0">{retailer.emoji}</span>
+        <div className="shrink-0 w-8 h-8 rounded-lg bg-white border border-cream flex items-center justify-center overflow-hidden p-0.5">
+          <RetailerLogo name={retailer.name} size={26} className="max-w-full max-h-full" />
+        </div>
         <div className="min-w-0">
           <p className={`font-display font-semibold text-sm leading-tight ${selected ? 'text-gold' : 'text-slate'}`}>
             {retailer.name}
@@ -336,8 +339,10 @@ function RetailerProfile({ retailer, wineCount }) {
         <div className="px-8 py-10 md:px-12 md:py-12">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             <div>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-4xl">{retailer.emoji}</span>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-white/95 flex items-center justify-center p-2 shadow-md shrink-0">
+                  <RetailerLogo name={retailer.name} size={52} className="max-w-full max-h-full" />
+                </div>
                 {retailer.type === 'specialist' && (
                   <span className="font-body text-xs font-medium bg-white/20 text-white/90 px-3 py-1 rounded-full">
                     Independent Specialist
