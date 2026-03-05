@@ -44,6 +44,15 @@ const RETAILER_ICONS = {
   'Le Bon Vin':     '🍷',
 }
 
+// Card colour legend — mirrors BOTTLE_BG in WineCard.jsx
+const CATEGORY_LEGEND = [
+  { id: 'red',       label: 'Red',       start: '#4A1020', end: '#7A2238' },
+  { id: 'white',     label: 'White',     start: '#1E3A2A', end: '#3A6050' },
+  { id: 'sparkling', label: 'Sparkling', start: '#2C2208', end: '#6B5518' },
+  { id: 'rosé',      label: 'Rosé',      start: '#4A1525', end: '#8B3548' },
+  { id: 'dessert',   label: 'Dessert',   start: '#3A1E05', end: '#7A4518' },
+]
+
 // Extract numeric price from strings like "£8.07", "from £7.99", "£120 per bottle"
 function parsePrice(priceStr) {
   if (!priceStr) return 0
@@ -357,6 +366,31 @@ export default function Explorer() {
                 </p>
               </div>
             )}
+
+            {/* Category colour legend */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-5 px-4 py-3 bg-white rounded-xl border border-cream">
+              <span className="font-body text-[10px] uppercase tracking-widest text-slate-lt/70 font-medium">Card colours</span>
+              {CATEGORY_LEGEND.map(({ id, label, start, end }) => (
+                <button
+                  key={id}
+                  onClick={() => setFilter('category', categoryFilter === id ? 'all' : id)}
+                  className={`flex items-center gap-1.5 group transition-opacity ${
+                    categoryFilter !== 'all' && categoryFilter !== id ? 'opacity-35' : ''
+                  }`}
+                  title={categoryFilter === id ? `Clear ${label} filter` : `Show ${label} wines only`}
+                >
+                  <span
+                    className="w-5 h-3.5 rounded-sm shadow-sm flex-shrink-0 border border-black/10"
+                    style={{ background: `linear-gradient(135deg, ${start}, ${end})` }}
+                  />
+                  <span className={`font-body text-xs transition-colors ${
+                    categoryFilter === id ? 'text-slate font-semibold' : 'text-slate-lt group-hover:text-slate'
+                  }`}>
+                    {label}
+                  </span>
+                </button>
+              ))}
+            </div>
 
             {filtered.length === 0 ? (
               <div className="text-center py-20">

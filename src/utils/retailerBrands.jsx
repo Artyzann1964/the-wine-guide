@@ -1,4 +1,4 @@
-// src/utils/retailerBrands.js
+// src/utils/retailerBrands.jsx
 // Brand colour definitions and badge component for UK retailers
 
 export const RETAILER_BRANDS = {
@@ -15,6 +15,21 @@ export const RETAILER_BRANDS = {
   'Co-op':        { bg: '#003E71', text: '#FFFFFF', border: '#002850' },
 }
 
+// Lettermark shown in the icon section of each badge (1–2 chars)
+const RETAILER_MARKS = {
+  'Tesco':        'T',
+  "Sainsbury's":  'S',
+  'Waitrose':     'W',
+  'Asda':         'A',
+  'M&S':          'M',
+  'Aldi':         'Al',
+  'Lidl':         'L',
+  'Morrisons':    'Mo',
+  'Le Bon Vin':   'LB',
+  'Majestic':     'Mj',
+  'Co-op':        'Co',
+}
+
 // React component — import this where you need a styled retailer pill
 export function RetailerBadge({ name, className = '' }) {
   const brand = RETAILER_BRANDS[name]
@@ -25,12 +40,28 @@ export function RetailerBadge({ name, className = '' }) {
       </span>
     )
   }
+
+  const mark = RETAILER_MARKS[name] || name.slice(0, 1).toUpperCase()
+
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-body font-semibold tracking-wide ${className}`}
-      style={{ backgroundColor: brand.bg, color: brand.text, border: `1px solid ${brand.border}` }}
+      className={`inline-flex items-stretch rounded-full overflow-hidden font-body font-semibold tracking-wide text-xs ${className}`}
+      style={{ border: `1px solid ${brand.border}` }}
     >
-      {name}
+      {/* Lettermark — slightly darker left section uses border colour as bg */}
+      <span
+        className="flex items-center justify-center px-2 font-black text-[10px] tracking-tighter leading-none"
+        style={{ backgroundColor: brand.border, color: brand.text }}
+      >
+        {mark}
+      </span>
+      {/* Full retailer name */}
+      <span
+        className="flex items-center px-2.5 py-1"
+        style={{ backgroundColor: brand.bg, color: brand.text }}
+      >
+        {name}
+      </span>
     </span>
   )
 }
