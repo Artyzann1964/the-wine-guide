@@ -25,11 +25,17 @@ export default function Nav() {
   useEffect(() => { setMenuOpen(false) }, [location])
 
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-      scrolled
-        ? 'bg-navy/98 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.06),0_4px_32px_rgba(0,0,0,0.35)]'
-        : 'bg-navy/88 backdrop-blur-sm'
-    }`}>
+    <header
+      className="fixed top-0 inset-x-0 z-50 transition-all duration-300 backdrop-blur-sm"
+      style={{
+        background: scrolled
+          ? 'rgba(26,26,46,0.98)'
+          : 'rgba(26,26,46,0.88)',
+        boxShadow: scrolled
+          ? '0 1px 0 rgba(255,255,255,0.06), 0 4px 32px rgba(0,0,0,0.35)'
+          : 'none',
+      }}
+    >
       <nav className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
 
         {/* Logo */}
@@ -75,7 +81,7 @@ export default function Nav() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-navy/98 backdrop-blur-md border-t border-white/8 animate-fade-in">
+        <div className="md:hidden backdrop-blur-md border-t border-white/8 animate-fade-in" style={{ background: 'rgba(26,26,46,0.98)' }}>
           <ul className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {NAV_LINKS.map(({ to, label }) => (
               <li key={to}>
