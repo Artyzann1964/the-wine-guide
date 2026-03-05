@@ -8,6 +8,8 @@ const SECTIONS = [
   { id: 'tasting', label: 'How to Taste' },
   { id: 'dos-donts', label: "Do's & Don'ts" },
   { id: 'glassware', label: 'Glassware Guide' },
+  { id: 'sparkling', label: 'Sparkling Wines' },
+  { id: 'grapes', label: 'Grape Varieties' },
   { id: 'tech', label: 'Wine Tech' },
   { id: 'corkscrews', label: 'Top 10 Corkscrews' },
 ]
@@ -63,6 +65,8 @@ export default function Education() {
             {activeSection === 'tasting' && <TastingSection />}
             {activeSection === 'dos-donts' && <DosDontsSection />}
             {activeSection === 'glassware' && <GlasswareSection />}
+            {activeSection === 'sparkling' && <SparklingSection />}
+            {activeSection === 'grapes' && <GrapeVarietiesSection />}
             {activeSection === 'tech' && <WineTechSection />}
             {activeSection === 'corkscrews' && <CorkscrewSection />}
           </main>
@@ -704,6 +708,19 @@ function GlasswareSection() {
         </p>
       </div>
 
+      {/* Glass guide infographic */}
+      <div className="rounded-2xl overflow-hidden border border-cream shadow-sm">
+        <div className="bg-cream/40 px-5 py-3 border-b border-cream flex items-center gap-2">
+          <span className="text-lg">🖼️</span>
+          <p className="font-body text-xs font-semibold uppercase tracking-widest text-slate-lt">Visual Reference — Glass Shapes by Wine Type</p>
+        </div>
+        <img
+          src="/eWine_Glass_Guide.webp"
+          alt="Wine Glass Guide — shapes and their ideal wines"
+          className="w-full h-auto block"
+        />
+      </div>
+
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Selector */}
         <div className="lg:w-52 flex-shrink-0">
@@ -777,6 +794,306 @@ function GlasswareSection() {
           </p>
         </div>
       </div>
+    </div>
+  )
+}
+
+// ── Sparkling Section ────────────────────────────────────────────
+
+function SparklingSection() {
+  const [active, setActive] = useState('champagne')
+  const wine = SPARKLING_TYPES.find(s => s.id === active)
+
+  return (
+    <div className="space-y-10 animate-fade-up">
+      <div>
+        <h2 className="font-display font-bold text-3xl text-slate mb-3">Sparkling Wines</h2>
+        <p className="font-body text-slate-lt leading-relaxed">
+          Not all bubbles are equal. Champagne, Prosecco, Cava, and Crémant each have distinct origins, production methods, and flavour profiles. Here's how to tell them apart — and when to reach for each.
+        </p>
+      </div>
+
+      {/* Selector tabs */}
+      <div className="flex flex-wrap gap-2">
+        {SPARKLING_TYPES.map(s => (
+          <button
+            key={s.id}
+            onClick={() => setActive(s.id)}
+            className={`px-4 py-2 rounded-full font-body text-sm font-medium transition-all duration-200 border ${
+              active === s.id
+                ? 'text-white border-transparent shadow-sm'
+                : 'text-slate-lt border-cream hover:border-gold/30 hover:text-slate bg-white'
+            }`}
+            style={active === s.id ? { backgroundColor: s.colour, borderColor: s.colour } : {}}
+          >
+            {s.icon} {s.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Detail card */}
+      {wine && (
+        <div className="card overflow-hidden animate-fade-in">
+          {/* Header band */}
+          <div className="px-6 py-5 text-white" style={{ background: `linear-gradient(135deg, ${wine.colour}, ${wine.colourDark})` }}>
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <p className="font-body text-xs uppercase tracking-widest text-white/60 mb-1">{wine.country}</p>
+                <h3 className="font-display font-bold text-2xl">{wine.name}</h3>
+                <p className="font-body text-sm text-white/75 mt-1">{wine.region}</p>
+              </div>
+              <span className="text-4xl">{wine.icon}</span>
+            </div>
+          </div>
+
+          <div className="p-6 space-y-6">
+            <p className="font-body text-sm text-slate-lt leading-relaxed">{wine.description}</p>
+
+            {/* Key facts grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: 'Method', value: wine.method },
+                { label: 'Key Grapes', value: wine.grapes },
+                { label: 'Style', value: wine.style },
+                { label: 'Price Range', value: wine.price },
+              ].map(f => (
+                <div key={f.label} className="rounded-xl bg-cream/60 p-3">
+                  <p className="font-body text-[10px] uppercase tracking-widest text-slate-lt font-semibold mb-1">{f.label}</p>
+                  <p className="font-body text-sm text-slate font-medium leading-snug">{f.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Grapes detail */}
+            <div>
+              <h4 className="font-display font-semibold text-base text-slate mb-3">The Grapes</h4>
+              <div className="space-y-2">
+                {wine.grapeDetail.map(g => (
+                  <div key={g.name} className="flex gap-3 items-start">
+                    <span className="font-body text-xs font-semibold text-gold w-36 flex-shrink-0 pt-0.5">{g.name}</span>
+                    <p className="font-body text-xs text-slate-lt leading-relaxed">{g.role}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* What to look for / serving */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-xl bg-cream/50 p-4">
+                <h4 className="font-body text-[10px] uppercase tracking-widest text-slate-lt font-semibold mb-2">What to Look For</h4>
+                <ul className="space-y-1.5">
+                  {wine.lookFor.map(lf => (
+                    <li key={lf} className="flex items-start gap-2 font-body text-xs text-slate-lt">
+                      <span className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0" style={{ backgroundColor: wine.colour }} />
+                      {lf}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-xl bg-cream/50 p-4">
+                <h4 className="font-body text-[10px] uppercase tracking-widest text-slate-lt font-semibold mb-2">Serving & Occasions</h4>
+                <ul className="space-y-1.5">
+                  {wine.serving.map(s => (
+                    <li key={s} className="flex items-start gap-2 font-body text-xs text-slate-lt">
+                      <span className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0" style={{ backgroundColor: wine.colour }} />
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {wine.tip && (
+              <div className="rounded-xl border px-4 py-3" style={{ borderColor: wine.colour + '40', backgroundColor: wine.colour + '10' }}>
+                <p className="font-body text-xs text-slate italic">💡 {wine.tip}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Side-by-side quick comparison */}
+      <div>
+        <h3 className="font-display font-semibold text-2xl text-slate mb-5">Quick Comparison</h3>
+        <div className="overflow-x-auto rounded-2xl border border-cream">
+          <table className="w-full min-w-[560px]">
+            <thead>
+              <tr className="bg-cream/60">
+                <th className="text-left font-body text-xs uppercase tracking-widest text-slate-lt px-5 py-4">Type</th>
+                <th className="text-left font-body text-xs uppercase tracking-widest text-slate-lt px-5 py-4">Country</th>
+                <th className="text-left font-body text-xs uppercase tracking-widest text-slate-lt px-5 py-4">Method</th>
+                <th className="text-left font-body text-xs uppercase tracking-widest text-slate-lt px-5 py-4">Price</th>
+                <th className="text-left font-body text-xs uppercase tracking-widest text-slate-lt px-5 py-4 hidden sm:table-cell">Character</th>
+              </tr>
+            </thead>
+            <tbody>
+              {SPARKLING_TYPES.map((s, i) => (
+                <tr key={s.id} className={`border-t border-cream cursor-pointer hover:bg-cream/30 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-ivory/30'}`} onClick={() => setActive(s.id)}>
+                  <td className="px-5 py-4">
+                    <span className="font-body font-semibold text-sm text-slate flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: s.colour }} />
+                      {s.name}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4 font-body text-sm text-slate-lt">{s.country}</td>
+                  <td className="px-5 py-4 font-body text-sm text-slate-lt">{s.method}</td>
+                  <td className="px-5 py-4 font-body text-sm text-slate-lt">{s.price}</td>
+                  <td className="px-5 py-4 font-body text-xs text-slate-lt hidden sm:table-cell">{s.character}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Sweetness guide */}
+      <div className="card p-6">
+        <h3 className="font-display font-semibold text-xl text-slate mb-4">Decoding Sweetness Labels</h3>
+        <p className="font-body text-xs text-slate-lt mb-4">Sparkling wine sweetness is measured by residual sugar (g/L) and labelled in French — even on Cava and Prosecco.</p>
+        <div className="space-y-2">
+          {SPARKLING_SWEETNESS.map(s => (
+            <div key={s.term} className="flex items-center gap-4 flex-wrap">
+              <span className="font-body font-semibold text-gold text-sm w-28 flex-shrink-0">{s.term}</span>
+              <div className="flex-1 h-2 rounded-full bg-cream overflow-hidden min-w-[80px]">
+                <div className="h-full rounded-full bg-gradient-to-r from-gold/30 to-gold" style={{ width: `${s.pct}%` }} />
+              </div>
+              <span className="font-body text-xs text-slate-lt w-20 flex-shrink-0">{s.sugar}</span>
+              <span className="font-body text-xs text-slate-lt hidden sm:block">{s.note}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Grape Varieties Section ───────────────────────────────────────
+
+function GrapeVarietiesSection() {
+  const [tab, setTab] = useState('white')
+
+  return (
+    <div className="space-y-10 animate-fade-up">
+      <div>
+        <h2 className="font-display font-bold text-3xl text-slate mb-3">Grape Varieties</h2>
+        <p className="font-body text-slate-lt leading-relaxed">
+          Every wine starts with a grape — and the variety is the single biggest influence on flavour. Here are the key grapes to know, where they come from, and how they taste.
+        </p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 flex-wrap">
+        {[
+          { id: 'white', label: '🍋 White Grapes' },
+          { id: 'red', label: '🍇 Red Grapes' },
+          { id: 'blends', label: '🔀 Classic Blends' },
+        ].map(t => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`px-4 py-2 rounded-full font-body text-sm font-medium transition-all duration-200 border ${
+              tab === t.id
+                ? 'bg-gold text-white border-gold shadow-gold'
+                : 'text-slate-lt border-cream hover:text-slate hover:border-gold/30 bg-white'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'white' && (
+        <div className="space-y-4 animate-fade-in">
+          {WHITE_GRAPES.map(g => (
+            <div key={g.name} className="card p-5 flex gap-5">
+              <div className="w-10 h-10 rounded-full bg-yellow-50 border border-yellow-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-xl">
+                🍋
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
+                  <div>
+                    <h4 className="font-display font-semibold text-lg text-slate">{g.name}</h4>
+                    <p className="font-body text-xs text-slate-lt">{g.origin}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {g.tags.map(tag => <span key={tag} className="tag bg-cream text-slate-lt text-[10px]">{tag}</span>)}
+                  </div>
+                </div>
+                <p className="font-body text-xs text-slate-lt leading-relaxed mb-3">{g.description}</p>
+                <div className="flex flex-wrap gap-x-5 gap-y-1">
+                  <span className="font-body text-[10px] text-slate-lt"><span className="font-semibold text-gold">Key regions: </span>{g.regions}</span>
+                  <span className="font-body text-[10px] text-slate-lt"><span className="font-semibold text-gold">Food: </span>{g.food}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === 'red' && (
+        <div className="space-y-4 animate-fade-in">
+          {RED_GRAPES.map(g => (
+            <div key={g.name} className="card p-5 flex gap-5">
+              <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-xl">
+                🍇
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
+                  <div>
+                    <h4 className="font-display font-semibold text-lg text-slate">{g.name}</h4>
+                    <p className="font-body text-xs text-slate-lt">{g.origin}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {g.tags.map(tag => <span key={tag} className="tag bg-cream text-slate-lt text-[10px]">{tag}</span>)}
+                  </div>
+                </div>
+                <p className="font-body text-xs text-slate-lt leading-relaxed mb-3">{g.description}</p>
+                <div className="flex flex-wrap gap-x-5 gap-y-1">
+                  <span className="font-body text-[10px] text-slate-lt"><span className="font-semibold text-gold">Key regions: </span>{g.regions}</span>
+                  <span className="font-body text-[10px] text-slate-lt"><span className="font-semibold text-gold">Food: </span>{g.food}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === 'blends' && (
+        <div className="space-y-6 animate-fade-in">
+          <p className="font-body text-sm text-slate-lt leading-relaxed">
+            Some of the world's greatest wines are blends — each variety contributing something the others lack. Here are the classic combinations every wine lover should know.
+          </p>
+          {CLASSIC_BLENDS.map(b => (
+            <div key={b.name} className="card overflow-hidden">
+              <div className="px-5 py-4 border-b border-cream" style={{ background: b.bg }}>
+                <h4 className="font-display font-semibold text-lg text-slate">{b.name}</h4>
+                <p className="font-body text-xs text-slate-lt mt-0.5">{b.region}</p>
+              </div>
+              <div className="p-5 space-y-4">
+                <p className="font-body text-sm text-slate-lt leading-relaxed">{b.description}</p>
+                <div className="space-y-2">
+                  {b.grapes.map(g => (
+                    <div key={g.name} className="flex gap-3 items-start">
+                      <div className="flex items-center gap-2 w-44 flex-shrink-0">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: g.colour }} />
+                        <span className="font-body text-xs font-semibold text-slate">{g.name}</span>
+                        <span className="font-body text-[10px] text-slate-lt ml-auto">{g.pct}</span>
+                      </div>
+                      <p className="font-body text-xs text-slate-lt leading-relaxed">{g.role}</p>
+                    </div>
+                  ))}
+                </div>
+                {b.examples && (
+                  <div className="rounded-xl bg-cream/60 px-4 py-3">
+                    <p className="font-body text-[10px] uppercase tracking-widest text-slate-lt font-semibold mb-1">Famous examples</p>
+                    <p className="font-body text-xs text-slate-lt">{b.examples}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -1202,3 +1519,337 @@ const TOP_CORKSCREWS = [
   },
 ]
 
+
+
+// ── Sparkling Data ───────────────────────────────────────────────
+
+const SPARKLING_TYPES = [
+  {
+    id: 'champagne',
+    name: 'Champagne',
+    icon: '🥂',
+    country: 'France',
+    region: 'Champagne AOC — Reims, Épernay & the Côte des Blancs',
+    colour: '#C9973A',
+    colourDark: '#8B6520',
+    method: 'Traditional Method',
+    grapes: 'Pinot Noir, Chardonnay, Pinot Meunier',
+    style: 'Dry to Brut',
+    price: '£25–£500+',
+    character: 'Toasty, complex, fine persistent bubbles',
+    description: `Champagne is the benchmark against which all sparkling wine is measured. Made exclusively in a legally defined region in northeast France, it undergoes two fermentations — the second inside the bottle — creating fine, persistent bubbles and extraordinary complexity. Minimum ageing of 15 months for NV and 3 years for vintage on the lees develops the signature brioche, toasty character that no other region can truly replicate.`,
+    grapeDetail: [
+      { name: 'Pinot Noir', role: 'Provides body, structure, and red fruit character (strawberry, cherry). The backbone of most blended Champagnes.' },
+      { name: 'Chardonnay', role: 'Brings elegance, freshness, citrus, and the creamy quality of Blanc de Blancs. Ages beautifully.' },
+      { name: 'Pinot Meunier', role: 'Adds approachability, fruitiness, and early-drinking character. Often used in NV blends for roundness.' },
+    ],
+    lookFor: [
+      'Fine, persistent bubbles rising in a continuous stream',
+      'Pale golden to deep gold colour (older or oak-influenced)',
+      'Aromas of brioche, toast, lemon curd, apple, and chalk',
+      'Creamy mousse and long, complex finish',
+      'Dosage level on label: Brut Nature to Demi-Sec',
+    ],
+    serving: [
+      'Serve at 6–8°C in a tulip or white wine glass (not a coupe — it loses bubbles too fast)',
+      'Perfect aperitif; also outstanding with oysters, fried food, sushi, and aged hard cheese',
+      'Vintage Champagne can age 10–30+ years — decant slightly to open up',
+      'NV Champagne: drink within 2–3 years of purchase for freshness',
+    ],
+    tip: `"Blanc de Blancs" means 100% Chardonnay — purer, crisper, more mineral. "Blanc de Noirs" is made from red grapes only — fuller, more vinous. Both are worth exploring beyond the standard blend.`,
+  },
+  {
+    id: 'prosecco',
+    name: 'Prosecco',
+    icon: '🍾',
+    country: 'Italy',
+    region: 'Veneto & Friuli Venezia Giulia — Conegliano-Valdobbiadene DOCG',
+    colour: '#5C9518',
+    colourDark: '#3a6010',
+    method: 'Charmat (Tank) Method',
+    grapes: 'Glera (min. 85%)',
+    style: 'Extra Dry to Brut',
+    price: '£8–£35',
+    character: 'Fresh, fruity, light — pear, apple, white flower',
+    description: `Prosecco is Italy's most exported sparkling wine and the world's best-selling sparkling variety. Made using the Charmat (or Martinotti) method — where the second fermentation happens in a sealed tank rather than in bottle — it preserves fresh, fruity, aromatic character rather than developing the toasty complexity of Champagne. The result is approachable, light, and ideal for casual enjoyment.`,
+    grapeDetail: [
+      { name: 'Glera', role: 'The primary grape (minimum 85%), formerly called Prosecco. Naturally high acidity, light body, and signature pear-drop, white flower aromas.' },
+      { name: 'Pinot Bianco, Pinot Grigio, Verdiso (up to 15%)', role: 'Optional additions to add body, texture, or aromatic complexity. Rarely dominant.' },
+    ],
+    lookFor: [
+      'Pale straw to light golden colour',
+      'Larger, livelier bubbles than Champagne',
+      'Aromas of pear, green apple, white peach, and white flowers',
+      'Light to medium body, relatively simple but refreshing',
+      'DOCG (Conegliano-Valdobbiadene) on the label indicates higher quality',
+    ],
+    serving: [
+      'Serve very cold (4–6°C) — warmer than this and it loses its charm quickly',
+      'Ideal for Aperol Spritz, Bellinis, and light aperitivo moments',
+      'Pairs well with charcuterie, light antipasti, fresh mozzarella, and mild fish',
+      'Drink young — most Prosecco is not made for ageing; within 1–2 years of vintage',
+    ],
+    tip: `"Extra Dry" on Prosecco is actually slightly sweeter than "Brut" — the terminology is counterintuitive. If you want drier Prosecco, look for "Brut" or "Brut Nature" on the label.`,
+  },
+  {
+    id: 'cava',
+    name: 'Cava',
+    icon: '🇪🇸',
+    country: 'Spain',
+    region: 'Primarily Penedès (Catalonia); also Rioja, Aragon, Valencia',
+    colour: '#B03040',
+    colourDark: '#7a1a28',
+    method: 'Traditional Method',
+    grapes: 'Macabeo, Xarel·lo, Parellada (+ Chardonnay, Pinot Noir)',
+    style: 'Brut to Brut Nature',
+    price: '£7–£60',
+    character: 'Earthy, herbal, apple, almond — remarkable value',
+    description: `Cava is made by exactly the same method as Champagne — two fermentations, second in bottle, aged on the lees — yet costs a fraction of the price. The difference lies in the grapes: native Spanish varieties give Cava a distinctly earthy, herbal, sometimes slightly rustic character rather than Champagne's yeasty refinement. At its best, aged Cava Gran Reserva (minimum 30 months) offers extraordinary complexity and value.`,
+    grapeDetail: [
+      { name: 'Macabeo (Viura)', role: 'The most widely planted. Provides neutral, fresh base wine with good acidity and subtle floral notes.' },
+      { name: 'Xarel·lo', role: 'The character grape — earthy, herbal, and full-bodied. Gives Cava its distinctive Spanish identity and ageing potential.' },
+      { name: 'Parellada', role: 'Adds delicacy and floral aromatics. Always the thinnest and most aromatic of the three.' },
+      { name: 'Chardonnay / Pinot Noir', role: 'International varieties now permitted. Used in premium Cavas for greater creaminess and familiar international style.' },
+    ],
+    lookFor: [
+      'Pale to golden colour; rosé Cava is a growing category',
+      'Fine bubbles — similar to Champagne in texture due to the same method',
+      'Aromas of apple, lemon, almond, herbs, and sometimes light earthiness',
+      '"Reserva" (min. 15 months), "Gran Reserva" (min. 30 months) — both excellent value',
+      '"Paraje Calificado" on the label = single-vineyard, top-tier quality',
+    ],
+    serving: [
+      'Serve at 6–8°C, slightly warmer for aged Gran Reserva to open up complexity',
+      'Outstanding with tapas: jamón, patatas bravas, tortilla, and seafood',
+      'Gran Reserva Cava can rival entry-level Champagne at half the price',
+      'Drink NV within 2 years; Gran Reserva can improve for 3–5 years',
+    ],
+    tip: `Cava is the world's best-kept sparkling secret. A £15 Cava Gran Reserva aged 30 months on the lees will regularly outperform £30 Champagne in blind tastings. Codorníu, Gramona, and Recaredo are benchmarks.`,
+  },
+  {
+    id: 'cremant',
+    name: 'Crémant',
+    icon: '🇫🇷',
+    country: 'France',
+    region: 'Alsace, Burgundy, Loire, Bordeaux, Jura, Die, Limoux, Luxembourg',
+    colour: '#4A6A9A',
+    colourDark: '#2d4a70',
+    method: 'Traditional Method',
+    grapes: 'Varies by region (Chenin Blanc, Pinot Noir, Chardonnay, Auxerrois…)',
+    style: 'Brut',
+    price: '£10–£35',
+    character: `Elegant, regional character — the insider's choice`,
+    description: `Crémant is France's name for Traditional Method sparkling wine made outside the Champagne region. Each appellation uses different local grapes and contributes its own personality: Crémant d'Alsace (Pinot Blanc, Auxerrois) is rich and spicy; Crémant de Bourgogne (Pinot Noir, Chardonnay) is the closest to Champagne in character; Crémant de Loire (Chenin Blanc) is fresh and mineral. Minimum lees ageing is 9 months — less than Champagne's 15, but still substantial.`,
+    grapeDetail: [
+      { name: 'Crémant d\'Alsace', role: 'Pinot Blanc, Auxerrois, Pinot Gris — rich, full, spicy with good weight. Most popular Crémant in France.' },
+      { name: 'Crémant de Bourgogne', role: 'Chardonnay and Pinot Noir — closest to Champagne in style; fine bubbles, good complexity, excellent value.' },
+      { name: 'Crémant de Loire', role: 'Chenin Blanc — high natural acidity, apple and quince flavours, honeyed notes, outstanding ageing potential.' },
+      { name: 'Crémant de Bordeaux', role: 'Sémillon, Sauvignon Blanc, Cabernet Franc — unusual and underappreciated; earthy, full, and distinctive.' },
+    ],
+    lookFor: [
+      'Fine bubbles comparable to Champagne due to the same production method',
+      'Significant regional variation — try different appellations to explore French terroir',
+      'Look for "Millésimé" (vintage) Crémant for greater depth and complexity',
+      'Rosé Crémant (Rosé de Saignée in Alsace) is outstanding — often better than Prosecco Rosé',
+    ],
+    serving: [
+      'Serve at 6–8°C — same as Champagne',
+      'Perfect everyday Champagne substitute at a third of the price',
+      'Crémant d\'Alsace: pairs beautifully with Alsatian tarte flambée and choucroute',
+      `Crémant de Loire: excellent with Loire goat's cheese and shellfish`,
+    ],
+    tip: `Crémant is the sommelier's go-to recommendation when customers want "something like Champagne but don't want to spend Champagne money." A £15 Crémant de Bourgogne Blanc de Noirs genuinely competes with £30 Champagne.`,
+  },
+]
+
+const SPARKLING_SWEETNESS = [
+  { term: 'Brut Nature', sugar: '0–3 g/L', pct: 5, note: 'Bone dry. No dosage added. Austere and mineral.' },
+  { term: 'Extra Brut', sugar: '0–6 g/L', pct: 10, note: 'Very dry. Purist style, common in prestige cuvées.' },
+  { term: 'Brut', sugar: '0–12 g/L', pct: 20, note: 'Dry. The most common style worldwide. Most NV Champagnes.' },
+  { term: 'Extra Dry', sugar: '12–17 g/L', pct: 35, note: 'Off-dry. Confusingly named — sweeter than Brut. Common in Prosecco.' },
+  { term: 'Sec', sugar: '17–32 g/L', pct: 55, note: 'Medium. Noticeably sweet. Good with desserts.' },
+  { term: 'Demi-Sec', sugar: '32–50 g/L', pct: 78, note: 'Sweet. Pairs well with fruit desserts and blue cheese.' },
+  { term: 'Doux', sugar: '50+ g/L', pct: 100, note: 'Very sweet. Rare and rich — classic with puddings.' },
+]
+
+// ── Grape Varieties Data ─────────────────────────────────────────
+
+const WHITE_GRAPES = [
+  {
+    name: 'Chardonnay',
+    origin: 'Burgundy, France — now grown worldwide',
+    tags: ['Versatile', 'Full-bodied', 'Oak-friendly'],
+    description: `The world's most planted white grape — and its most debated. Naturally neutral, Chardonnay is a blank canvas that expresses terroir and winemaking more than almost any other variety. Unoaked: crisp, mineral, with green apple and citrus. Oaked: rich, buttery, with vanilla, toast, and tropical fruit. At its greatest in white Burgundy (Chablis to Montrachet), where it achieves extraordinary complexity.`,
+    regions: 'Burgundy (Chablis, Meursault, Puligny-Montrachet), Champagne, Napa Valley, Margaret River, Côte d\'Or',
+    food: 'Lobster, roast chicken, cream sauces, aged hard cheese, mushroom risotto',
+  },
+  {
+    name: 'Sauvignon Blanc',
+    origin: 'Loire Valley, France',
+    tags: ['Aromatic', 'Crisp', 'Herbaceous'],
+    description: `Unmistakably aromatic — Sauvignon Blanc announces itself with vivid notes of cut grass, gooseberry, elderflower, and in warmer climates, tropical passion fruit. New Zealand (Marlborough) made the grape globally famous with an exuberantly fruity style. France's Loire Valley (Sancerre, Pouilly-Fumé) offers a more restrained, mineral expression with a characteristic flint-like smokiness.`,
+    regions: 'Marlborough (NZ), Loire Valley (Sancerre, Pouilly-Fumé), Bordeaux, Chile, South Africa',
+    food: 'Goat\'s cheese, oysters, asparagus, green salads, Thai cuisine, sushi',
+  },
+  {
+    name: 'Riesling',
+    origin: 'Rhine Valley, Germany',
+    tags: ['High acidity', 'Age-worthy', 'Aromatic'],
+    description: `Often called the world's greatest white grape by those who know it best — and criminally underrated by everyone else. Naturally high in acidity, Riesling can range from bone-dry to lusciously sweet. Its hallmark is a petrol/kerosene note that develops with age, alongside intense lime, apricot, slate, and white flower aromas. Riesling is the most age-worthy white grape — great examples improve for 30+ years.`,
+    regions: 'Mosel (Germany), Alsace (France), Clare & Eden Valley (Australia), Wachau (Austria), New Zealand',
+    food: 'Pork, duck, spicy Asian cuisine, smoked salmon, blue cheese, Vietnamese food',
+  },
+  {
+    name: 'Pinot Gris / Pinot Grigio',
+    origin: 'Burgundy, France (same grape, two styles)',
+    tags: ['Two styles', 'Versatile', 'Food-friendly'],
+    description: `The same grape, radically different expressions. As Pinot Grigio in Italy: pale, light, crisp, and neutral — a refreshing everyday wine. As Pinot Gris in Alsace: rich, full-bodied, with honey, spice, and stone fruit, sometimes bordering on dessert wine sweetness. The Alsatian version is far more complex and age-worthy. Germany's Grauburgunder is a middle ground — dry and full with good weight.`,
+    regions: 'Alsace (France), Friuli & Trentino-Alto Adige (Italy), Oregon, Germany, New Zealand',
+    food: 'Alsatian style: pork, foie gras, Munster cheese. Italian style: light pasta, seafood, prosciutto',
+  },
+  {
+    name: 'Chenin Blanc',
+    origin: 'Loire Valley, France',
+    tags: ['High acidity', 'Versatile', 'Age-worthy'],
+    description: `The great underdog of white grapes — capable of producing everything from lean, dry Muscadet-style wines to sublime, honeyed dessert wines (Quarts de Chaume, Vouvray moelleux). Its naturally high acidity means it ages spectacularly. South Africa has become a second home, producing world-class dry Chenin (often sold simply as "Chenin Blanc") at superb value.`,
+    regions: 'Loire Valley (Vouvray, Savennières, Quarts de Chaume), South Africa (Stellenbosch, Swartland)',
+    food: 'Pork, duck, quince, apple tart, soft cheese. Sweet versions: foie gras, blue cheese',
+  },
+  {
+    name: 'Viognier',
+    origin: 'Northern Rhône (Condrieu), France',
+    tags: ['Aromatic', 'Full-bodied', 'Low acidity'],
+    description: `One of wine's most exotic varieties — intensely perfumed with apricot, peach blossom, jasmine, and white pepper. Naturally low acidity makes it feel opulent and creamy, but also means it must be drunk relatively young before the aromatics fade. Condrieu is its greatest expression; co-fermented with Syrah in Côte-Rôtie to add perfume to a red wine. Also planted successfully in Australia's Yarra Valley and California.`,
+    regions: 'Condrieu & Côte-Rôtie (Rhône, France), Languedoc, South Australia, California',
+    food: 'Lobster with cream sauce, spiced chicken, Thai curry, peach and apricot-based dishes',
+  },
+]
+
+const RED_GRAPES = [
+  {
+    name: 'Cabernet Sauvignon',
+    origin: 'Bordeaux, France',
+    tags: ['Full-bodied', 'Tannic', 'Age-worthy'],
+    description: `The world's most widely planted red grape and probably its most recognisable. Naturally high in tannin and acidity, Cabernet Sauvignon produces structured, ageworthy wines with classic aromas of blackcurrant (cassis), cedar, tobacco, and graphite. It is almost always blended in Bordeaux (with Merlot and Cabernet Franc) but bottled alone in Napa Valley and much of the New World, where warmer climates produce riper, more immediately accessible styles.`,
+    regions: 'Bordeaux (Médoc, Pauillac), Napa Valley, Coonawarra (Australia), Chile, Tuscany (Super Tuscans)',
+    food: 'Aged beef, lamb, venison, hard aged cheese, truffles',
+  },
+  {
+    name: 'Merlot',
+    origin: 'Bordeaux (Right Bank), France',
+    tags: ['Medium-full body', 'Soft tannins', 'Approachable'],
+    description: `Merlot softens everything it touches. Lower in tannin and higher in natural sugar than Cabernet Sauvignon, it produces plump, velvety wines with plum, chocolate, and blue fruit flavours. In Bordeaux's Pomerol (Pétrus) and Saint-Émilion, Merlot achieves extraordinary nobility. Often dismissed as a grape for beginners, top Merlot can be among the world's greatest wines — Château Pétrus is nearly 100% Merlot.`,
+    regions: 'Pomerol & Saint-Émilion (Bordeaux), Washington State, California, Chile, Italy (Veneto, Tuscany)',
+    food: 'Roast lamb, pork, duck, mushroom-based dishes, mild soft cheese',
+  },
+  {
+    name: 'Pinot Noir',
+    origin: 'Burgundy, France',
+    tags: ['Light-medium body', 'Low tannin', 'Silky'],
+    description: `The heartbreak grape — notoriously difficult to grow, almost impossible to replicate away from its homeland. Burgundian Pinot Noir is ethereal: pale in colour, yet intensely aromatic with wild strawberry, violet, forest floor, and game notes. Silky tannins, vibrant acidity, and extraordinary length. Great Burgundy (La Tâche, Romanée-Conti) is the world's most expensive wine. Oregon and New Zealand produce world-class alternatives.`,
+    regions: 'Côte d\'Or (Burgundy), Willamette Valley (Oregon), Central Otago (NZ), Tasmania, Alsace',
+    food: 'Duck, salmon, mushroom risotto, chicken in cream, soft goat\'s cheese, charcuterie',
+  },
+  {
+    name: 'Syrah / Shiraz',
+    origin: 'Northern Rhône (Hermitage), France',
+    tags: ['Full-bodied', 'Peppery', 'Age-worthy'],
+    description: `Two names, one grape — but very different expressions. As Syrah in France's northern Rhône (Hermitage, Côte-Rôtie): dark, structured, with violet, black pepper, smoked meat, and leather — austere young but magnificent with age. As Shiraz in Australia (Barossa Valley, McLaren Vale): richer, jammier, more chocolatey, with higher alcohol and a more immediate appeal. Both are world-class.`,
+    regions: 'Hermitage & Côte-Rôtie (Rhône), Barossa Valley, McLaren Vale, Western Australia, South Africa',
+    food: 'BBQ beef, game, lamb tagine, venison, aged hard cheese, dark chocolate',
+  },
+  {
+    name: 'Grenache / Garnacha',
+    origin: 'Aragon, Spain (later adopted by southern France)',
+    tags: ['High alcohol', 'Red fruit', 'Spicy'],
+    description: `The world's second most planted red grape. Naturally high in alcohol with relatively low tannin, Grenache produces warm, heady wines with raspberry, white pepper, and dried herb character. Rarely bottled alone — more often the backbone of Rhône blends (Châteauneuf-du-Pape) and Spanish wines (Priorat, where old-vine Garnacha achieves extraordinary concentration). Also the basis of many great rosés.`,
+    regions: 'Châteauneuf-du-Pape (France), Priorat (Spain), Sardinia (Cannonau), South Australia',
+    food: 'Roast lamb, rabbit, Provençal dishes, ratatouille, tapas',
+  },
+  {
+    name: 'Nebbiolo',
+    origin: 'Piedmont, Italy',
+    tags: ['High tannin', 'High acidity', 'Age-worthy'],
+    description: `Italy's most noble grape — the force behind Barolo and Barbaresco, two of the country's greatest wines. Nebbiolo's tannins are ferocious in youth (bottles often need 10+ years before they soften), but the rewards are extraordinary: rose petals, tar, cherries, leather, and truffles in a wine of remarkable complexity. The name means "fog" in Italian — a reference to the autumn mists that roll through Piedmont at harvest.`,
+    regions: 'Barolo & Barbaresco (Piedmont, Italy), Valtellina, Ghemme, Gattinara',
+    food: 'Brasato al Barolo (braised beef), truffle dishes, aged Parmesan, game',
+  },
+  {
+    name: 'Sangiovese',
+    origin: 'Tuscany, Italy',
+    tags: ['High acidity', 'Firm tannins', 'Versatile'],
+    description: `Italy's most planted red grape and the backbone of Chianti, Brunello di Montalcino, and Vino Nobile di Montepulciano. Naturally high in acidity with firm tannins, Sangiovese produces wines with cherry, dried herbs, and leather character — naturally food-friendly and built for the table. Brunello (100% Sangiovese from Montalcino) is one of Italy's most age-worthy wines, improving for 20–30 years.`,
+    regions: 'Chianti Classico, Brunello di Montalcino, Vino Nobile (Tuscany), Emilia-Romagna, Umbria',
+    food: 'Italian food almost universally: pasta al ragù, pizza, bistecca Fiorentina, pecorino, ribollita',
+  },
+  {
+    name: 'Tempranillo',
+    origin: 'Rioja, Spain',
+    tags: ['Medium body', 'Oak-aged', 'Earthy'],
+    description: `Spain's most important red grape and the cornerstone of Rioja, Ribera del Duero, and Navarra. Tempranillo has relatively low natural acidity (often supplemented by blending with Garnacha) and responds beautifully to oak ageing, developing leather, tobacco, vanilla, and dried cherry character. The traditional Rioja classification (Joven, Crianza, Reserva, Gran Reserva) is based entirely on oak ageing time.`,
+    regions: 'Rioja, Ribera del Duero, Toro, Navarra (Spain), Alentejo (Portugal as Aragonez)',
+    food: 'Lamb, suckling pig, cured meats, Manchego cheese, lentil stews',
+  },
+]
+
+const CLASSIC_BLENDS = [
+  {
+    name: 'Bordeaux Red Blend',
+    region: 'Bordeaux, France — Left Bank (Médoc) and Right Bank (Saint-Émilion, Pomerol)',
+    bg: 'linear-gradient(135deg, #f9f1e8, #f5e8d8)',
+    description: `The world's most famous red blend. Left Bank Bordeaux (Pauillac, Saint-Julien, Margaux) is Cabernet Sauvignon-dominant — structured and tannic, built for decades of ageing. Right Bank (Pomerol, Saint-Émilion) is Merlot-dominant — softer, rounder, and more immediately accessible. Both sides share the same cast of characters in different proportions.`,
+    grapes: [
+      { name: 'Cabernet Sauvignon', pct: '40–80%', colour: '#8B1A2F', role: 'The backbone — provides structure, tannin, blackcurrant character, and the framework for long ageing.' },
+      { name: 'Merlot', pct: '10–50%', colour: '#C94040', role: 'Adds softness, plum fruit, and rounds out the Cabernet\'s austere tannins. Dominant on the Right Bank.' },
+      { name: 'Cabernet Franc', pct: '5–20%', colour: '#A83050', role: 'Contributes violet, pepper, and herbal notes. Adds mid-palate complexity and aromatic lift.' },
+      { name: 'Petit Verdot', pct: '1–5%', colour: '#6B1A5A', role: 'A finishing touch — deep colour, spice, and tannin. Only used in good years when fully ripe.' },
+    ],
+    examples: 'Château Mouton Rothschild, Château Léoville-Barton, Château Pétrus, Château Cheval Blanc, Château Léoville-Las Cases',
+  },
+  {
+    name: 'Champagne Blend',
+    region: 'Champagne, France',
+    bg: 'linear-gradient(135deg, #fdf8e8, #f9f0d0)',
+    description: `The majority of Champagne is a blend of three grapes, two red and one white — an unusual combination that produces a white sparkling wine. Each grape brings something essential; the art of blending is to achieve the house's consistent style year after year, despite vintage variation.`,
+    grapes: [
+      { name: 'Pinot Noir', pct: '30–60%', colour: '#8B1A2F', role: 'Gives body, structure, and red fruit character. Forms the backbone of most grandes marques.' },
+      { name: 'Chardonnay', pct: '20–50%', colour: '#C9B840', role: 'Brings freshness, elegance, citrus, and mineral finesse. Dominant in Blanc de Blancs.' },
+      { name: 'Pinot Meunier', pct: '10–40%', colour: '#C94080', role: 'Adds approachability, soft fruitiness, and rounds out the blend for early drinking.' },
+    ],
+    examples: 'Krug Grande Cuvée, Bollinger Special Cuvée, Moët & Chandon Brut Impérial, Louis Roederer Brut Premier, Veuve Clicquot Brut',
+  },
+  {
+    name: 'Southern Rhône: GSM',
+    region: 'Châteauneuf-du-Pape, Gigondas, Côtes du Rhône — France',
+    bg: 'linear-gradient(135deg, #f5ece8, #edd8d0)',
+    description: `GSM — Grenache, Syrah, Mourvèdre — is the classic blend of France's southern Rhône Valley, responsible for Châteauneuf-du-Pape and many of the region's finest reds. Grenache's warmth and alcohol provides the base; Syrah adds structure and peppery spice; Mourvèdre brings meaty, earthy depth. The same blend appears in Australia (Barossa "GSM") and Spain.`,
+    grapes: [
+      { name: 'Grenache', pct: '50–80%', colour: '#C94040', role: 'The dominant partner. Provides warmth, high alcohol (often 14–15%+), raspberry fruit, and white pepper.' },
+      { name: 'Syrah', pct: '10–30%', colour: '#5A1A4A', role: 'Adds structure, tannin, black pepper, and violet. Prevents the blend becoming too diffuse or high-alcohol.' },
+      { name: 'Mourvèdre', pct: '5–20%', colour: '#3A1A2A', role: 'Deep colour, meaty, gamey, earthy character. Excellent ageing potential. The dark heart of great CdP.' },
+    ],
+    examples: 'Château Rayas, Château Beaucastel, Domaine du Vieux Télégraphe, Château Pégaü, Tardieu-Laurent',
+  },
+  {
+    name: 'White Burgundy',
+    region: 'Côte de Beaune, Burgundy — France',
+    bg: 'linear-gradient(135deg, #f5f3e8, #ede8cc)',
+    description: `The world's greatest white wine is almost always 100% Chardonnay from Burgundy's Côte de Beaune. Unlike Bordeaux Blanc (which blends Sauvignon Blanc and Sémillon), white Burgundy is a single-variety expression where village, vineyard, and producer define everything. The hierarchy from Bourgogne Blanc to Grand Cru represents one of wine's most nuanced ladders of quality.`,
+    grapes: [
+      { name: 'Chardonnay', pct: '100%', colour: '#C9B840', role: 'Everything — the variety is a neutral canvas. Terroir and winemaking (oak, lees ageing, malolactic) do the rest.' },
+    ],
+    examples: 'Domaine Leflaive Chevalier-Montrachet, Coche-Dury Meursault, Roulot Meursault, Ramonet Chassagne-Montrachet, Jadot Puligny-Montrachet',
+  },
+  {
+    name: 'Rioja: Tempranillo Blend',
+    region: 'Rioja DOCa, Spain',
+    bg: 'linear-gradient(135deg, #f5ece5, #edded5)',
+    description: `Traditional Rioja is a blend centred on Tempranillo, softened with Garnacha, and given structure by Graciano and Mazuelo. The result is a wine uniquely suited to extensive oak ageing — Gran Reserva spends at least 2 years in oak and 3 in bottle before release, yet costs a fraction of similarly aged Burgundy or Bordeaux.`,
+    grapes: [
+      { name: 'Tempranillo', pct: '60–90%', colour: '#8B3A20', role: 'The lead actor. Cherry, leather, vanilla (from oak), and earthy tobacco character. Medium body with good acidity.' },
+      { name: 'Garnacha', pct: '5–25%', colour: '#C94040', role: 'Adds alcohol, roundness, and red fruit softness to complement Tempranillo\'s austerity.' },
+      { name: 'Graciano', pct: '2–10%', colour: '#5A1A1A', role: 'High acidity, dark colour, and floral aromatics. A small addition transforms a blend\'s freshness and ageing potential.' },
+    ],
+    examples: 'CVNE Imperial Reserva, La Rioja Alta Gran Reserva 904, Muga Prado Enea, Marqués de Riscal Gran Reserva, Roda I Reserva',
+  },
+]
