@@ -5,8 +5,9 @@ const NAV_LINKS = [
   { to: '/explore',   label: 'Explore' },
   { to: '/shop',      label: 'Shops' },
   { to: '/sparkling', label: 'Sparkling' },
-  { to: '/pairing',   label: 'Pairings' },
-  { to: '/critics',   label: 'Critics' },
+  { to: '/pairing',     label: 'Pairings' },
+  { to: '/taste-quiz', label: 'My Taste' },
+  { to: '/critics',    label: 'Critics' },
   { to: '/learn',     label: 'Learn' },
   { to: '/cellar',    label: 'My Cellar' },
 ]

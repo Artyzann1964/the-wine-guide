@@ -13,7 +13,8 @@ const Pairing   = lazy(() => import('./pages/Pairing'))
 const Cellar    = lazy(() => import('./pages/Cellar'))
 const Education = lazy(() => import('./pages/Education'))
 const Shop      = lazy(() => import('./pages/Shop'))
-const Critics   = lazy(() => import('./pages/Critics'))
+const Critics        = lazy(() => import('./pages/Critics'))
+const TasteProfiler  = lazy(() => import('./pages/TasteProfiler'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -43,6 +44,7 @@ function AppLayout() {
           <Route path="/learn" element={<Education />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/critics" element={<Critics />} />
+          <Route path="/taste-quiz" element={<TasteProfiler />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
