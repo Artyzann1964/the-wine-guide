@@ -30,3 +30,6 @@ yarn-error.log*
 
 # Temp generation scripts
 /tmp/
+
+# Vite
+vite.config.js.timestamp-*

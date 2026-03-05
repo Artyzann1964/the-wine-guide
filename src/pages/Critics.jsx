@@ -43,7 +43,7 @@ const CRITICS = [
     ],
     gilby: true,
     colour: '#C9973A',
-    topPickIds: ['aldi-veuve-monsigny-champagne-nv', 'lidl-cremant-alsace', 'tesco-finest-english-sparkling'],
+    topPickIds: ['aldi-cremant-du-jura', 'tesco-finest-english-sparkling', 'waitrose-cune-rioja'],
     quote: `"A wine doesn't have to be expensive to be Class. And an expensive wine can absolutely be Arse."`,
   },
   {
