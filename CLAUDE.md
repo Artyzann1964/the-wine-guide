@@ -6,7 +6,7 @@ Project memory for Claude Code sessions. Keep this updated as the project evolve
 
 ## Project Overview
 
-A React SPA wine reference and personal cellar tracker aimed at UK consumers. Covers 144 wines sourced from UK supermarkets (Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons) plus Sheffield specialist Le Bon Vin, with full tasting profiles, food pairings, and vintage guides.
+A React SPA wine reference and personal cellar tracker aimed at UK consumers. Covers 156 wines sourced from UK supermarkets (Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons), specialist retailers (Majestic, Co-op) and Sheffield specialist Le Bon Vin, with full tasting profiles, food pairings, and vintage guides.
 
 **Stack:** React 18 · React Router 6 (HashRouter) · Vite 5 · Tailwind CSS v3 · localStorage for cellar persistence · No backend
 
@@ -34,7 +34,7 @@ src/
   index.css                 # Tailwind directives + custom utilities
 
   data/
-    wines.js                # All wine entries (144 wines) + REGIONS array
+    wines.js                # All wine entries (156 wines) + REGIONS array
 
   hooks/
     useCellar.js            # localStorage cellar state: bottles / wishlist / tasted
@@ -107,6 +107,10 @@ Each entry in the `wines` array:
   tags: [`award winner`, `organic`],
   drinkFrom: 2025,                   // optional year number — used for drinking window in Cellar
   drinkBy: 2035,                     // optional year number
+  // Tom Gilby critic fields (optional — only on wines rated by Tom Gilby)
+  gilbyRating: 'class',              // 'class' | 'arse'
+  gilbyNote: `...`,                  // one-line summary of Gilby's verdict
+  gilbyVideoUrl: `https://...`,      // optional YouTube link to his review
 }
 ```
 
@@ -145,6 +149,20 @@ Note: `bottles`, `wishlist`, `tasted` are returned **directly** (not just nested
 
 ### Explorer Filters
 All filters synced to URL search params (except `sort` and `search` which are local state). URL params: `category`, `country`, `price`, `retailer`, `grape`.
+
+### Retailer Branding (`src/utils/retailerBrands.jsx`)
+Exports `RETAILER_BRANDS` (bg/text/border colour config) and `RetailerBadge` component. Covers all 11 retailers: Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons, Le Bon Vin, Majestic, Co-op. Import and use `<RetailerBadge name="Waitrose" />` wherever a styled retailer pill is needed.
+
+### Schema Normalizer (`src/data/wines.js`)
+The wines array is exported via `normalizeWine()` — the internal array is `const _wines = [...]`, the public export is `export const wines = _wines.map(normalizeWine)`. The normalizer reconciles two schemas (original hand-crafted wines vs bulk-generated wines):
+- `category` → always lowercase
+- `priceRange` → `'£'/'££'/'£££'` symbol strings → `'budget'/'mid'/'premium'` named tiers
+- `price` → number → `'£X.XX'` display string
+- `pairings` → string[] → `[{dish, cuisine, reason}][]`
+- `vintageGuide` → string[] → `[{year, rating, notes}][]`
+- `whereToBuy` → `{store}` shape → `{name, type, note}` shape
+
+**Never write new wines using the old bulk schema** — always use the correct schema (lowercase category, named priceRange, £string price, object arrays).
 
 ### Cellar Drinking Window
 `drinkWindowStatus(bottle)` in `Cellar.jsx` — parses `drinkFrom`/`drinkBy` as year integers, returns `{ status, icon, label, cls }` or `null`.
@@ -185,10 +203,10 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 
 ## Known Issues / Watch-outs
 
-- **Chunk size warning** — `dist/assets/index-*.js` ~625 kB (gzip: ~166 kB). Due to wine data size. Not a blocker but worth code-splitting the `wines.js` data in future if database grows past ~300 wines.
+- **Chunk size warning** — `dist/assets/index-*.js` ~757 kB (gzip: ~207 kB). Due to wine data size. Not a blocker but worth code-splitting the `wines.js` data in future if database grows past ~300 wines.
 - **No `.gitignore`** — should add one before pushing to GitHub to exclude `node_modules/`, `dist/`, `.DS_Store`, the PDF reference files.
 - **localStorage only** — cellar data is browser-local, not synced across devices. Fine for v1 but noted for future backend consideration.
-- **whereToBuy retailer names** — must be exactly consistent across wines for the Explorer retailer filter to work correctly (case-sensitive string match). The 8 supermarkets are: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`.
+- **whereToBuy retailer names** — must be exactly consistent across wines for the Explorer retailer filter to work correctly (case-sensitive string match). The 11 retailers are: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Majestic`, `Co-op`, `Le Bon Vin`.
 
 ---
 
@@ -197,7 +215,7 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 | Route | Page | Notes |
 |-------|------|-------|
 | `/` | Home | Featured wines, hero |
-| `/explore` | Explorer | Filter/sort 144 wines |
+| `/explore` | Explorer | Filter/sort 156 wines |
 | `/explore/:id` | WineDetail | Full wine page, 5 tabs, cellar modal |
 | `/sparkling` | Sparkling | Sparkling wine guide |
 | `/pairing` | Pairing | Food pairing wizard |
