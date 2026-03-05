@@ -185,10 +185,10 @@ export default function Explorer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col md:flex-row gap-6">
 
           {/* ── SIDEBAR FILTERS ───────────────── */}
-          <aside className="lg:w-56 flex-shrink-0">
+          <aside className="md:w-52 lg:w-56 flex-shrink-0">
             {/* Search */}
             <div className="mb-6">
               <label className="section-label block mb-2">Search</label>
@@ -329,7 +329,7 @@ export default function Explorer() {
                 <p className="font-body text-sm text-slate-lt">Try adjusting your filters</p>
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filtered.map(wine => (
                   <WineCard key={wine.id} wine={wine} showPrice={sort === 'price_asc' || sort === 'price_desc' || sort === 'value'} />
                 ))}

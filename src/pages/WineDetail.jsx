@@ -183,20 +183,29 @@ export default function WineDetail() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 mt-8 border-b border-cream overflow-x-auto">
-            {TABS.map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`font-body text-sm px-5 py-3 border-b-2 transition-all capitalize whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'border-gold text-gold font-medium'
-                    : 'border-transparent text-slate-lt hover:text-slate'
-                }`}
-              >
-                {tab === 'buy' ? 'Where to Buy' : tab === 'vintages' ? 'Vintage Guide' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
+          <div className="flex mt-8 border-b border-cream overflow-x-auto scrollbar-none">
+            {TABS.map(tab => {
+              const label = tab === 'buy' ? 'Buy'
+                : tab === 'vintages' ? 'Vintages'
+                : tab.charAt(0).toUpperCase() + tab.slice(1)
+              const labelLg = tab === 'buy' ? 'Where to Buy'
+                : tab === 'vintages' ? 'Vintage Guide'
+                : label
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`font-body text-[13px] px-3 sm:px-5 py-3 border-b-2 transition-all whitespace-nowrap flex-shrink-0 ${
+                    activeTab === tab
+                      ? 'border-gold text-gold font-medium'
+                      : 'border-transparent text-slate-lt hover:text-slate'
+                  }`}
+                >
+                  <span className="sm:hidden">{label}</span>
+                  <span className="hidden sm:inline">{labelLg}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>

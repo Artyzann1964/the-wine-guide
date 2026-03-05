@@ -126,6 +126,30 @@ const CRITICS = [
 ]
 
 // ── Component helpers ──────────────────────────────────────────────────────────
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+}
+
+function CriticAvatar({ critic, size = 'md', frosted = false }) {
+  const sizes = {
+    sm: 'w-10 h-10 text-sm',
+    md: 'w-14 h-14 text-base',
+    lg: 'w-20 h-20 text-2xl',
+  }
+  const style = frosted
+    ? { background: 'rgba(255,255,255,0.18)', color: '#fff', border: '2px solid rgba(255,255,255,0.3)', letterSpacing: '0.06em' }
+    : { background: critic.colour, color: '#fff', letterSpacing: '0.06em' }
+  return (
+    <div
+      className={`${sizes[size]} rounded-full flex items-center justify-center font-display font-semibold flex-shrink-0 select-none`}
+      style={style}
+    >
+      {getInitials(critic.name)}
+    </div>
+  )
+}
+
 function CriticCard({ critic, onSelect, isSelected }) {
   return (
     <button
@@ -135,12 +159,7 @@ function CriticCard({ critic, onSelect, isSelected }) {
       }`}
     >
       <div className="flex items-center gap-3 mb-3">
-        <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-          style={{ background: `${critic.colour}20`, border: `1px solid ${critic.colour}30` }}
-        >
-          {critic.emoji}
-        </div>
+        <CriticAvatar critic={critic} size="md" />
         <div>
           <h3 className="font-display text-lg font-semibold text-slate leading-tight">{critic.name}</h3>
           <p className="font-body text-xs text-slate-lt">{critic.title}</p>
@@ -168,9 +187,14 @@ function CriticDetail({ critic }) {
         className="rounded-2xl p-8 mb-8 text-white relative overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${critic.colour} 0%, ${critic.colour}99 100%)` }}
       >
-        <div className="absolute right-6 top-6 text-6xl opacity-20">{critic.emoji}</div>
-        <p className="font-body text-xs tracking-[0.15em] uppercase text-white/60 mb-2">{critic.title}</p>
-        <h2 className="font-display text-4xl font-semibold text-white mb-4">{critic.name}</h2>
+        <div className="absolute right-6 top-6 text-6xl opacity-10">{critic.emoji}</div>
+        <div className="flex items-center gap-5 mb-5">
+          <CriticAvatar critic={critic} size="lg" frosted />
+          <div>
+            <p className="font-body text-xs tracking-[0.15em] uppercase text-white/60 mb-1">{critic.title}</p>
+            <h2 className="font-display text-3xl lg:text-4xl font-semibold text-white leading-tight">{critic.name}</h2>
+          </div>
+        </div>
         <p className="font-body text-sm text-white/80 leading-relaxed max-w-2xl mb-5">{critic.bio}</p>
         <p className="font-display text-lg italic text-white/90">{critic.quote}</p>
       </div>
@@ -303,7 +327,12 @@ export default function Critics() {
           style={{ background: 'linear-gradient(135deg, #1A1A2E 0%, #2C1810 100%)' }}
           onClick={() => setSelectedId('tom-gilby')}
         >
-          <div className="text-4xl flex-shrink-0">🎬</div>
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center font-display font-semibold text-base flex-shrink-0 select-none"
+            style={{ background: '#C9973A', color: '#1A1A2E', letterSpacing: '0.06em' }}
+          >
+            TG
+          </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
               <p className="font-display text-xl font-semibold text-white">Tom Gilby MW</p>
