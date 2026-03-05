@@ -95,10 +95,10 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
         </div>
 
         {/* Wine name */}
-        <h3 className="font-display font-semibold text-white text-xl mt-3 leading-tight">
+        <h3 className="font-display font-semibold text-white text-xl mt-3 leading-tight line-clamp-2">
           {wine.name}
         </h3>
-        <p className="font-body text-sm text-white/60 mt-1">{wine.producer}</p>
+        <p className="font-body text-sm text-white/60 mt-1 truncate">{wine.producer}</p>
       </div>
 
       {/* Card body */}
@@ -111,7 +111,7 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
         </div>
 
         {/* Grapes */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="flex flex-wrap gap-1.5 mb-3">
           {wine.grapes.slice(0, 2).map(g => (
             <span key={g} className="tag bg-cream text-slate-lt text-xs">{g}</span>
           ))}
@@ -119,6 +119,17 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
             <span className="tag bg-cream/50 text-slate-lt/60 text-xs">+{wine.grapes.length - 2}</span>
           )}
         </div>
+
+        {/* Pairing chips */}
+        {wine.pairings?.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {wine.pairings.slice(0, 2).map((p, i) => (
+              <span key={i} className="tag bg-sage/10 border border-sage/20 text-sage text-[10px]">
+                {typeof p === 'string' ? p : p.dish}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Our Take */}
         <p className="font-body text-xs text-slate-lt italic leading-relaxed line-clamp-2 mb-4 flex-1">
