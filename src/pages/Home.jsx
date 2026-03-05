@@ -64,6 +64,19 @@ const PAIRING_PROMPTS = [
   'Mushroom risotto', 'Thai green curry', 'Stilton & Port',
 ]
 
+const RETAILERS = [
+  { name: 'Tesco',       bg: '#00539F', color: '#fff',     to: '/explore?retailer=Tesco' },
+  { name: "Sainsbury's", bg: '#EB6100', color: '#fff',     to: "/explore?retailer=Sainsbury's" },
+  { name: 'Waitrose',    bg: '#3d6b34', color: '#fff',     to: '/explore?retailer=Waitrose' },
+  { name: 'Asda',        bg: '#78BE20', color: '#1a3a00',  to: '/explore?retailer=Asda' },
+  { name: 'M&S',         bg: '#0A4F2E', color: '#fff',     to: '/explore?retailer=M%26S' },
+  { name: 'Aldi',        bg: '#1e3764', color: '#fff',     to: '/explore?retailer=Aldi' },
+  { name: 'Lidl',        bg: '#0050aa', color: '#fff',     to: '/explore?retailer=Lidl' },
+  { name: 'Morrisons',   bg: '#FFD700', color: '#004225',  to: '/explore?retailer=Morrisons' },
+  { name: 'Majestic',    bg: '#2C2C3E', color: '#C9973A',  to: '/explore?retailer=Majestic' },
+  { name: 'Le Bon Vin',  bg: '#7B1D2E', color: '#F7E7CE',  to: '/explore?retailer=Le+Bon+Vin' },
+]
+
 export default function Home() {
   const [prompt, setPrompt] = useState('')
   const navigate = useNavigate()
@@ -92,20 +105,14 @@ export default function Home() {
   return (
     <main>
       {/* ── HERO ─────────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex items-center pt-16 overflow-hidden bg-ivory">
+      <section className="relative pt-28 pb-16 overflow-hidden bg-ivory">
         {/* Decorative background */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 right-0 w-[600px] h-[600px] rounded-full bg-gold/5 -translate-y-20 translate-x-40" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-terracotta/5 translate-y-20 -translate-x-20" />
-          {/* Decorative lines */}
-          <svg className="absolute right-20 top-32 opacity-10" width="300" height="300" viewBox="0 0 300 300">
-            <circle cx="150" cy="150" r="140" fill="none" stroke="#C9973A" strokeWidth="1" />
-            <circle cx="150" cy="150" r="100" fill="none" stroke="#C9973A" strokeWidth="1" />
-            <circle cx="150" cy="150" r="60" fill="none" stroke="#C9973A" strokeWidth="1" />
-          </svg>
+          <div className="absolute top-10 right-0 w-[500px] h-[500px] rounded-full bg-gold/4 translate-x-40" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-terracotta/4 translate-y-16 -translate-x-16" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-20 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="animate-fade-up">
             <p className="section-label mb-4">A world-class wine companion</p>
             <h1 className="font-display text-6xl lg:text-7xl font-light text-slate leading-[1.05] mb-6">
@@ -154,30 +161,73 @@ export default function Home() {
             </form>
           </div>
 
-          {/* Hero visual — wine stats mosaic */}
-          <div className="hidden lg:grid grid-cols-2 gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            {[
-              { n: '232', label: 'Curated Wines' },
-              { n: '20+', label: 'Countries' },
-              { n: '90+', label: 'Wine Regions' },
-              { n: '∞',   label: 'Perfect Pairings' },
-            ].map(({ n, label }) => (
-              <div key={label} className="card p-6 text-center">
-                <p className="font-display text-5xl font-light text-gold mb-1">{n}</p>
-                <p className="font-body text-sm text-slate-lt">{label}</p>
-              </div>
-            ))}
-            <div className="card p-6 col-span-2 bg-navy text-white text-center overflow-hidden">
-              <div
-                className="transition-opacity duration-400"
-                style={{ opacity: quoteFade ? 1 : 0 }}
-              >
-                <p className="font-display text-xl lg:text-2xl font-light italic mb-2 leading-snug">
-                  "{WINE_QUOTES[quoteIdx].quote}"
-                </p>
-                <p className="font-body text-xs text-gold/70">— {WINE_QUOTES[quoteIdx].author}</p>
+          {/* Hero visual — Amanda portrait + stats */}
+          <div className="hidden lg:flex flex-col gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+
+            {/* Amanda portrait panel */}
+            <div className="rounded-2xl overflow-hidden shadow-hover" style={{ background: 'rgba(26,26,46,1)' }}>
+              <div className="flex items-stretch">
+                {/* Photo */}
+                <div className="w-44 flex-shrink-0">
+                  <img
+                    src="/amanda-holmes.png"
+                    alt="Amanda Holmes — Creator of The Wine Guide"
+                    className="w-full h-full object-cover object-top"
+                    style={{ filter: 'grayscale(100%) contrast(1.05) brightness(0.95)', minHeight: '210px' }}
+                  />
+                </div>
+                {/* Quote */}
+                <div className="flex-1 p-6 flex flex-col justify-center">
+                  <p className="font-body text-[11px] tracking-[0.18em] uppercase mb-3" style={{ color: 'rgba(201,151,58,0.65)' }}>
+                    From the creator
+                  </p>
+                  <p className="font-display text-lg lg:text-xl font-light italic text-white leading-snug mb-3">
+                    "Life is too short for bad Champagne — and too wonderful not to find the good stuff."
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-px" style={{ background: 'rgba(201,151,58,0.4)' }} />
+                    <p className="font-body text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Amanda Holmes</p>
+                  </div>
+                </div>
               </div>
             </div>
+
+            {/* Compact stats row */}
+            <div className="grid grid-cols-4 gap-3">
+              {[
+                { n: '232', label: 'Wines' },
+                { n: '20+', label: 'Countries' },
+                { n: '90+', label: 'Regions' },
+                { n: '∞',   label: 'Pairings' },
+              ].map(({ n, label }) => (
+                <div key={label} className="card p-4 text-center">
+                  <p className="font-display text-3xl font-light text-gold mb-0.5">{n}</p>
+                  <p className="font-body text-xs text-slate-lt">{label}</p>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── RETAILER STRIP ───────────────────────────────── */}
+      <section className="py-8 bg-white border-y border-cream/60">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <p className="font-body text-[11px] text-slate-lt/50 text-center mb-5 tracking-[0.22em] uppercase">
+            Wines sourced from
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-2">
+            {RETAILERS.map(({ name, bg, color, to }) => (
+              <Link
+                key={name}
+                to={to}
+                className="font-body text-sm font-semibold px-4 py-2 rounded-lg hover:scale-105 hover:shadow-md transition-all duration-200"
+                style={{ background: bg, color }}
+              >
+                {name}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
