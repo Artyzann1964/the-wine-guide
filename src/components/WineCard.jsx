@@ -18,12 +18,23 @@ const PRICE_LABEL = {
   luxury:  '££££',
 }
 
-const CARD_FALLBACK = {
-  red:       'linear-gradient(135deg, #6B1F2E 0%, #8B2040 100%)',
-  white:     'linear-gradient(135deg, #4A6741 0%, #5C7A52 100%)',
-  sparkling: 'linear-gradient(135deg, #3D2E0A 0%, #7B6020 100%)',
-  rosé:      'linear-gradient(135deg, #7B2D3E 0%, #9B3D50 100%)',
-  dessert:   'linear-gradient(135deg, #6B3A10 0%, #8B4F18 100%)',
+// Dark, bottle-inspired backgrounds — used for all cards so they always look rich,
+// even for wines whose cardGradient is a Tailwind class string (invalid in style={})
+const BOTTLE_BG = {
+  red:       'linear-gradient(150deg, #4A1020 0%, #6B1F2E 60%, #7A2238 100%)',
+  white:     'linear-gradient(150deg, #1E3A2A 0%, #2D5040 60%, #3A6050 100%)',
+  sparkling: 'linear-gradient(150deg, #2C2208 0%, #4A3A10 60%, #6B5518 100%)',
+  rosé:      'linear-gradient(150deg, #4A1525 0%, #7B2D3E 60%, #8B3548 100%)',
+  dessert:   'linear-gradient(150deg, #3A1E05 0%, #6B3A10 60%, #7A4518 100%)',
+}
+
+const FALLBACK_BG = 'linear-gradient(150deg, #1A1A2E 0%, #2C2C3E 100%)'
+
+// Always use the category bottle background for consistent, rich card headers.
+// Individual cardGradient values are unreliable (72 wines have invalid Tailwind class
+// strings; many CSS gradient values are light pastels that clash with the white label).
+function resolveBackground(wine) {
+  return BOTTLE_BG[wine.category] || FALLBACK_BG
 }
 
 export default function WineCard({ wine, compact = false, showPrice = false }) {
@@ -32,6 +43,7 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
   const config     = CATEGORY_CONFIG[wine.category] || CATEGORY_CONFIG.red
   const inCellar   = isInCellar(wine.id)
   const onWishlist = isInWishlist(wine.id)
+  const bgStyle    = resolveBackground(wine)
 
   const handleWishlist = (e) => {
     e.preventDefault()
@@ -69,47 +81,44 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
       to={`/explore/${wine.id}`}
       className="card group flex flex-col overflow-hidden hover:-translate-y-1 transition-all duration-300"
     >
-      {/* Card header — wine colour gradient */}
-      <div
-        className="px-5 pt-6 pb-5 relative"
-        style={{ background: wine.cardGradient || CARD_FALLBACK[wine.category] || 'linear-gradient(135deg, #2C2C3E 0%, #3D3D55 100%)' }}
-      >
-        {/* Category badge */}
-        <span className="tag bg-white/10 border border-white/15 text-white/70 text-[11px]">
-          <span className="wine-dot" style={{ background: config.dot }} />
-          {config.label}
-        </span>
+      {/* Card header — dark bottle background + label insert */}
+      <div className="px-4 pt-4 pb-4 relative" style={{ background: bgStyle }}>
 
-        {/* Status badges */}
-        <div className="absolute top-4 right-4 flex flex-col gap-1 items-end">
-          {inCellar && (
-            <span className="tag bg-white/20 border border-white/25 text-white text-[10px]">
-              In Cellar
-            </span>
-          )}
-          {(onWishlist || flashed) && !inCellar && (
-            <span className="tag bg-gold/30 border border-gold/50 text-gold text-[10px]">
-              {flashed && !onWishlist ? '✓ Added' : 'Wishlist'}
-            </span>
-          )}
+        {/* Top row: category badge + status badges */}
+        <div className="flex items-start justify-between mb-3">
+          <span className="tag bg-white/10 border border-white/20 text-white/70 text-[10px]">
+            <span className="wine-dot" style={{ background: config.dot }} />
+            {config.label}
+          </span>
+          <div className="flex flex-col gap-1 items-end">
+            {inCellar && (
+              <span className="tag bg-white/20 border border-white/30 text-white text-[10px]">
+                In Cellar
+              </span>
+            )}
+            {(onWishlist || flashed) && !inCellar && (
+              <span className="tag bg-gold/30 border border-gold/50 text-gold text-[10px]">
+                {flashed && !onWishlist ? '✓ Added' : 'Wishlist'}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Wine name */}
-        <h3 className="font-display font-semibold text-white text-xl mt-3 leading-tight line-clamp-2">
-          {wine.name}
-        </h3>
-        <p className="font-body text-sm text-white/60 mt-1 truncate">{wine.producer}</p>
+        {/* Wine label */}
+        <div className="rounded-xl px-4 pt-2.5 pb-3 text-center shadow-md" style={{ background: 'rgba(255,255,255,0.95)' }}>
+          <p className="font-body text-[9px] tracking-[0.18em] uppercase text-slate-lt truncate">
+            {wine.region}
+            {wine.vintage ? ` · ${wine.vintage}` : ''}
+          </p>
+          <h3 className="font-display font-semibold text-slate text-[15px] leading-snug mt-1 line-clamp-2">
+            {wine.name}
+          </h3>
+          <p className="font-body text-[10px] text-slate-lt mt-0.5 truncate">{wine.producer}</p>
+        </div>
       </div>
 
       {/* Card body */}
       <div className="p-5 flex-1 flex flex-col">
-        {/* Region / vintage row */}
-        <div className="flex items-center gap-2 flex-wrap mb-3">
-          <span className="font-body text-xs text-slate-lt">{wine.region}, {wine.country}</span>
-          <span className="text-slate-lt/40">·</span>
-          <span className="font-body text-xs font-medium text-slate">{wine.vintage}</span>
-        </div>
-
         {/* Grapes */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           {wine.grapes.slice(0, 2).map(g => (
