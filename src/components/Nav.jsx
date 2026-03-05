@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { NavLogo } from './Logo'
 
 const NAV_LINKS = [
   { to: '/explore',   label: 'Explore' },
@@ -40,12 +41,7 @@ export default function Nav() {
       <nav className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <WineGlassIcon className="w-7 h-7 text-gold transition-transform duration-300 group-hover:rotate-6" />
-          <span className="font-display font-semibold text-xl text-white tracking-wide">
-            The Wine Guide
-          </span>
-        </Link>
+        <NavLogo />
 
         {/* Desktop nav */}
         <ul className="hidden lg:flex items-center gap-0.5">
@@ -101,10 +97,3 @@ export default function Nav() {
   )
 }
 
-function WineGlassIcon({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M7 3h10M7 3c0 4 2 7 5 8M7 3c0 4-2 7-5 8m10-8c0 4 2 7 5 8m-5-8c0 4-2 7-5 8m0 0v7m0 0h-3m3 0h3" />
-    </svg>
-  )
-}

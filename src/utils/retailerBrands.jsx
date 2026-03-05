@@ -1,5 +1,6 @@
 // src/utils/retailerBrands.jsx
-// Brand colour definitions and badge component for UK retailers
+// Brand definitions and badge component for UK retailers
+// Logo images live in /public — served at root by Vite
 
 export const RETAILER_BRANDS = {
   'Tesco':        { bg: '#00539F', text: '#FFFFFF', border: '#003d75' },
@@ -15,7 +16,22 @@ export const RETAILER_BRANDS = {
   'Co-op':        { bg: '#003E71', text: '#FFFFFF', border: '#002850' },
 }
 
-// Lettermark shown in the icon section of each badge (1–2 chars)
+// Logo image paths (in /public, served at /)
+const RETAILER_LOGOS = {
+  'Tesco':        '/Tesco-Logo.wine.svg',
+  "Sainsbury's":  '/Sainsburys-Logo-600x600-1.webp',
+  'Waitrose':     '/Waitrose-Logo.wine.png',
+  'Asda':         '/asda-logo.png',
+  'M&S':          '/marks-spencer-ms-logo-png_seeklogo-312435.png',
+  'Aldi':         '/aldi-logo.webp',
+  'Lidl':         '/logo-lidl.png',
+  'Morrisons':    '/morrisons-logo.png',
+  'Le Bon Vin':   '/le-bon-vin-wine-merchants-sheffield-uk-S13PHFITKR.jpg',
+  'Majestic':     '/Majestic.jpg',
+  'Co-op':        '/coop-logo.avif',
+}
+
+// Fallback lettermarks (used if logo fails to load)
 const RETAILER_MARKS = {
   'Tesco':        'T',
   "Sainsbury's":  'S',
@@ -30,38 +46,102 @@ const RETAILER_MARKS = {
   'Co-op':        'Co',
 }
 
-// React component — import this where you need a styled retailer pill
+// ─────────────────────────────────────────────────────────────
+// RetailerBadge — logo image pill
+// Shows actual retailer logo on a white/cream background
+// Falls back to coloured lettermark if logo is unavailable
+// ─────────────────────────────────────────────────────────────
 export function RetailerBadge({ name, className = '' }) {
+  const logo = RETAILER_LOGOS[name]
   const brand = RETAILER_BRANDS[name]
-  if (!brand) {
+  const mark = RETAILER_MARKS[name] || name.slice(0, 1).toUpperCase()
+
+  if (logo) {
     return (
-      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-body font-medium bg-cream text-slate-lt ${className}`}>
-        {name}
+      <span
+        className={`inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white border border-cream shadow-sm ${className}`}
+      >
+        <img
+          src={logo}
+          alt={name}
+          className="h-4 w-auto object-contain"
+          style={{ maxWidth: 36 }}
+          onError={e => { e.currentTarget.style.display = 'none' }}
+        />
+        <span className="font-body text-xs font-semibold text-slate leading-none">
+          {name}
+        </span>
       </span>
     )
   }
 
+  // Fallback — coloured lettermark pill (original style)
+  if (brand) {
+    return (
+      <span
+        className={`inline-flex items-stretch rounded-full overflow-hidden font-body font-semibold tracking-wide text-xs ${className}`}
+        style={{ border: `1px solid ${brand.border}` }}
+      >
+        <span
+          className="flex items-center justify-center px-2 font-black text-[10px] tracking-tighter leading-none"
+          style={{ backgroundColor: brand.border, color: brand.text }}
+        >
+          {mark}
+        </span>
+        <span
+          className="flex items-center px-2.5 py-1"
+          style={{ backgroundColor: brand.bg, color: brand.text }}
+        >
+          {name}
+        </span>
+      </span>
+    )
+  }
+
+  // Unknown retailer
+  return (
+    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-body font-medium bg-cream text-slate-lt ${className}`}>
+      {name}
+    </span>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// RetailerLogo — just the logo image, no pill/text
+// Use in Explorer filter chips, Shop page cards, etc.
+// ─────────────────────────────────────────────────────────────
+export function RetailerLogo({ name, size = 24, className = '' }) {
+  const logo = RETAILER_LOGOS[name]
+  const brand = RETAILER_BRANDS[name]
   const mark = RETAILER_MARKS[name] || name.slice(0, 1).toUpperCase()
 
+  if (logo) {
+    return (
+      <img
+        src={logo}
+        alt={name}
+        title={name}
+        className={`object-contain ${className}`}
+        style={{ height: size, width: 'auto', maxWidth: size * 2 }}
+        onError={e => { e.currentTarget.style.display = 'none' }}
+      />
+    )
+  }
+
+  // Fallback circle with lettermark
   return (
     <span
-      className={`inline-flex items-stretch rounded-full overflow-hidden font-body font-semibold tracking-wide text-xs ${className}`}
-      style={{ border: `1px solid ${brand.border}` }}
+      className={`inline-flex items-center justify-center rounded-full font-body font-black text-[10px] ${className}`}
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: brand?.bg ?? '#6B7C8D',
+        color: brand?.text ?? '#FFF',
+        fontSize: size * 0.38,
+      }}
+      title={name}
     >
-      {/* Lettermark — slightly darker left section uses border colour as bg */}
-      <span
-        className="flex items-center justify-center px-2 font-black text-[10px] tracking-tighter leading-none"
-        style={{ backgroundColor: brand.border, color: brand.text }}
-      >
-        {mark}
-      </span>
-      {/* Full retailer name */}
-      <span
-        className="flex items-center px-2.5 py-1"
-        style={{ backgroundColor: brand.bg, color: brand.text }}
-      >
-        {name}
-      </span>
+      {mark}
     </span>
   )
 }
