@@ -420,9 +420,40 @@ export default function Sparkling() {
         </div>
       </section>
 
-      {/* ── AMANDA'S PICKS ───────────────────────────────────────────────────── */}
+      {/* ── AMANDA'S FIZZ ────────────────────────────────────────────────────── */}
       <section className="py-20 bg-white border-b border-cream">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
+
+          {/* Amanda portrait + quote */}
+          <div className="rounded-2xl bg-navy overflow-hidden mb-12">
+            <div className="flex flex-col sm:flex-row items-stretch">
+              {/* Photo */}
+              <div className="sm:w-56 flex-shrink-0">
+                <img
+                  src="/amanda-holmes.png"
+                  alt="Amanda Holmes"
+                  className="w-full h-full object-cover object-top sm:min-h-[240px]"
+                  style={{ filter: 'grayscale(100%) contrast(1.05) brightness(0.95)' }}
+                />
+              </div>
+              {/* Text */}
+              <div className="flex-1 p-8 flex flex-col justify-center">
+                <p className="section-label mb-2" style={{ color: 'rgba(201,151,58,0.7)' }}>Amanda's Fizz</p>
+                <h2 className="font-display text-3xl lg:text-4xl font-light text-white mb-4 leading-tight">
+                  Amanda Holmes
+                </h2>
+                <p className="font-display text-xl lg:text-2xl italic text-white/85 mb-5 leading-snug">
+                  "Life is too short for bad Champagne — and too wonderful not to find the good stuff."
+                </p>
+                <p className="font-body text-sm text-white/55 leading-relaxed max-w-lg">
+                  Creator of The Wine Guide and confirmed fizz obsessive. These are the eight bottles
+                  Amanda keeps coming back to — from the Tuesday-night Lidl Crémant to the once-a-year Dom Pérignon.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Grid header */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
             <div>
               <p className="section-label mb-2">Curated by preference</p>
