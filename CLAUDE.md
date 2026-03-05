@@ -6,7 +6,7 @@ Project memory for Claude Code sessions. Keep this updated as the project evolve
 
 ## Project Overview
 
-A React SPA wine reference and personal cellar tracker aimed at UK consumers. Covers 156 wines sourced from UK supermarkets (Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons), specialist retailers (Majestic, Co-op) and Sheffield specialist Le Bon Vin, with full tasting profiles, food pairings, and vintage guides.
+A React SPA wine reference and personal cellar tracker aimed at UK consumers. Covers 232 wines sourced from UK supermarkets (Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons), specialist retailers (Majestic, Co-op) and Sheffield specialist Le Bon Vin, with full tasting profiles, food pairings, and vintage guides.
 
 **Stack:** React 18 · React Router 6 (HashRouter) · Vite 5 · Tailwind CSS v3 · localStorage for cellar persistence · No backend
 
@@ -21,7 +21,7 @@ npm run preview   # serve dist/ on :3000 (same as Railway)
 npm start         # alias for preview with $PORT support
 ```
 
-Build is clean — only a chunk size warning (expected: wine data is large). Zero errors, zero unused-variable errors.
+Build is clean — zero errors, zero warnings. Code-split via `React.lazy()` — wine data lands in its own chunk, pages are separate chunks.
 
 ---
 
@@ -29,29 +29,30 @@ Build is clean — only a chunk size warning (expected: wine data is large). Zer
 
 ```
 src/
-  App.jsx                   # Routes: / /explore /explore/:id /sparkling /pairing /cellar /learn
+  App.jsx                   # Routes + React.lazy() page imports + Suspense wrapper
   main.jsx                  # Entry, BrowserRouter wrapper uses HashRouter internally
   index.css                 # Tailwind directives + custom utilities
 
   data/
-    wines.js                # All wine entries (156 wines) + REGIONS array
+    wines.js                # All wine entries (232 wines) + REGIONS array
 
   hooks/
     useCellar.js            # localStorage cellar state: bottles / wishlist / tasted
 
   components/
-    WineCard.jsx            # Card with compact mode, showPrice prop, quick ♡ wishlist button
+    WineCard.jsx            # Card with compact mode, showPrice prop, pairing chips, quick ♡ wishlist button
     TasteProfile.jsx        # SVG radar/spider chart for taste profile
     Nav.jsx                 # Top navigation bar
 
   pages/
     Home.jsx                # Landing page with featured wines
-    Explorer.jsx            # Browse/filter/sort 144 wines
+    Explorer.jsx            # Browse/filter/sort 232 wines
     WineDetail.jsx          # Full detail: tabs (overview/tasting/pairings/vintages/buy), add to cellar modal
     Cellar.jsx              # Personal cellar tracker (bottles/wishlist/tasting notes)
     Education.jsx           # Wine School: production, labels, vintages, tasting vocab
     Sparkling.jsx           # Sparkling wine guide
     Pairing.jsx             # Food pairing wizard
+    Critics.jsx             # Critics page — Tom Gilby picks + staff picks
 ```
 
 ---
@@ -147,6 +148,8 @@ Note: `bottles`, `wishlist`, `tasted` are returned **directly** (not just nested
 ### WineCard Props
 `wine` (required), `compact` (bool, default false), `showPrice` (bool — shows actual price string instead of £/££/£££ tier)
 
+Card body layout (standard mode): category badge → status badges → wine name (`line-clamp-2`) → producer (`truncate`) → region/vintage row → grape chips (cream, up to 2) → pairing chips (sage-green `bg-sage/10 border-sage/20 text-sage`, up to 2) → Our Take quote → footer (rating / price tier / wishlist button). Handles both `{dish}` pairing objects and raw string pairings.
+
 ### Explorer Filters
 All filters synced to URL search params (except `sort` and `search` which are local state). URL params: `category`, `country`, `price`, `retailer`, `grape`.
 
@@ -171,12 +174,21 @@ The wines array is exported via `normalizeWine()` — the internal array is `con
 
 ## Bulk Wine Generation
 
-Reference script at `/tmp/generate_wines2.py` — Python script that encodes raw wine data as dicts and generates full JS object strings using template functions per grape/region. Output goes to `/tmp/wines_additions2.js`.
+**Latest script:** `/tmp/generate_supermarket80.py` — reads `top_wines_dataset_updated3.csv`, skips Le Bon Vin rows (no price/year/rating) and already-imported Gilby rows, infers category/priceRange/tasteProfile/style from grape + region + notes, deduplicates against existing IDs and wine names, outputs to `/tmp/supermarket_wines_80.js`. Used to add 76 wines (sprint 6 — total 232).
+
+**Legacy script:** `/tmp/generate_wines2.py` — earlier hand-encoded template approach, output to `/tmp/wines_additions2.js`.
+
+**Key generation gotchas:**
+- Use `json.dumps(x, ensure_ascii=False)` — prevents £ being escaped as `\u00a3`
+- Category inference must check `row['Region'].lower()` in addition to name/grapes — e.g. Champagne wines don't always have "champagne" in their name
+- Fall back to `row['Stockist']` when `row['Producer']` is empty (some M&S wines)
+- CSV from this project starts with a leading newline — use `content.lstrip('\n')` before `csv.DictReader`
 
 **Injection pattern:**
 ```python
-# Find last ] in wines array, insert before it
-# Use re.sub() to replace REGIONS array
+# Find last `},` before the `// Schema normalizer` comment, insert after it
+insert_at = content[:marker_idx].rfind('},') + 2
+content = content[:insert_at] + insertion + content[insert_at:]
 ```
 
 Always update `REGIONS` array at the bottom of `wines.js` when adding new countries/regions.
@@ -203,8 +215,7 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 
 ## Known Issues / Watch-outs
 
-- **Chunk size warning** — `dist/assets/index-*.js` ~757 kB (gzip: ~207 kB). Due to wine data size. Not a blocker but worth code-splitting the `wines.js` data in future if database grows past ~300 wines.
-- **No `.gitignore`** — should add one before pushing to GitHub to exclude `node_modules/`, `dist/`, `.DS_Store`, the PDF reference files.
+- **Chunk sizes (post code-split)** — `vendor.js` 163 kB/53 kB gzip · `wines.js` 477 kB/100 kB gzip · pages 8–60 kB each. Zero warnings. If the DB grows past ~400 wines, consider lazy-loading wine data by category.
 - **localStorage only** — cellar data is browser-local, not synced across devices. Fine for v1 but noted for future backend consideration.
 - **whereToBuy retailer names** — must be exactly consistent across wines for the Explorer retailer filter to work correctly (case-sensitive string match). The 11 retailers are: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Majestic`, `Co-op`, `Le Bon Vin`.
 
@@ -215,12 +226,36 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 | Route | Page | Notes |
 |-------|------|-------|
 | `/` | Home | Featured wines, hero |
-| `/explore` | Explorer | Filter/sort 156 wines |
+| `/explore` | Explorer | Filter/sort 232 wines |
 | `/explore/:id` | WineDetail | Full wine page, 5 tabs, cellar modal |
 | `/sparkling` | Sparkling | Sparkling wine guide |
 | `/pairing` | Pairing | Food pairing wizard |
 | `/cellar` | Cellar | Personal tracker (localStorage) |
 | `/learn` | Education | Wine school content |
+| `/shop` | Shop | Buy wines — retailer links |
+| `/critics` | Critics | Tom Gilby verdicts + staff picks |
+
+---
+
+## Code Splitting
+
+`App.jsx` imports all pages via `React.lazy()` wrapped in a single `<Suspense fallback={<PageLoader />}>`. Rollup automatically places the shared `wines.js` data in its own chunk.
+
+`vite.config.js` build config:
+```js
+build: {
+  chunkSizeWarningLimit: 800,   // wines chunk is large by design
+  rollupOptions: {
+    output: {
+      manualChunks: {
+        vendor: ['react', 'react-dom', 'react-router-dom'],  // long-lived cache
+      },
+    },
+  },
+},
+```
+
+`PageLoader` fallback: `<div className="min-h-screen bg-ivory pt-16" aria-hidden="true" />` — matches nav height, prevents layout shift.
 
 ---
 
