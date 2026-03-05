@@ -19,7 +19,7 @@ export const REGIONS = [
   'Southern England',
 ]
 
-export const wines = [
+const _wines = [
 
   // ── SPARKLING ────────────────────────────────────────────────────────────
 
@@ -4861,6 +4861,8 @@ export const wines = [
     vintageGuide: [`2022: Current release – drinking beautifully now`, `Drink now to 5 years for fresh fruit character`],
     whereToBuy: [{ store: `Asda`, url: `https://groceries.asda.com/search/exceptional+chablis+premier+cru`, price: `£16.00` }],
     tags: [`Asda`, `White`, `France`, `Chablis`, `Under £20`, `Award Winning`, `Chardonnay`, `Mineral`, `Unoaked`],
+    gilbyRating: `class`,
+    gilbyNote: `Tom Gilby awarded Class — Famille Brocard's Premier Cru brings genuine Chablis minerality at a fair price.`,
   },
   {
     id: `asda-exceptional-chianti-classico`,
@@ -5785,6 +5787,8 @@ export const wines = [
     vintageGuide: [`2021: Current release – drinking beautifully now`, `Drink now to 5 years for fresh fruit character`],
     whereToBuy: [{ store: `Lidl`, url: `https://www.lidl.co.uk/search?q=coonawarra+cabernet`, price: `£10.99` }],
     tags: [`Lidl`, `Red`, `Australia`, `Coonawarra`, `Under £15`, `Cabernet Sauvignon`, `Full Bodied`],
+    gilbyRating: `class`,
+    gilbyNote: `Tom Gilby awarded Class — remarkable Coonawarra Cab at under £7.`,
   },
   {
     id: `lidl-chianti-classico`,
@@ -6461,3 +6465,86 @@ export const wines = [
 ]
 
 export default wines
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Schema normalizer — reconciles the two schemas used in this file:
+//   • Original wines: lowercase category, 'budget'|'mid'|'premium'|'luxury' priceRange,
+//     string price ('£45.00'), object pairings/vintageGuide/whereToBuy
+//   • Bulk-generated wines: capitalized category, '£'/'££' priceRange,
+//     numeric price (16.0), string-array pairings/vintageGuide, { store } whereToBuy
+// ─────────────────────────────────────────────────────────────────────────────
+const PRICE_TIER_MAP = { '£': 'budget', '££': 'mid', '£££': 'premium', '££££': 'luxury' }
+
+function normalizeWine(w) {
+  // 1. category → always lowercase
+  const category = typeof w.category === 'string' ? w.category.toLowerCase() : 'red'
+
+  // 2. priceRange — convert '££' style to named tier
+  let priceRange = w.priceRange
+  if (priceRange && /^£+$/.test(priceRange)) {
+    priceRange = PRICE_TIER_MAP[priceRange] || 'mid'
+  }
+
+  // 3. price — ensure it's a display string with £ prefix
+  let price = w.price
+  if (typeof price === 'number') {
+    price = `£${price.toFixed(2)}`
+  } else if (typeof price === 'string' && price && !price.startsWith('£') && !isNaN(parseFloat(price))) {
+    price = `£${parseFloat(price).toFixed(2)}`
+  }
+
+  // 4. grapes — ensure it's an array
+  const grapes = Array.isArray(w.grapes)
+    ? w.grapes
+    : w.grapes ? [String(w.grapes)] : ['Unknown']
+
+  // 5. style — ensure it's an array
+  const style = Array.isArray(w.style)
+    ? w.style
+    : w.style ? [String(w.style)] : []
+
+  // 6. pairings — normalise string[] → { dish, cuisine, reason }[]
+  let pairings = w.pairings
+  if (Array.isArray(pairings) && pairings.length > 0 && typeof pairings[0] === 'string') {
+    pairings = pairings.map(p => ({ dish: p, cuisine: '', reason: '' }))
+  } else if (!Array.isArray(pairings)) {
+    pairings = []
+  }
+
+  // 7. vintageGuide — normalise string[] → { year, rating, notes }[]
+  let vintageGuide = w.vintageGuide
+  if (Array.isArray(vintageGuide) && vintageGuide.length > 0 && typeof vintageGuide[0] === 'string') {
+    vintageGuide = vintageGuide.map((v, i) => {
+      const yearMatch = v.match(/^(\d{4})/)
+      return {
+        year: yearMatch ? parseInt(yearMatch[1]) : (typeof w.vintage === 'number' ? w.vintage - i : 2022),
+        rating: 'good',
+        notes: v.replace(/^\d{4}[:\s]+/, ''),
+      }
+    })
+  } else if (!Array.isArray(vintageGuide)) {
+    vintageGuide = []
+  }
+
+  // 8. whereToBuy — normalise { store, url, price } → { name, type, note }
+  let whereToBuy = w.whereToBuy
+  if (Array.isArray(whereToBuy)) {
+    whereToBuy = whereToBuy.map(r => {
+      if (r && r.store && !r.name) {
+        return {
+          name: r.store,
+          type: 'supermarket',
+          note: r.price ? `Typically priced at ${r.price}. Check availability online.` : 'Check store for current availability.',
+          url: r.url || null,
+        }
+      }
+      return r
+    })
+  } else {
+    whereToBuy = []
+  }
+
+  return { ...w, category, priceRange, price, grapes, style, pairings, vintageGuide, whereToBuy }
+}
+
+export const wines = _wines.map(normalizeWine)

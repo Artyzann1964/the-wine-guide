@@ -11,6 +11,8 @@ export const RETAILER_BRANDS = {
   'Lidl':         { bg: '#003DA5', text: '#FFC832', border: '#002d80' },
   'Morrisons':    { bg: '#004F2D', text: '#FFCD00', border: '#003a20' },
   'Le Bon Vin':   { bg: '#2C2C3E', text: '#C9973A', border: '#1a1a2e' },
+  'Majestic':     { bg: '#5C1A3A', text: '#F0CB71', border: '#3d1028' },
+  'Co-op':        { bg: '#003E71', text: '#FFFFFF', border: '#002850' },
 }
 
 // React component — import this where you need a styled retailer pill
