@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
@@ -28,6 +28,37 @@ const REGIONS = [
   { label: 'England',     to: '/explore?country=England',     emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
 ]
 
+const WINE_QUOTES = [
+  { quote: `Life is too short to drink bad wine.`,                                                   author: `Goethe` },
+  { quote: `In victory, you deserve Champagne; in defeat, you need it.`,                             author: `Napoleon Bonaparte` },
+  { quote: `Wine is sunlight, held together by water.`,                                              author: `Galileo Galilei` },
+  { quote: `My only regret in life is that I did not drink more Champagne.`,                         author: `John Maynard Keynes` },
+  { quote: `Wine is bottled poetry.`,                                                                author: `Robert Louis Stevenson` },
+  { quote: `I cook with wine. Sometimes I even add it to the food.`,                                 author: `W.C. Fields` },
+  { quote: `A bottle of wine contains more philosophy than all the books in the world.`,             author: `Louis Pasteur` },
+  { quote: `Quickly, bring me a beaker of wine so I may wet my mind and say something clever.`,     author: `Aristophanes` },
+  { quote: `Wine is the most civilised thing in the world.`,                                         author: `Ernest Hemingway` },
+  { quote: `Wine makes daily living easier, less hurried, with fewer tensions and more tolerance.`,  author: `Benjamin Franklin` },
+  { quote: `If food is the body of good living, wine is its soul.`,                                  author: `Clifton Fadiman` },
+  { quote: `Either give me more wine or leave me alone.`,                                            author: `Rumi` },
+  { quote: `Age is just a number — unless you happen to be a bottle of wine.`,                       author: `Joan Collins` },
+  { quote: `Beer is made by men, wine by God.`,                                                      author: `Martin Luther` },
+  { quote: `Penicillin cures, but wine makes people happy.`,                                         author: `Alexander Fleming` },
+  { quote: `Men are like wine — some turn to vinegar, but the best improve with age.`,               author: `Pope John XXIII` },
+  { quote: `One barrel of wine can work more miracles than a church full of saints.`,                author: `Italian Proverb` },
+  { quote: `A meal without wine is like a day without sunshine.`,                                    author: `Jean-Anthelme Brillat-Savarin` },
+  { quote: `To take wine into our mouths is to savour a droplet of the river of human history.`,    author: `Clifton Fadiman` },
+  { quote: `We are all mortal until the first kiss and the second glass of wine.`,                   author: `Eduardo Galeano` },
+  { quote: `A glass of wine is a great cure for a bad day.`,                                         author: `Anonymous` },
+  { quote: `Wine is proof that God loves us and wants us to be happy.`,                              author: `Benjamin Franklin` },
+  { quote: `Compromises are for relationships, not wine.`,                                           author: `Robert Scott Caywood` },
+  { quote: `Wine is the answer. What was the question?`,                                             author: `Unknown` },
+  { quote: `The best wines are the ones we drink with friends.`,                                     author: `Unknown` },
+  { quote: `A good wine is like a good friend. It will be with you for life.`,                       author: `Unknown` },
+  { quote: `I only drink Champagne on two occasions: when I am in love and when I am not.`,          author: `Coco Chanel` },
+  { quote: `With wine and hope, anything is possible.`,                                              author: `Spanish Proverb` },
+]
+
 const PAIRING_PROMPTS = [
   'Coq au vin', 'Sunday roast beef', 'Lobster thermidor',
   'Mushroom risotto', 'Thai green curry', 'Stilton & Port',
@@ -37,6 +68,19 @@ export default function Home() {
   const [prompt, setPrompt] = useState('')
   const navigate = useNavigate()
   const featured = FEATURED_IDS.map(id => wines.find(w => w.id === id)).filter(Boolean)
+  const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * WINE_QUOTES.length))
+  const [quoteFade, setQuoteFade] = useState(true)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setQuoteFade(false)
+      setTimeout(() => {
+        setQuoteIdx(i => (i + 1) % WINE_QUOTES.length)
+        setQuoteFade(true)
+      }, 400)
+    }, 7000)
+    return () => clearInterval(timer)
+  }, [])
 
   const handlePromptSubmit = (e) => {
     e.preventDefault()
@@ -113,19 +157,26 @@ export default function Home() {
           {/* Hero visual — wine stats mosaic */}
           <div className="hidden lg:grid grid-cols-2 gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
             {[
-              { n: '25+', label: 'Curated Wines' },
-              { n: '15', label: 'Countries' },
-              { n: '8', label: 'Wine Regions' },
-              { n: '∞', label: 'Perfect Pairings' },
+              { n: '144', label: 'Curated Wines' },
+              { n: '12+', label: 'Countries' },
+              { n: '30+', label: 'Wine Regions' },
+              { n: '∞',   label: 'Perfect Pairings' },
             ].map(({ n, label }) => (
               <div key={label} className="card p-6 text-center">
                 <p className="font-display text-5xl font-light text-gold mb-1">{n}</p>
                 <p className="font-body text-sm text-slate-lt">{label}</p>
               </div>
             ))}
-            <div className="card p-6 col-span-2 bg-gradient-to-br from-slate to-slate-lt text-white text-center">
-              <p className="font-display text-2xl font-light italic mb-1">"Life is too short to drink bad wine."</p>
-              <p className="font-body text-xs text-white/50">— Goethe</p>
+            <div className="card p-6 col-span-2 bg-[#1A1A2E] text-white text-center overflow-hidden">
+              <div
+                className="transition-opacity duration-400"
+                style={{ opacity: quoteFade ? 1 : 0 }}
+              >
+                <p className="font-display text-xl lg:text-2xl font-light italic mb-2 leading-snug">
+                  "{WINE_QUOTES[quoteIdx].quote}"
+                </p>
+                <p className="font-body text-xs text-gold/70">— {WINE_QUOTES[quoteIdx].author}</p>
+              </div>
             </div>
           </div>
         </div>

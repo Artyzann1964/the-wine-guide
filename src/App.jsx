@@ -10,6 +10,7 @@ import Pairing from './pages/Pairing'
 import Cellar from './pages/Cellar'
 import Education from './pages/Education'
 import Shop from './pages/Shop'
+import Critics from './pages/Critics'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -33,6 +34,7 @@ function AppLayout() {
         <Route path="/cellar" element={<Cellar />} />
         <Route path="/learn" element={<Education />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/critics" element={<Critics />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

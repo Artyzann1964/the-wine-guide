@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { to: '/shop',      label: 'Shops' },
   { to: '/sparkling', label: 'Sparkling' },
   { to: '/pairing',   label: 'Pairings' },
+  { to: '/critics',   label: 'Critics' },
   { to: '/learn',     label: 'Learn' },
   { to: '/cellar',    label: 'My Cellar' },
 ]
@@ -25,20 +26,22 @@ export default function Nav() {
 
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-ivory/95 backdrop-blur-sm shadow-[0_1px_20px_rgba(44,44,62,0.08)]' : 'bg-transparent'
+      scrolled
+        ? 'bg-[#1A1A2E]/98 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.06),0_4px_32px_rgba(0,0,0,0.35)]'
+        : 'bg-[#1A1A2E]/88 backdrop-blur-sm'
     }`}>
       <nav className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <WineGlassIcon className="w-7 h-7 text-gold transition-transform duration-300 group-hover:rotate-6" />
-          <span className="font-display font-semibold text-xl text-slate tracking-wide">
+          <span className="font-display font-semibold text-xl text-white tracking-wide">
             The Wine Guide
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-1">
+        <ul className="hidden md:flex items-center gap-0.5">
           {NAV_LINKS.map(({ to, label }) => {
             const active = location.pathname.startsWith(to)
             return (
@@ -47,8 +50,8 @@ export default function Nav() {
                   to={to}
                   className={`font-body text-sm px-4 py-2 rounded-full transition-all duration-200
                     ${active
-                      ? 'bg-gold/15 text-gold font-medium'
-                      : 'text-slate-lt hover:text-slate hover:bg-cream'
+                      ? 'bg-gold/20 text-gold font-medium'
+                      : 'text-white/60 hover:text-white hover:bg-white/8'
                     }`}
                 >
                   {label}
@@ -61,24 +64,24 @@ export default function Nav() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMenuOpen(v => !v)}
-          className="md:hidden p-2 rounded-lg hover:bg-cream transition-colors"
+          className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
           aria-label="Toggle menu"
         >
-          <div className={`w-5 h-0.5 bg-slate mb-1 transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
-          <div className={`w-5 h-0.5 bg-slate mb-1 transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
-          <div className={`w-5 h-0.5 bg-slate transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+          <div className={`w-5 h-0.5 bg-white mb-1 transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+          <div className={`w-5 h-0.5 bg-white mb-1 transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+          <div className={`w-5 h-0.5 bg-white transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
         </button>
       </nav>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-ivory/98 backdrop-blur-sm border-t border-cream animate-fade-in">
+        <div className="md:hidden bg-[#1A1A2E]/98 backdrop-blur-md border-t border-white/8 animate-fade-in">
           <ul className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {NAV_LINKS.map(({ to, label }) => (
               <li key={to}>
                 <Link
                   to={to}
-                  className="block font-body text-sm px-4 py-3 rounded-xl text-slate hover:bg-cream transition-colors"
+                  className="block font-body text-sm px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/8 transition-colors"
                 >
                   {label}
                 </Link>

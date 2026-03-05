@@ -4,6 +4,7 @@ import { wines } from '../data/wines'
 import { useCellar } from '../hooks/useCellar'
 import TasteProfile from '../components/TasteProfile'
 import { generateOurTake } from '../utils/ourTake'
+import { RetailerBadge } from '../utils/retailerBrands'
 
 const RATING_LABEL = { exceptional: '★★★ Exceptional', great: '★★ Great', good: '★ Good', average: '— Average' }
 const RATING_COLOR = { exceptional: 'text-gold', great: 'text-sage', good: 'text-slate-lt', average: 'text-slate-lt/50' }
@@ -108,6 +109,26 @@ export default function WineDetail() {
                   "{wine.ourTake || generateOurTake(wine)}"
                 </p>
               </div>
+
+              {/* Tom Gilby rating — only shown when wine has gilbyRating data */}
+              {wine.gilbyRating && (
+                <div className="mt-4 p-5 rounded-2xl bg-[#1A1A2E] border border-white/10">
+                  <div className="flex items-center gap-3 mb-2">
+                    <a
+                      href={wine.gilbyVideoUrl || 'https://www.youtube.com/@TomGilby'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-body text-[10px] tracking-[0.15em] uppercase text-white/50 hover:text-gold transition-colors"
+                    >
+                      Tom Gilby says ↗
+                    </a>
+                    <GilbyBadge rating={wine.gilbyRating} />
+                  </div>
+                  {wine.gilbyNote && (
+                    <p className="font-body text-sm text-white/70 italic leading-relaxed">"{wine.gilbyNote}"</p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Right panel */}
@@ -316,8 +337,8 @@ export default function WineDetail() {
             <div className="grid sm:grid-cols-2 gap-5 max-w-3xl">
               {wine.whereToBuy?.map((source, i) => (
                 <div key={i} className="card p-5">
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <h3 className="font-body font-semibold text-slate">{source.name}</h3>
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <RetailerBadge name={source.name} />
                     <span className="tag bg-cream text-slate-lt text-[10px] capitalize whitespace-nowrap">{source.type}</span>
                   </div>
                   <p className="font-body text-sm text-slate-lt">{source.note}</p>
@@ -422,6 +443,27 @@ function AddToCellarModal({ wine, onClose }) {
         </form>
       </div>
     </div>
+  )
+}
+
+// ── Tom Gilby badge ────────────────────────────────────────────────────────────
+const GILBY_CONFIG = {
+  class: { label: 'CLASS ✨',  bg: '#C9973A', text: '#1A1A2E', title: 'Tom\'s top pick'      },
+  pass:  { label: 'PASS 👍',  bg: '#4A6741', text: '#FFFFFF', title: 'Decent, drinks well'  },
+  arse:  { label: 'ARSE 💀',  bg: '#8B2040', text: '#FFFFFF', title: 'Tom says avoid it'    },
+}
+
+function GilbyBadge({ rating }) {
+  const cfg = GILBY_CONFIG[rating]
+  if (!cfg) return null
+  return (
+    <span
+      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-body font-bold tracking-widest"
+      style={{ backgroundColor: cfg.bg, color: cfg.text }}
+      title={cfg.title}
+    >
+      {cfg.label}
+    </span>
   )
 }
 

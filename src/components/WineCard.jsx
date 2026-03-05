@@ -18,6 +18,14 @@ const PRICE_LABEL = {
   luxury:  '££££',
 }
 
+const CARD_FALLBACK = {
+  red:       'linear-gradient(135deg, #6B1F2E 0%, #8B2040 100%)',
+  white:     'linear-gradient(135deg, #4A6741 0%, #5C7A52 100%)',
+  sparkling: 'linear-gradient(135deg, #3D2E0A 0%, #7B6020 100%)',
+  rosé:      'linear-gradient(135deg, #7B2D3E 0%, #9B3D50 100%)',
+  dessert:   'linear-gradient(135deg, #6B3A10 0%, #8B4F18 100%)',
+}
+
 export default function WineCard({ wine, compact = false, showPrice = false }) {
   const { isInCellar, isInWishlist, addToWishlist } = useCellar()
   const [flashed, setFlashed] = useState(false)
@@ -61,10 +69,13 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
       to={`/explore/${wine.id}`}
       className="card group flex flex-col overflow-hidden hover:-translate-y-1 transition-all duration-300"
     >
-      {/* Card header / visual */}
-      <div className={`${config.bg} px-5 pt-6 pb-4 relative`}>
+      {/* Card header — wine colour gradient */}
+      <div
+        className="px-5 pt-6 pb-5 relative"
+        style={{ background: wine.cardGradient || CARD_FALLBACK[wine.category] || 'linear-gradient(135deg, #2C2C3E 0%, #3D3D55 100%)' }}
+      >
         {/* Category badge */}
-        <span className={`tag ${config.bg} border ${config.border} text-slate-lt`}>
+        <span className="tag bg-white/10 border border-white/15 text-white/70 text-[11px]">
           <span className="wine-dot" style={{ background: config.dot }} />
           {config.label}
         </span>
@@ -72,22 +83,22 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
         {/* Status badges */}
         <div className="absolute top-4 right-4 flex flex-col gap-1 items-end">
           {inCellar && (
-            <span className="tag bg-sage/20 border border-sage/40 text-sage text-[10px]">
+            <span className="tag bg-white/20 border border-white/25 text-white text-[10px]">
               In Cellar
             </span>
           )}
           {(onWishlist || flashed) && !inCellar && (
-            <span className="tag bg-gold/15 border border-gold/30 text-gold text-[10px]">
+            <span className="tag bg-gold/30 border border-gold/50 text-gold text-[10px]">
               {flashed && !onWishlist ? '✓ Added' : 'Wishlist'}
             </span>
           )}
         </div>
 
         {/* Wine name */}
-        <h3 className="font-display font-semibold text-slate text-xl mt-3 leading-tight">
+        <h3 className="font-display font-semibold text-white text-xl mt-3 leading-tight">
           {wine.name}
         </h3>
-        <p className="font-body text-sm text-slate-lt mt-1">{wine.producer}</p>
+        <p className="font-body text-sm text-white/60 mt-1">{wine.producer}</p>
       </div>
 
       {/* Card body */}
