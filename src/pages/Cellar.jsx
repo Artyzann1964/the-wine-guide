@@ -99,7 +99,7 @@ export default function Cellar() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-body text-sm font-medium transition-all duration-200
+              className={`flex-1 sm:flex-none px-3 sm:px-5 py-2.5 rounded-xl font-body text-sm font-medium whitespace-nowrap transition-all duration-200
                 ${activeTab === t.id
                   ? 'bg-white text-slate shadow-card'
                   : 'text-slate-lt hover:text-slate'

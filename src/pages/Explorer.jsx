@@ -58,6 +58,7 @@ export default function Explorer() {
   const [search, setSearch]           = useState('')
   const [sort, setSort]               = useState('rating')
   const [showAllGrapes, setShowAllGrapes] = useState(false)
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   // All filters synced to URL params
   const categoryFilter = searchParams.get('category') || 'all'
@@ -162,6 +163,15 @@ export default function Explorer() {
   const hasFilters = categoryFilter !== 'all' || countryFilter !== 'all' ||
     priceFilter !== 'all' || retailerFilter !== 'all' || grapeFilter !== 'all' || search
 
+  const activeFilterCount = [
+    categoryFilter !== 'all',
+    countryFilter  !== 'all',
+    priceFilter    !== 'all',
+    retailerFilter !== 'all',
+    grapeFilter    !== 'all',
+    !!search.trim(),
+  ].filter(Boolean).length
+
   // Active filter chips for the results bar
   const activeChips = [
     categoryFilter !== 'all' && { key: 'category', label: categoryFilter },
@@ -189,6 +199,29 @@ export default function Explorer() {
 
           {/* ── SIDEBAR FILTERS ───────────────── */}
           <aside className="md:w-52 lg:w-56 flex-shrink-0">
+
+            {/* Mobile filter toggle */}
+            <button
+              onClick={() => setShowMobileFilters(v => !v)}
+              className="md:hidden w-full flex items-center justify-between px-4 py-3 rounded-xl border border-cream bg-white mb-4 font-body text-sm text-slate"
+            >
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-slate-lt" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M3 5h14M6 10h8M9 15h2"/>
+                </svg>
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gold text-white text-[10px] font-semibold">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </span>
+              <span className="text-slate-lt text-xs">{showMobileFilters ? '▲' : '▼'}</span>
+            </button>
+
+            {/* Filter content — always visible on md+, toggleable on mobile */}
+            <div className={`${showMobileFilters ? 'block' : 'hidden'} md:block`}>
+
             {/* Search */}
             <div className="mb-6">
               <label className="section-label block mb-2">Search</label>
@@ -280,6 +313,8 @@ export default function Explorer() {
                 ✕ Clear all filters
               </button>
             )}
+
+            </div>{/* end filter content */}
           </aside>
 
           {/* ── RESULTS GRID ──────────────────── */}

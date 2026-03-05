@@ -47,7 +47,7 @@ export default function Nav() {
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-0.5">
+        <ul className="hidden lg:flex items-center gap-0.5">
           {NAV_LINKS.map(({ to, label }) => {
             const active = location.pathname.startsWith(to)
             return (
@@ -70,7 +70,7 @@ export default function Nav() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMenuOpen(v => !v)}
-          className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
           aria-label="Toggle menu"
         >
           <div className={`w-5 h-0.5 bg-white mb-1 transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
@@ -81,7 +81,7 @@ export default function Nav() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden backdrop-blur-md border-t border-white/8 animate-fade-in" style={{ background: 'rgba(26,26,46,0.98)' }}>
+        <div className="lg:hidden backdrop-blur-md border-t border-white/8 animate-fade-in" style={{ background: 'rgba(26,26,46,0.98)' }}>
           <ul className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {NAV_LINKS.map(({ to, label }) => (
               <li key={to}>

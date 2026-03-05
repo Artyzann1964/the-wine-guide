@@ -159,6 +159,21 @@ export default function Home() {
                 ))}
               </div>
             </form>
+
+            {/* Stats strip — visible at md–lg only (tablet; desktop handled by right column) */}
+            <div className="hidden md:flex lg:hidden gap-4 mt-8">
+              {[
+                { n: '232', label: 'Wines' },
+                { n: '20+', label: 'Countries' },
+                { n: '90+', label: 'Regions' },
+                { n: '∞',   label: 'Pairings' },
+              ].map(({ n, label }) => (
+                <div key={label} className="flex flex-col items-center px-4 py-3 rounded-xl border border-cream bg-white/60 flex-1">
+                  <p className="font-display text-2xl font-light text-gold">{n}</p>
+                  <p className="font-body text-xs text-slate-lt">{label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Hero visual — Amanda portrait + stats */}
