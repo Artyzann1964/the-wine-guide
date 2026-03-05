@@ -4,10 +4,10 @@ import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
 
 const FEATURED_IDS = [
-  'dom-perignon-2013',
-  'chateau-margaux-2015',
-  'barolo-conterno',
-  'chateau-yquem-2015',
+  'dom-perignon-2013',       // Sparkling — 97pts, luxury
+  'chateau-margaux-2015',    // Red — 100pts, luxury
+  'trimbach-clos-ste-hune',  // White — 98pts, luxury
+  'chateau-yquem-2015',      // Dessert — 100pts, luxury
 ]
 
 const QUICK_LINKS = [
@@ -24,7 +24,7 @@ const REGIONS = [
   { label: 'Italy',       to: '/explore?country=Italy',       emoji: '🇮🇹' },
   { label: 'Spain',       to: '/explore?country=Spain',       emoji: '🇪🇸' },
   { label: 'Germany',     to: '/explore?country=Germany',     emoji: '🇩🇪' },
-  { label: 'New World',   to: '/explore?region=new-world',    emoji: '🌍' },
+  { label: 'Argentina',   to: '/explore?country=Argentina',   emoji: '🇦🇷' },
   { label: 'England',     to: '/explore?country=England',     emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
 ]
 
@@ -157,9 +157,9 @@ export default function Home() {
           {/* Hero visual — wine stats mosaic */}
           <div className="hidden lg:grid grid-cols-2 gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
             {[
-              { n: '144', label: 'Curated Wines' },
-              { n: '12+', label: 'Countries' },
-              { n: '30+', label: 'Wine Regions' },
+              { n: '232', label: 'Curated Wines' },
+              { n: '20+', label: 'Countries' },
+              { n: '90+', label: 'Wine Regions' },
               { n: '∞',   label: 'Perfect Pairings' },
             ].map(({ n, label }) => (
               <div key={label} className="card p-6 text-center">

@@ -7202,7 +7202,7 @@ const _wines = [
     name: `Waitrose No.1 German Riesling 2024`,
     producer: `Robert Weil (Waitrose No.1)`,
     vintage: 2024,
-    category: 'rosé',
+    category: 'white',
     subcategory: `Rheinhessen`,
     region: `Rheinhessen`,
     country: `Germany`,
