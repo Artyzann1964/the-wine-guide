@@ -1,16 +1,19 @@
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
-import Home from './pages/Home'
-import Explorer from './pages/Explorer'
-import WineDetail from './pages/WineDetail'
-import Sparkling from './pages/Sparkling'
-import Pairing from './pages/Pairing'
-import Cellar from './pages/Cellar'
-import Education from './pages/Education'
-import Shop from './pages/Shop'
-import Critics from './pages/Critics'
+
+// Lazy-load pages — Vite/Rollup splits each into its own chunk.
+// wines.js is shared, so it lands in its own common chunk automatically.
+const Home      = lazy(() => import('./pages/Home'))
+const Explorer  = lazy(() => import('./pages/Explorer'))
+const WineDetail = lazy(() => import('./pages/WineDetail'))
+const Sparkling = lazy(() => import('./pages/Sparkling'))
+const Pairing   = lazy(() => import('./pages/Pairing'))
+const Cellar    = lazy(() => import('./pages/Cellar'))
+const Education = lazy(() => import('./pages/Education'))
+const Shop      = lazy(() => import('./pages/Shop'))
+const Critics   = lazy(() => import('./pages/Critics'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -20,23 +23,29 @@ function ScrollToTop() {
   return null
 }
 
+function PageLoader() {
+  return <div className="min-h-screen bg-ivory pt-16" aria-hidden="true" />
+}
+
 function AppLayout() {
   return (
     <>
       <ScrollToTop />
       <Nav />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/explore" element={<Explorer />} />
-        <Route path="/explore/:id" element={<WineDetail />} />
-        <Route path="/sparkling" element={<Sparkling />} />
-        <Route path="/pairing" element={<Pairing />} />
-        <Route path="/cellar" element={<Cellar />} />
-        <Route path="/learn" element={<Education />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/critics" element={<Critics />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/explore" element={<Explorer />} />
+          <Route path="/explore/:id" element={<WineDetail />} />
+          <Route path="/sparkling" element={<Sparkling />} />
+          <Route path="/pairing" element={<Pairing />} />
+          <Route path="/cellar" element={<Cellar />} />
+          <Route path="/learn" element={<Education />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/critics" element={<Critics />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </>
   )

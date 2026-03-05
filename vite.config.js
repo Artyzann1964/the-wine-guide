@@ -13,4 +13,17 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
   },
+  build: {
+    // wines.js data is large by design — raise limit to avoid noise.
+    // Page code-splitting via React.lazy keeps each page chunk small.
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React + router → separate vendor chunk, cached across deploys
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
+  },
 })
