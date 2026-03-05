@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCellar } from '../hooks/useCellar'
+import { generateOurTake } from '../utils/ourTake'
 
 const CATEGORY_CONFIG = {
   sparkling: { dot: '#D4AF37', label: 'Sparkling', bg: 'bg-amber-50',   border: 'border-amber-200' },
@@ -105,9 +106,9 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
           ))}
         </div>
 
-        {/* Tasting note preview */}
-        <p className="font-body text-xs text-slate-lt leading-relaxed line-clamp-2 mb-4 flex-1">
-          {wine.tastingNotes?.nose}
+        {/* Our Take */}
+        <p className="font-body text-xs text-slate-lt italic leading-relaxed line-clamp-2 mb-4 flex-1">
+          "{wine.ourTake || generateOurTake(wine)}"
         </p>
 
         {/* Footer row */}

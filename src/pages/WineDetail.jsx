@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { wines } from '../data/wines'
 import { useCellar } from '../hooks/useCellar'
 import TasteProfile from '../components/TasteProfile'
+import { generateOurTake } from '../utils/ourTake'
 
 const RATING_LABEL = { exceptional: '★★★ Exceptional', great: '★★ Great', good: '★ Good', average: '— Average' }
 const RATING_COLOR = { exceptional: 'text-gold', great: 'text-sage', good: 'text-slate-lt', average: 'text-slate-lt/50' }
@@ -97,6 +98,16 @@ export default function WineDetail() {
               </div>
 
               <p className="font-body text-slate-lt leading-relaxed">{wine.background}</p>
+
+              {/* Our Take */}
+              <div className="mt-6 p-5 rounded-2xl bg-gold/5 border border-gold/20">
+                <p className="font-body text-[10px] tracking-[0.15em] uppercase text-gold font-medium mb-2">
+                  Our Take
+                </p>
+                <p className="font-body text-sm text-slate italic leading-relaxed">
+                  "{wine.ourTake || generateOurTake(wine)}"
+                </p>
+              </div>
             </div>
 
             {/* Right panel */}
