@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { wines } from '../data/wines'
 
-// ── Tom Gilby's Pass / Class / Arse system ─────────────────────────────────────
+// ── Tom Gilbey's Pass / Class / Arse system ────────────────────────────────────
 const GILBY_TIERS = [
   {
     rating: 'class',
@@ -31,10 +31,10 @@ const GILBY_TIERS = [
 const CRITICS = [
   {
     id:       'tom-gilby',
-    name:     'Tom Gilby',
+    name:     'Tom Gilbey',
     title:    'The People\'s Wine Guy',
     emoji:    '🎬',
-    bio:      `Tom Gilby is a Master of Wine and wine educator who became a genuine phenomenon on YouTube — reviewing supermarket wines with honesty, humour and zero pretension. His three-tier rating system (Pass / Class / Arse) has done more to demystify wine than most textbooks. Accessible, occasionally sweary, and always entertaining.`,
+    bio:      `Tom Gilbey is a Master of Wine and wine educator who became a genuine phenomenon on YouTube — reviewing supermarket wines with honesty, humour and zero pretension. His three-tier rating system (Pass / Class / Arse) has done more to demystify wine than most textbooks. Accessible, occasionally sweary, and always entertaining.`,
     specialty: `Supermarket wines · Value hunting · UK retail`,
     scoring:  `Pass / Class / Arse — his three-tier system cuts through the noise. No points, no percentages, just an honest verdict.`,
     links: [
@@ -43,6 +43,7 @@ const CRITICS = [
     ],
     gilby: true,
     colour: '#C9973A',
+    photo: '/critic-tom-gilbey.jpg',
     topPickIds: ['aldi-cremant-du-jura', 'tesco-finest-english-sparkling', 'waitrose-cune-rioja'],
     quote: `"A wine doesn't have to be expensive to be Class. And an expensive wine can absolutely be Arse."`,
   },
@@ -59,6 +60,7 @@ const CRITICS = [
       { label: 'Financial Times', url: 'https://www.ft.com/topics/people/Jancis_Robinson', icon: '📰' },
     ],
     colour: '#2C2C3E',
+    photo: '/critic-jancis-robinson.jpg',
     topPickIds: ['dom-perignon-2013', 'chateau-margaux-2015', 'chateau-yquem-2015'],
     quote: `"I see my main job as trying to find wines that give genuine pleasure, at whatever price."`,
   },
@@ -74,6 +76,7 @@ const CRITICS = [
       { label: 'timatkin.com', url: 'https://timatkin.com', icon: '🌐' },
     ],
     colour: '#4A6741',
+    photo: '/critic-tim-atkin.png',
     topPickIds: ['waitrose-muga-rioja-reserva', 'trivento-reserve-malbec', 'barolo-conterno'],
     quote: `"Great wine should make you feel something. It's not just a beverage — it's a moment."`,
   },
@@ -90,6 +93,7 @@ const CRITICS = [
       { label: 'DWWA', url: 'https://www.decanter.com/wine-news/dwwa/', icon: '🏆' },
     ],
     colour: '#C4622D',
+    photo: '/critic-decanter.webp',
     topPickIds: ['bollinger-special-cuvee', 'chateau-margaux-2015', 'waitrose-prunotto-barolo'],
     quote: `"Wine is endlessly fascinating precisely because the same grape, in the same region, in different hands, can produce something entirely different."`,
   },
@@ -105,6 +109,7 @@ const CRITICS = [
       { label: 'ozclarke.com', url: 'https://www.ozclarke.com', icon: '🌐' },
     ],
     colour: '#7B2D3E',
+    photo: '/critic-oz-clarke.jpg',
     topPickIds: ['cloudy-bay-sauvignon', 'tesco-finest-barossa-shiraz', 'sainsbur-zuccardi-poligonos-altamira-malbec'],
     quote: `"The best wine isn't the most expensive. It's the one that makes you smile."`,
   },
@@ -120,6 +125,7 @@ const CRITICS = [
       { label: 'matthewjukes.com', url: 'https://www.matthewjukes.com', icon: '🌐' },
     ],
     colour: '#3D5A80',
+    photo: '/critic-matthew-jukes.jpg',
     topPickIds: ['puligny-montrachet-leflaive', 'sainsburys-ttd-cotes-du-rhone', 'baron-de-ley-rioja-reserva'],
     quote: `"Wine is about pleasure — understand what you like, and pursue it unapologetically."`,
   },
@@ -136,6 +142,17 @@ function CriticAvatar({ critic, size = 'md', frosted = false }) {
     sm: 'w-10 h-10 text-sm',
     md: 'w-14 h-14 text-base',
     lg: 'w-20 h-20 text-2xl',
+  }
+  if (critic.photo) {
+    return (
+      <div className={`${sizes[size]} rounded-full overflow-hidden flex-shrink-0 ring-2 ${frosted ? 'ring-white/40' : 'ring-white/20'}`}>
+        <img
+          src={critic.photo}
+          alt={critic.name}
+          className="w-full h-full object-cover object-top"
+        />
+      </div>
+    )
   }
   const style = frosted
     ? { background: 'rgba(255,255,255,0.18)', color: '#fff', border: '2px solid rgba(255,255,255,0.3)', letterSpacing: '0.06em' }
@@ -217,7 +234,7 @@ function CriticDetail({ critic }) {
             <p className="font-body text-sm text-slate-lt leading-relaxed">{critic.scoring}</p>
           </div>
 
-          {/* Gilby tiers — only for Tom Gilby */}
+          {/* Gilbey tiers — only for Tom Gilbey */}
           {critic.gilby && (
             <div className="card p-5">
               <h3 className="font-body text-xs tracking-[0.15em] uppercase text-slate-lt mb-4">The Three Tiers</h3>
@@ -315,27 +332,22 @@ export default function Critics() {
             <em className="text-gold not-italic">actually matters?</em>
           </h1>
           <p className="font-body text-white/60 max-w-2xl leading-relaxed">
-            From Tom Gilby's supermarket shelf verdicts (Pass, Class, or Arse) to Jancis Robinson's authoritative 20-point scale — meet the people who shape what the UK drinks.
+            From Tom Gilbey's supermarket shelf verdicts (Pass, Class, or Arse) to Jancis Robinson's authoritative 20-point scale — meet the people who shape what the UK drinks.
           </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
-        {/* Tom Gilby feature strip */}
+        {/* Tom Gilbey feature strip */}
         <div
           className="rounded-2xl p-6 mb-10 flex items-center gap-6 cursor-pointer hover:scale-[1.005] transition-transform"
           style={{ background: 'linear-gradient(135deg, #1A1A2E 0%, #2C1810 100%)' }}
           onClick={() => setSelectedId('tom-gilby')}
         >
-          <div
-            className="w-14 h-14 rounded-full flex items-center justify-center font-display font-semibold text-base flex-shrink-0 select-none"
-            style={{ background: '#C9973A', color: '#1A1A2E', letterSpacing: '0.06em' }}
-          >
-            TG
-          </div>
+          <CriticAvatar critic={CRITICS[0]} size="md" frosted />
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
-              <p className="font-display text-xl font-semibold text-white">Tom Gilby MW</p>
+              <p className="font-display text-xl font-semibold text-white">Tom Gilbey MW</p>
               <span className="font-body text-[10px] tracking-widest uppercase text-gold/70">Featured</span>
             </div>
             <p className="font-body text-sm text-white/60">
