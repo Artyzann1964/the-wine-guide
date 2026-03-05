@@ -128,15 +128,33 @@ Uses `HashRouter` — all routes are `/#/path`. Wine detail URLs: `/#/explore/:i
 
 ### Tailwind Custom Palette (tailwind.config.js)
 ```
-slate      = #2C3A47   (primary dark)
-slate-lt   = #6B7C8D   (muted text)
-gold       = #D4AF37   (primary accent)
-cream      = #F0EAD6   (light bg / borders)
-ivory      = #FAFAF7   (page bg)
-terracotta = #C4622D   (CTA / warning)
-sage       = #5C7A5C   (success / "in cellar")
+// Core backgrounds
+ivory      = #FAF8F4   (page bg)
+cream      = #F5EFE6   (light borders, panels)
+champagne  = #F7E7CE   (warm accent bg)
+
+// Gold accent
+gold       = #C9973A   (primary accent)
+gold-lt    = #E8C97A   (light gold tint)
+
+// Terracotta — CTA buttons
+terracotta = #C4622D   (btn-primary bg)
+terra-lt   = #E8A07A   (light terracotta)
+terra-dk   = #A8501F   (btn-primary hover — replaces [#A8501F])
+
+// Text / dark backgrounds
+slate      = #2C2C3E   (primary text, dark)
+slate-lt   = #4A4A60   (muted text)
+navy       = #1A1A2E   (nav bar & dark-panel bg — replaces [#1A1A2E])
+
+// Supplementary
+sage       = #8FAF8A   (success / "in cellar")
+wine-red   = #7B1D2E   (deep wine)
+blush      = #F2C4CE   (pale pink)
 ```
-Custom utilities defined in `index.css`: `.btn-primary`, `.btn-secondary`, `.btn-ghost`, `.card`, `.tag`, `.section-label`, `.wine-dot`, `.animate-fade-in`, `.animate-scale-in`.
+Custom utilities defined in `index.css`: `.btn-primary`, `.btn-secondary`, `.btn-ghost`, `.card`, `.tag`, `.section-label`, `.wine-dot`, `.animate-fade-in`, `.animate-scale-in`, `.ruled`, `.stagger`.
+
+**Token discipline:** never use `[#1A1A2E]` or `[#A8501F]` as arbitrary Tailwind values — use `navy` and `terra-dk` respectively. Per-wine card gradients (in wine data) remain as hex, not tokens.
 
 ### useCellar Hook
 Returns: `{ cellar, bottles, wishlist, tasted, stats, addBottle, removeBottle, updateBottle, markTasted, addToWishlist, removeFromWishlist, isInCellar, isInWishlist }`
