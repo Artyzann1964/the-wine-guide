@@ -42,7 +42,10 @@ src/
   components/
     WineCard.jsx            # Card with compact mode, showPrice prop, pairing chips, quick ♡ wishlist button
     TasteProfile.jsx        # SVG radar/spider chart for taste profile
-    Nav.jsx                 # Top navigation bar
+    Nav.jsx                 # Top navigation bar — uses NavLogo from Logo.jsx
+    Logo.jsx                # Brand logo — WineGlassSVG (flute SVG with animated bubbles),
+                            #   NavLogo (icon + wordmark), HeroLogo (large stacked),
+                            #   LogoMark (icon-only). All from a single file.
 
   pages/
     Home.jsx                # Landing page with featured wines
@@ -172,7 +175,14 @@ Card body layout (standard mode): category badge → status badges → wine name
 All filters synced to URL search params (except `sort` and `search` which are local state). URL params: `category`, `country`, `price`, `retailer`, `grape`.
 
 ### Retailer Branding (`src/utils/retailerBrands.jsx`)
-Exports `RETAILER_BRANDS` (bg/text/border colour config) and `RetailerBadge` component. Covers all 11 retailers: Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons, Le Bon Vin, Majestic, Co-op. Import and use `<RetailerBadge name="Waitrose" />` wherever a styled retailer pill is needed.
+Exports:
+- `RETAILER_BRANDS` — bg/text/border colour config for all 11 retailers
+- `RetailerBadge` — white pill with actual logo image + retailer name; falls back to coloured lettermark if image fails. Use wherever a styled retailer pill is needed: `<RetailerBadge name="Waitrose" />`
+- `RetailerLogo` — logo image only (no pill/text), for tighter spaces: `<RetailerLogo name="Tesco" size={32} />`
+
+Logo images live in `/public` and are mapped in `RETAILER_LOGOS` inside the file. The 11 retailers: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Le Bon Vin`, `Majestic`, `Co-op`.
+
+**Watch-out:** two filenames were renamed to be URL-safe: `aldi logo.webp` → `aldi-logo.webp`, `Co opLogo.jpg.avif` → `coop-logo.avif`. Never add logo files with spaces in the name.
 
 ### Schema Normalizer (`src/data/wines.js`)
 The wines array is exported via `normalizeWine()` — the internal array is `const _wines = [...]`, the public export is `export const wines = _wines.map(normalizeWine)`. The normalizer reconciles two schemas (original hand-crafted wines vs bulk-generated wines):
@@ -215,7 +225,7 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 
 ## Railway Deployment
 
-**Status: Ready.** Config already in place:
+**Status: Live — auto-deploys on every push to `main` via GitHub integration.** Config in place:
 
 - `railway.toml` — nixpacks builder, `npm install && npm run build`, start with `npm start`
 - `package.json` `start` script — `vite preview --host 0.0.0.0 --port ${PORT:-3000}`
@@ -248,6 +258,7 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 | `/explore/:id` | WineDetail | Full wine page, 5 tabs, cellar modal |
 | `/sparkling` | Sparkling | Sparkling wine guide |
 | `/pairing` | Pairing | Food pairing wizard |
+| `/taste-quiz` | TasteQuiz | 4-question profiler → matched wines |
 | `/cellar` | Cellar | Personal tracker (localStorage) |
 | `/learn` | Education | Wine school content |
 | `/shop` | Shop | Buy wines — retailer links |
