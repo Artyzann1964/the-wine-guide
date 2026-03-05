@@ -199,6 +199,54 @@ const RETAILERS = [
     tip: 'The Best Rioja Reserva is one of the best-value Spanish reds in any supermarket.',
   },
   {
+    id: 'majestic',
+    name: 'Majestic',
+    type: 'specialist',
+    emoji: '🏰',
+    color: '#5C1A3A',
+    bg: 'from-[#3d1028] to-[#5C1A3A]',
+    tagline: 'The Specialist Choice',
+    vibe: `Majestic sits in the gap between supermarket and fine wine merchant — and it fills that gap rather well. The mixed-case model means the economics work in your favour once you buy six or more bottles. A well-trained floor team and a range that genuinely goes somewhere most supermarkets won't.`,
+    brilliantAt: [
+      'Mixed cases — the six-bottle model makes the pricing genuinely competitive',
+      'Rhône Valley — whites and reds, particularly strong buying here',
+      'Southern European wines — Spain and Italy well covered',
+      'Staff knowledge — generally meaningfully better than supermarket level',
+      'En primeur and fine wine access without full merchant prices',
+    ],
+    worthKnowing: [
+      'You need to buy at least six bottles — not ideal for single-bottle browsing',
+      'Mix and match: you don\'t have to buy six of the same wine',
+      'Tasting events run regularly — worth signing up for their mailing list',
+    ],
+    ourTake: `The grown-up alternative to the supermarket run. The six-bottle minimum is an adjustment, but the pricing and quality make it worthwhile if you drink wine regularly. Particularly strong on Rhône and southern Europe.`,
+    tip: 'Mix six different bottles to hit the case threshold — it\'s the best way to explore the range.',
+  },
+  {
+    id: 'coop',
+    name: 'Co-op',
+    type: 'supermarket',
+    emoji: '🌱',
+    color: '#003E71',
+    bg: 'from-[#002850] to-[#003E71]',
+    tagline: 'The Ethical Choice',
+    vibe: `Co-op punches well above its weight in the ethics department — and increasingly in the wine department too. The Fairtrade wine range is genuinely strong, and the own-label bottles offer surprising value. A smaller range than the big four, but curated with care.`,
+    brilliantAt: [
+      'Fairtrade wines — among the best Fairtrade ranges in the UK',
+      'Own-label quality — consistently overperforms its price point',
+      'Organic and sustainable range, a genuine priority here',
+      'South African wines — particularly strong at supporting Fairtrade producers',
+      'Everyday value that doesn\'t require compromise on ethics',
+    ],
+    worthKnowing: [
+      'Range is smaller than Tesco or Sainsbury\'s — works best when you know what you want',
+      'Member pricing available — worth joining for regulars',
+      'The focus on ethics is genuine, not marketing — the supply chain matters here',
+    ],
+    ourTake: `Wine buying with a conscience. The Fairtrade range is the strongest in any major UK retailer. Quality is solid, range is focused, and you can feel good about what you're drinking.`,
+    tip: 'The Fairtrade South African Chenin Blanc is a perennial great-value find.',
+  },
+  {
     id: 'le-bon-vin',
     name: 'Le Bon Vin Sheffield',
     type: 'specialist',
@@ -247,14 +295,23 @@ function RetailerCard({ retailer, selected, onSelect }) {
   return (
     <button
       onClick={() => onSelect(retailer.id)}
-      className={`group relative w-full text-left rounded-2xl border-2 transition-all duration-200 p-5 ${
+      aria-pressed={selected}
+      className={`group relative w-full text-left rounded-2xl border-2 transition-all duration-200 p-4 ${
         selected
           ? 'border-gold bg-gold/5 shadow-lg scale-[1.02]'
           : 'border-cream bg-white hover:border-gold/40 hover:shadow-md hover:scale-[1.01]'
       }`}
     >
-      <div className="flex items-start gap-3">
-        <span className="text-2xl leading-none mt-0.5">{retailer.emoji}</span>
+      {/* Selected checkmark */}
+      {selected && (
+        <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-gold flex items-center justify-center">
+          <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 6l3 3 5-5" />
+          </svg>
+        </span>
+      )}
+      <div className="flex items-start gap-2.5">
+        <span className="text-xl leading-none mt-0.5 shrink-0">{retailer.emoji}</span>
         <div className="min-w-0">
           <p className={`font-display font-semibold text-sm leading-tight ${selected ? 'text-gold' : 'text-slate'}`}>
             {retailer.name}
@@ -262,8 +319,8 @@ function RetailerCard({ retailer, selected, onSelect }) {
           <p className="font-body text-xs text-slate-lt mt-0.5 leading-tight">{retailer.tagline}</p>
         </div>
       </div>
-      {retailer.type === 'specialist' && (
-        <span className="absolute top-3 right-3 text-[10px] font-body font-medium bg-terracotta/10 text-terracotta px-2 py-0.5 rounded-full">
+      {retailer.type === 'specialist' && !selected && (
+        <span className="absolute top-2.5 right-2.5 text-[9px] font-body font-medium bg-terracotta/10 text-terracotta px-1.5 py-0.5 rounded-full">
           Specialist
         </span>
       )}
@@ -368,29 +425,49 @@ function RetailerProfile({ retailer, wineCount }) {
 
 function WineSection({ wines: wineList, retailer }) {
   return (
-    <div className="max-w-7xl mx-auto px-6 lg:px-10 mt-12 pb-20">
-      <div className="flex items-baseline justify-between mb-6">
-        <h3 className="font-display font-semibold text-xl text-slate">
-          {retailer.name} wines in our guide
-        </h3>
-        <Link
-          to={`/explore?retailer=${encodeURIComponent(retailer.name)}`}
-          className="font-body text-sm text-gold hover:text-gold/70 transition-colors"
-        >
-          View all in Explorer →
-        </Link>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {wineList.map(wine => (
-          <WineCard key={wine.id} wine={wine} />
-        ))}
-      </div>
-      {wineList.length === 0 && (
-        <div className="text-center py-16">
-          <p className="font-body text-slate-lt text-sm">No wines from this retailer in the current guide.</p>
-          <p className="font-body text-slate-lt text-xs mt-1">We're expanding the database — check back soon.</p>
+    <div className="mt-12 pb-20">
+      {/* Sticky section header */}
+      <div className="sticky top-16 z-10 bg-ivory/95 backdrop-blur-sm border-b border-cream shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-lg shrink-0">{retailer.emoji}</span>
+            <span className="font-display font-semibold text-slate text-sm truncate">
+              {retailer.name}
+            </span>
+            {wineList.length > 0 && (
+              <span className="font-body text-xs text-slate-lt shrink-0">
+                · {wineList.length} wine{wineList.length !== 1 ? 's' : ''} in guide
+              </span>
+            )}
+          </div>
+          <Link
+            to={`/explore?retailer=${encodeURIComponent(retailer.name)}`}
+            className="btn-ghost text-xs py-1.5 px-3 shrink-0"
+          >
+            Filter in Explorer →
+          </Link>
         </div>
-      )}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 mt-8">
+        {wineList.length > 0 ? (
+          <>
+            <p className="font-body text-xs text-slate-lt mb-5">
+              Explorer lets you filter by grape, region, rating and pairing across all {wineList.length} {retailer.name} wines.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {wineList.map(wine => (
+                <WineCard key={wine.id} wine={wine} showPrice />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-16">
+            <p className="font-body text-slate-lt text-sm">No wines from this retailer in the current guide.</p>
+            <p className="font-body text-slate-lt text-xs mt-1">We're expanding the database — check back soon.</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

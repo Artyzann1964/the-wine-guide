@@ -261,7 +261,7 @@ function getPracticalTip(wine) {
     `Serve cold, pour generously, enjoy immediately. No ceremony required.`,
   ], 2)
 
-  if (wine.decant && wine.decant !== 'Not needed') return pick(wine, [
+  if (wine.decant && typeof wine.decant === 'string' && wine.decant !== 'Not needed') return pick(wine, [
     `Decant for ${wine.decant} — this wine genuinely transforms with air.`,
     `Give it ${wine.decant} of breathing room. The patience is absolutely worth it.`,
   ], 2)

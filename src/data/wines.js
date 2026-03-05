@@ -7132,7 +7132,12 @@ function normalizeWine(w) {
     whereToBuy = []
   }
 
-  return { ...w, category, priceRange, price, grapes, style, pairings, vintageGuide, whereToBuy }
+  // 9. decant — bulk-generated wines used boolean true/false; normalise to string/null
+  let decant = w.decant
+  if (decant === true)  { decant = '30 minutes' }
+  if (decant === false) { decant = null }
+
+  return { ...w, category, priceRange, price, grapes, style, pairings, vintageGuide, whereToBuy, decant }
 }
 
 export const wines = _wines.map(normalizeWine)

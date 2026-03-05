@@ -112,9 +112,12 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
 
         {/* Grapes */}
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {wine.grapes.slice(0, 3).map(g => (
+          {wine.grapes.slice(0, 2).map(g => (
             <span key={g} className="tag bg-cream text-slate-lt text-xs">{g}</span>
           ))}
+          {wine.grapes.length > 2 && (
+            <span className="tag bg-cream/50 text-slate-lt/60 text-xs">+{wine.grapes.length - 2}</span>
+          )}
         </div>
 
         {/* Our Take */}
@@ -132,20 +135,21 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
 
           {/* Price */}
           <span className="font-body text-xs text-slate-lt">
-            {showPrice && wine.price ? wine.price : PRICE_LABEL[wine.priceRange]}
+            {showPrice && wine.price ? wine.price : (PRICE_LABEL[wine.priceRange] || '–')}
           </span>
 
           {/* Quick wishlist button */}
           <button
             onClick={handleWishlist}
-            title={onWishlist ? 'On wishlist' : 'Add to wishlist'}
-            className={`p-1.5 rounded-lg transition-all duration-200 ${
+            aria-label={onWishlist ? 'On wishlist' : 'Add to wishlist'}
+            aria-pressed={onWishlist || flashed}
+            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 ${
               onWishlist || flashed
-                ? 'text-gold'
-                : 'text-slate-lt/40 hover:text-gold hover:bg-gold/10'
+                ? 'text-gold bg-gold/10 border border-gold/30'
+                : 'text-slate-lt/50 hover:text-gold hover:bg-gold/10 hover:border-gold/20 border border-transparent'
             }`}
           >
-            <HeartIcon filled={onWishlist || flashed} className="w-3.5 h-3.5" />
+            <HeartIcon filled={onWishlist || flashed} className="w-4 h-4" />
           </button>
         </div>
       </div>
