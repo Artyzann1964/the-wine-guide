@@ -3733,7 +3733,7 @@ const _wines = [
     name: `Finest 10 Year Old Tawny Port`,
     producer: `Tesco Finest`,
     vintage: null,
-    category: `Fortified`,
+    category: `dessert`,
     subcategory: `Tawny Port`,
     region: `Douro Valley`,
     subregion: `Porto`,
@@ -9167,8 +9167,8 @@ const _wines = [
     subcategory: `Bordeaux (Saint-Estèphe)`,
     region: `Bordeaux (Saint-Estèphe)`,
     country: `France`,
-    grapes: [],
-    grapeNotes: ` from Bordeaux (Saint-Estèphe), France — a variety that expresses its origin with clarity and distinction.`,
+    grapes: ['Cabernet Sauvignon', 'Merlot', 'Cabernet Franc'],
+    grapeNotes: `A classic Saint-Estèphe blend of Cabernet Sauvignon, Merlot and Cabernet Franc — the backbone grape trio of the Médoc, delivering structure, dark fruit and longevity.`,
     style: ["medium-bodied", "fruit-forward"],
     priceRange: 'premium',
     price: `£26.50`,
@@ -9241,8 +9241,8 @@ const _wines = [
     subcategory: `Rioja`,
     region: `Rioja`,
     country: `Spain`,
-    grapes: [],
-    grapeNotes: ` from Rioja, Spain — a variety that expresses its origin with clarity and distinction.`,
+    grapes: ['Tempranillo', 'Garnacha', 'Mazuelo'],
+    grapeNotes: `Tempranillo-led with Garnacha and Mazuelo — the traditional Rioja trio. Tempranillo brings the dark cherry fruit and structure; Garnacha adds warmth; Mazuelo gives colour and bite.`,
     style: ["light-bodied", "fruit-forward"],
     priceRange: 'mid',
     price: `£24.00`,
@@ -9278,8 +9278,8 @@ const _wines = [
     subcategory: `Veneto (Ripasso della Valpolicella Superiore DOC)`,
     region: `Veneto (Ripasso della Valpolicella Superiore DOC)`,
     country: `Italy`,
-    grapes: [],
-    grapeNotes: ` from Veneto (Ripasso della Valpolicella Superiore DOC), Italy — a variety that expresses its origin with clarity and distinction.`,
+    grapes: ['Corvina', 'Rondinella', 'Molinara'],
+    grapeNotes: `The classic Valpolicella trio: Corvina provides the backbone of sour cherry and spice; Rondinella adds colour and freshness; Molinara contributes lightness. Re-passed over Amarone pomace in the Ripasso method, deepening concentration and complexity.`,
     style: ["medium-bodied"],
     priceRange: 'mid',
     price: `£15.00`,
@@ -9460,11 +9460,11 @@ const _wines = [
     producer: `Terre Cevico`,
     vintage: 'NV',
     category: 'red',
-    subcategory: `Italy`,
-    region: `Italy`,
+    subcategory: `Emilia-Romagna`,
+    region: `Emilia-Romagna`,
     country: `Italy`,
-    grapes: [],
-    grapeNotes: ` from Italy, Italy — a variety that expresses its origin with clarity and distinction.`,
+    grapes: ['Sangiovese', 'Merlot'],
+    grapeNotes: `A Sangiovese-led blend with Merlot from Emilia-Romagna, the home of this approachable Italian co-operative. Sangiovese gives cherry fruit and herbaceous edge; Merlot rounds and softens.`,
     style: ["light-bodied"],
     priceRange: 'budget',
     price: `£7.00`,
@@ -9864,8 +9864,6 @@ const _wines = [
 
 ]
 
-export default wines
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Schema normalizer — reconciles the two schemas used in this file:
 //   • Original wines: lowercase category, 'budget'|'mid'|'premium'|'luxury' priceRange,
@@ -9874,16 +9872,19 @@ export default wines
 //     numeric price (16.0), string-array pairings/vintageGuide, { store } whereToBuy
 // ─────────────────────────────────────────────────────────────────────────────
 const PRICE_TIER_MAP = { '£': 'budget', '££': 'mid', '£££': 'premium', '££££': 'luxury' }
+const VALID_PRICE_RANGES = new Set(['budget', 'mid', 'premium', 'luxury'])
 
 function normalizeWine(w) {
   // 1. category → always lowercase
   const category = typeof w.category === 'string' ? w.category.toLowerCase() : 'red'
 
-  // 2. priceRange — convert '££' style to named tier
+  // 2. priceRange — convert '££' style to named tier; map legacy 'everyday' → 'budget'
   let priceRange = w.priceRange
   if (priceRange && /^£+$/.test(priceRange)) {
     priceRange = PRICE_TIER_MAP[priceRange] || 'mid'
   }
+  if (priceRange === 'everyday') priceRange = 'budget'
+  if (!VALID_PRICE_RANGES.has(priceRange)) priceRange = 'mid'
 
   // 3. price — ensure it's a display string with £ prefix
   let price = w.price
