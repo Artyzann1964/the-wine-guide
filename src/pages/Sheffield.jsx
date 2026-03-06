@@ -257,6 +257,26 @@ const VENUES = [
     stylePrompts: ['Premium classic', 'Age-worthy red', 'Signature Champagne'],
     wineIds: ['chateau-margaux-2015', 'chateau-yquem-2015', 'dom-perignon-2013', 'trimbach-clos-ste-hune'],
   },
+  {
+    id: 'galvin-green-man',
+    name: 'Galvin Green Man',
+    claireFavourite: true,
+    town: 'Chelmsford',
+    area: 'Howe Street, Great Waltham',
+    type: 'Pub + restaurant',
+    note: `Claire's choice`,
+    vibe: 'A Grade II listed 14th-century country pub run by Michelin-starred chefs Chris & Jeff Galvin — Bib Gourmand-awarded cooking with a serious, French-leaning wine list in a beautiful Essex countryside setting.',
+    whyAmandaLovesIt: `Claire's pick in Chelmsford — a proper destination pub where the Galvin brothers bring Michelin pedigree to a 1341 country inn. The wine list punches well above pub weight, with Champagne by the glass, Burgundy Grand Cru, Bordeaux First Growths, and thoughtful by-the-glass options from Uncharted Wine kegs. The Bib Gourmand award confirms what Claire already knows: serious food and wine at fair prices.`,
+    bestFor: ['Sunday roast with proper wine', 'Special occasion dining', 'Champagne by the glass', 'French-led food pairing'],
+    typicalSpend: 'Mid to premium',
+    reserveTip: 'Restaurant open Thu–Sun; book ahead for weekend dinner. Pub menu available Mon–Wed. Five private dining rooms seat 8–16 each.',
+    website: 'https://galvinrestaurants.com/pub-restaurant-chelmsford-essex-galvin-green-man/',
+    address: 'Main Road, Howe Street, Great Waltham, Chelmsford, Essex CM3 1BG',
+    phone: '01245 408 820',
+    email: 'betty@galvinpubco.com',
+    stylePrompts: ['Champagne aperitif', 'Burgundy & Bordeaux', 'French country pairings', 'Premium by-the-glass'],
+    wineIds: ['bollinger-special-cuvee', 'tesco-finest-chablis', 'waitrose-no1-cdp-rouge', 'barolo-conterno'],
+  },
 ]
 
 const MOMENTS = [

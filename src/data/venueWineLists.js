@@ -2327,6 +2327,117 @@ export const venueWineLists = {
       { "name": "Vignana Prosecco Rosé", "category": "sparkling", "country": "Italy" },
       { "name": "Laurent Perrier Brut NV", "category": "sparkling", "country": "France" }
     ]
+  },
+  "galvin-green-man": {
+    "source": "Galvin Green Man Drinks Menu (PDF from website)",
+    "sourceUrl": "https://d28htdh8gmxq1j.cloudfront.net/wp-content/uploads/2025/09/GGM-Restaurant-Pub-Essex-Drinks.pdf",
+    "checkedOn": "2026-03-06",
+    "priceNote": "Bottle (750ml) prices unless noted. By-the-glass wines available in 125ml/175ml/250ml/750ml. Wine on Tap served from Uncharted Wine kegs. Vegan (Ⓥ) and Vegetarian (V) marked where indicated.",
+    "items": [
+      // ── WINES BY THE GLASS (on tap / keg) ──
+      { "name": "Sauvignon Blanc, VinExploré, France", "price": 35, "category": "white", "country": "France", "grape": "Sauvignon Blanc", "note": "Full & fruity with bright citrus notes & zesty finish. Also by the glass." },
+      { "name": "Madregale Pinot Grigio, Abruzzo, Italy", "price": 38, "category": "white", "country": "Italy", "grape": "Pinot Grigio", "note": "Smooth & dry with light citrus and lemon peel. Also by the glass." },
+      { "name": "Arinto, A Desconhecida, Lisbon, Portugal", "price": 40, "category": "white", "country": "Portugal", "grape": "Arinto", "note": "Elegant aromas of green peach & apple, with a refreshing salinity on the finish. Also by the glass." },
+      { "name": "Chardonnay, Pays D'Oc, France", "price": 44, "category": "white", "country": "France", "grape": "Chardonnay", "note": "Hints of honey, stone fruit & citrus with a nice minerality. Also by the glass." },
+      { "name": "Cinsault Rosé, Ventoux, France", "price": 39, "category": "rosé", "country": "France", "grape": "Cinsault", "note": "Shows notes of raspberry and cherry on a refreshing palate. Also by the glass." },
+      { "name": "Planeta Rose, Sicily, Italy", "price": 44, "category": "rosé", "country": "Italy", "grape": "Nero d'Avola/Syrah", "note": "Fresh and fruity with hints of rose, pomegranate and strawberries. Also by the glass." },
+      { "name": "Grenache Syrah, Mourvèdre, France", "price": 35, "category": "red", "country": "France", "grape": "Grenache/Syrah/Mourvèdre", "note": "Rich aromas of plum and black cherry with notes of cracked black pepper. Also by the glass." },
+      { "name": "Cãstelao, A Desconhecida, Portugal", "price": 38, "category": "red", "country": "Portugal", "grape": "Castelão", "note": "Rich, juicy aromas of dark plum and black cherry with sweet spices and soft tannins. Also by the glass." },
+      { "name": "Bordeaux, Château des Arras, France", "price": 43, "category": "red", "country": "France", "grape": "Bordeaux blend", "note": "Vibrant flavours of blackberry damson all coming together with a silky smooth finish with long tannins. Also by the glass." },
+      { "name": "Pinot Noir, Pays d'Oc, France", "price": 44, "category": "red", "country": "France", "grape": "Pinot Noir", "note": "Fruity and excellently balanced, with expressive nose of black cherry and spices. Also by the glass." },
+      { "name": "Malbec, Ballena del Sur, Argentina", "price": 45, "category": "red", "country": "Argentina", "grape": "Malbec", "note": "Soft dark bramble fruits with a nice touch of clean and fresh herb. Almost jammy consistency yet remains clean. Also by the glass." },
+
+      // ── LOW & NO (on tap) ──
+      { "name": "Lyre's Classico Grande 0%, UK", "price": 34, "category": "sparkling", "country": "UK", "note": "Light sparkling wine with tart flavour enhanced with peach, pear, and red apple. Alcohol-free." },
+      { "name": "Sauvignon Blanc 0.5%, South Africa", "price": 24, "category": "white", "country": "South Africa", "note": "Flavours of ripe tropical fruit, yellow peaches and gooseberries. Low alcohol." },
+      { "name": "Shiraz 0.5%, South Africa", "price": 24, "category": "red", "country": "South Africa", "note": "Hints of ripe red fruit, crushed black pepper, dried rose petals & candied cherries. Low alcohol." },
+
+      // ── CHAMPAGNE & SPARKLING ──
+      { "name": "Primi Soli Prosecco NV, Italy", "price": 39, "category": "sparkling", "country": "Italy", "note": "Light straw yellow with fine and persistent perlage. Delicate, slightly smooth and particularly fruity." },
+      { "name": "Botter Prosecco Rosé, Italy", "price": 41, "category": "sparkling-rosé", "country": "Italy", "note": "A fine and fragrant nose of fruity and floral aromas. Fresh, savoury and well-balanced." },
+      { "name": "Galvin Champagne, Beaumont des Crayères, NV", "price": 85, "category": "sparkling", "country": "France", "grape": "Champagne blend", "note": "The palate is well balanced, fresh and lively with aromas of pear, greengages and citrus fruit. House Champagne — also by the glass (£14.50/125ml)." },
+      { "name": "New Hall Classic Brut, NV, UK", "price": 86, "category": "sparkling", "country": "UK", "note": "Notes of ripe apricots, baked apple and roasted hazelnuts on the palate leading to a creamy, vibrant finish. Local Essex sparkling." },
+      { "name": "New Hall Rosé Brut, NV, UK", "price": 91, "category": "sparkling-rosé", "country": "UK", "note": "Elegant notes of wild strawberry, lemon sherbet and rose water leading to slightly mineral finish and a fine persistent mousse. Local Essex sparkling rosé." },
+      { "name": "Beaumont des Crayères Grand Rosé, NV", "price": 93, "category": "sparkling-rosé", "country": "France", "grape": "Champagne blend", "note": "Following 3 years of aging, a very fruity nose and the palate develops cherry and red fruit flavours with a particularly elegant finish. Also by the glass (£16.50/125ml)." },
+      { "name": "Taittinger Brut Réserve NV", "price": 106, "category": "sparkling", "country": "France", "grape": "Champagne blend", "note": "Lively, fresh and in total harmony. A delicate wine with flavours of fresh fruit and honey. Also by the glass (£18/125ml)." },
+      { "name": "Taittinger Prestige Rosé NV", "price": 128, "category": "sparkling-rosé", "country": "France", "grape": "Champagne blend", "note": "Fresh and young with aromas of red fruit, freshly crushed wild raspberry, cherry and blackcurrant." },
+      { "name": "Ruinart Blanc de Blancs NV", "price": 230, "category": "sparkling", "country": "France", "grape": "Chardonnay", "note": "Citrus, peach and white flower aromas evolve into a fresh and supple palate." },
+
+      // ── WHITE (bottle list) ──
+      { "name": "Viognier, Villa Vieja, Mendoza, Argentina", "price": 37, "category": "white", "country": "Argentina", "grape": "Viognier", "note": "Lightly perfumed with nectarine and grapefruit aromas." },
+      { "name": "Picpoul de Pinet, Grange des Rocs, Languedoc, France", "price": 39, "category": "white", "country": "France", "grape": "Picpoul", "note": "Crisp & herbal with zesty lime & lemon spiked fruit." },
+      { "name": "Rioja Blanco, Vina Ilusión, Navarra, Spain", "price": 41, "category": "white", "country": "Spain", "grape": "Tempranillo Blanco", "note": "Aromas of white fruits and lemon. Fresh, delicate wine with a touch of creaminess and a zippy finish." },
+      { "name": "Muscadet Sèvre et Maine Sur Lie 'Garance', Luneau, France", "price": 46, "category": "white", "country": "France", "grape": "Melon de Bourgogne", "note": "Herbal, floral, lime aromas. Fresh and mineral tasting with ripe elegant flavours of citrus and stone fruits." },
+      { "name": "Staete Landt 'Pure' Sauvignon Blanc, Marlborough, New Zealand", "price": 50, "category": "white", "country": "New Zealand", "grape": "Sauvignon Blanc", "note": "Packed with gooseberry, lime, grapefruit and exotic fruits." },
+      { "name": "Côtes du Rhône Blanc, Domaine La Collière, France", "price": 52, "category": "white", "country": "France", "grape": "Grenache Blanc/Clairette", "note": "Fresh tasting with creamy, honeyed flavours of caramelised apples and pears." },
+      { "name": "Galvin Pouilly Fumé, Arnaud et Stephanie Dezat, Loire, France", "price": 53, "category": "white", "country": "France", "grape": "Sauvignon Blanc", "note": "Harmonious and predominantly floral with a mixture of light peach and citrus aromas, wrapped in lovely minerality. Galvin's own label." },
+      { "name": "Chardonnay, Toques et Clochers, Languedoc-Roussillon, France", "price": 54, "category": "white", "country": "France", "grape": "Chardonnay", "note": "The elevage of the wine is new oak which confers complex flavours of melted butter, nuts, caramel & toast." },
+      { "name": "Bacchus, New Hall Wine Estate, Purleigh, UK", "price": 55, "category": "white", "country": "UK", "grape": "Bacchus", "note": "Quintessential English Bacchus. Intensely aromatic with grapefruit, pear, peach, lime and herbaceous vegetal notes. Local Essex winery." },
+      { "name": "Albariño, Abadia de San Campio, Galicia, Spain", "price": 56, "category": "white", "country": "Spain", "grape": "Albariño", "note": "Floral aromas lead to grapefruit, lemon & mandarin orange flavours." },
+      { "name": "Gavi di Gavi, La Minaia, Piedmont, Italy (Cortese)", "price": 59, "category": "white", "country": "Italy", "grape": "Cortese", "note": "Elegant, mineral wine with subtle citrus & melon flavours." },
+      { "name": "Riesling, Te Whare Ra, Marlborough, New Zealand", "price": 62, "category": "white", "country": "New Zealand", "grape": "Riesling", "note": "A sweet palate with creamy notes of green apple, nectarines, apricots & honey melon." },
+      { "name": "Gewurztraminer, Domaine Christophe Mittnacht, Alsace, France", "price": 70, "category": "white", "country": "France", "grape": "Gewurztraminer", "note": "Lovely off-dry white with notes of orange blossom & lychee and a honeyed finish." },
+      { "name": "Riesling, Domaine Bruno Sorg, Alsace, France", "price": 68, "category": "white", "country": "France", "grape": "Riesling", "note": "A drier Riesling — full of lime zest and a mouth-watering acidity." },
+      { "name": "Sancerre, Domaine Balland (Sauvignon Blanc), Loire, France", "price": 73, "category": "white", "country": "France", "grape": "Sauvignon Blanc", "note": "Dry and fruity with a wonderfully delicate bouquet and great length." },
+      { "name": "Chablis, Domaine Jean Collet, Burgundy 2021", "price": 75, "category": "white", "country": "France", "grape": "Chardonnay", "note": "Well-balanced, bringing out a complex and warm bouquet. At once mineral and lively with pine tree and grapefruit overtones." },
+      { "name": "La Soula, Trigone Blanc, Languedoc-Roussillon, France", "price": 78, "category": "white", "country": "France", "grape": "Sauvignon Blanc/Vermentino/Grenache Blanc", "note": "An intriguing blend of old-vine varieties with a welcoming bouquet of herbal notes and spiced orchard fruits." },
+      { "name": "Chardonnay, Riverview, Crouch Valley, UK", "price": 85, "category": "white", "country": "UK", "grape": "Chardonnay", "note": "Delicate creamy lychee giving way to buttery green apple with a nice citrussy acidity giving this stunning English Chardonnay some backbone." },
+      { "name": "Bourgogne Blanc 'La Combe' Domaine Derain, Burgundy", "price": 93, "category": "white", "country": "France", "grape": "Chardonnay", "note": "From 30 year old plot close to Puligny Montrachet. Only 1800 bottles are made a year. Elegant with robust flavours of white peach, yellow apple, lemon & pineapple." },
+      { "name": "Riesling Grand Cru, Domaine Pierre Frick, Alsace, France", "price": 107, "category": "white", "country": "France", "grape": "Riesling", "note": "Natural wine undergoing 'Vorbourg maceration' with complex and dense aromas of limestone pebbles, grilled hazelnuts, rum and tobacco." },
+      { "name": "Condrieu, Domaine Yves Cuilleron, Rhône Valley, France", "price": 120, "category": "white", "country": "France", "grape": "Viognier", "note": "An incredible Viognier with complex aromas of apricot & violet intertwine with toasted almonds. Velvety finish with delicate spices." },
+      { "name": "Chardonnay, Ceritas Vineyards 'Charles Heintz', USA", "price": 145, "category": "white", "country": "USA", "grape": "Chardonnay", "note": "A very elegant Burgundian style Chardonnay. Saline notes, white flowers on the nose. Similar to a 1er Cru Chablis." },
+      { "name": "Meursault, Vincent Gerardin, Burgundy, France", "price": 150, "category": "white", "country": "France", "grape": "Chardonnay", "note": "A very elegant Burgundian style Chardonnay with a heady bouquet of dried almond, butter and white flowers. Superb mineral structure." },
+      { "name": "Chassagne-Montrachet 1er Cru, Les Vergers, F&L Pillot, France", "price": 180, "category": "white", "country": "France", "grape": "Chardonnay", "note": "Lots of fresh grapefruit, lemon peel, crunchy red apple and blossom flavours." },
+
+      // ── ROSÉ (bottle list) ──
+      { "name": "Rose Sicilia, Planeta, Sicily, Italy (Nero d'Avola/Syrah)", "price": 44, "category": "rosé", "country": "Italy", "grape": "Nero d'Avola/Syrah", "note": "Fresh and fruity, encompasses all the emotions of the Sicilian summer with hints of rose, pomegranate and strawberries." },
+      { "name": "Côtes de Provence Rosé, La Vidaubanaise, France (Grenache Blanc)", "price": 45, "category": "rosé", "country": "France", "grape": "Grenache", "note": "Refreshing red berried rosé with a vibrant spicy dry finish." },
+      { "name": "New Hall Pinot Noir Rosé, Purleigh, UK", "price": 56, "category": "rosé", "country": "UK", "grape": "Pinot Noir", "note": "Notes of redcurrant & cream with hints of strawberry. Local Essex winery." },
+      { "name": "Secret de Léoube Rosé, Côtes de Provence, France", "price": 95, "category": "rosé", "country": "France", "grape": "Grenache/Cinsault/Cabernet Sauvignon", "note": "Strawberry & watermelon with floral hints of roses, extremely drinkable." },
+
+      // ── RED (bottle list) ──
+      { "name": "Cabernet Sauvignon, Mont d'Hortes, Pays d'Oc, France", "price": 38, "category": "red", "country": "France", "grape": "Cabernet Sauvignon", "note": "Full bodied but easy drinking with notes of raspberry & oak." },
+      { "name": "Ciù Ciù Piceno Bacchus, Marche, Italy (Sangiovese/Montepulciano)", "price": 39, "category": "red", "country": "Italy", "grape": "Sangiovese/Montepulciano", "note": "Full of life with strong cherry & blackberry notes." },
+      { "name": "Rioja Crianza, Lopez de Haro, Spain (Tempranillo)", "price": 40, "category": "red", "country": "Spain", "grape": "Tempranillo", "note": "Rounded, rich red fruit flavours with liquorice, mint & sweet spices." },
+      { "name": "Bergerac Rouge, Chateau Laulerie, South West France (Merlot)", "price": 42, "category": "red", "country": "France", "grape": "Merlot", "note": "Full flavoured and well balanced, velvety palate with flavours of red berries." },
+      { "name": "Stone Spring Shiraz, Barossa Valley, South Australia", "price": 46, "category": "red", "country": "Australia", "grape": "Shiraz", "note": "Intense savoury flavours of thick blackberry compote, black pepper and typical iron-rich beefy flavours." },
+      { "name": "Corbières, Château La Bastide, Languedoc (Syrah/Grenache/Mourvèdre)", "price": 45, "category": "red", "country": "France", "grape": "Syrah/Grenache/Mourvèdre", "note": "Ripe blackberry flavours with sweet spices, herbs & black pepper." },
+      { "name": "Chianti, Da Vinci, Tuscany, Italy (Sangiovese/Merlot)", "price": 48, "category": "red", "country": "Italy", "grape": "Sangiovese/Merlot", "note": "Well balanced with bouquet of fresh red fruits, especially cherries mingled with peppery notes. Ripe and lively with soft round tannins." },
+      { "name": "Galvin Rasteau, Rhône (Grenache/Syrah/Mourvèdre), France", "price": 49, "category": "red", "country": "France", "grape": "Grenache/Syrah/Mourvèdre", "note": "Powerful southern Rhône red with luxurious dark, ripe fruit. Galvin's own label." },
+      { "name": "Régnié, Domaine de la Plaigne, Beaujolais (Gamay)", "price": 52, "category": "red", "country": "France", "grape": "Gamay", "note": "A young but bold Beaujolais with notes of violet, plum & dark cherry." },
+      { "name": "Pinot Noir Précoce, New Hall Vineyards, Purleigh, UK", "price": 57, "category": "red", "country": "UK", "grape": "Pinot Noir", "note": "Packed with red cherry, blackberry fruit and earthy notes on the nose. Smoky, savoury complexity. Local Essex winery." },
+      { "name": "Pinot Noir, Domaine Bruno Sorg, Alsace, France", "price": 61, "category": "red", "country": "France", "grape": "Pinot Noir", "note": "Elegant and restrained Pinot Noir from Alsace. Youthful with flavours of summer berries, cherries and touch of cracked black pepper." },
+      { "name": "Côtes-du-Rhône, Mas de Libian, Khayyâm, Rhone Valley, France (Mourvèdre)", "price": 65, "category": "red", "country": "France", "grape": "Mourvèdre", "note": "Rich & dense: dripping with black cherry, liquorice, bay leaf, white pepper and anise." },
+      { "name": "Rioja Reserva, Hacienda Grimon, Spain (Tempranillo)", "price": 75, "category": "red", "country": "Spain", "grape": "Tempranillo", "note": "Mature ripe cherry & black raisins with long complex notes of blackberry." },
+      { "name": "Barbera d'Asti Superiore, Trinchero, Piemonte, Italy", "price": 77, "category": "red", "country": "Italy", "grape": "Barbera", "note": "Tart cherry & currants with good acidity, smooth tannins and a complex spiced finish with hints of clove & cinnamon." },
+      { "name": "Château Gros Caillou, Grand Cru St Emilion, Bordeaux, France", "price": 85, "category": "red", "country": "France", "grape": "Merlot/Cabernet Franc", "note": "Rich tasting and elegant with good concentrated, nicely developed red and black fruit flavours with notes of cedar and supple tannins." },
+      { "name": "Pinot Noir, Riverview, Crouch Valley, UK", "price": 87, "category": "red", "country": "UK", "grape": "Pinot Noir", "note": "Light but intense flavours of cranberry, strawberry & blueberry." },
+      { "name": "JM Cazes, St. Estephe, Bordeaux, France (Cab Sauv/Merlot/Cab Franc)", "price": 89, "category": "red", "country": "France", "grape": "Cabernet Sauvignon/Merlot/Cabernet Franc", "note": "Produced from the younger fruit of Château Les Ormes de Pez, delivering a forward, silky style, but the classic Saint Estèphe structure is clearly on show." },
+      { "name": "Barolo 'Ascheri' Michele Reverdito, Piedmont, Italy", "price": 95, "category": "red", "country": "Italy", "grape": "Nebbiolo", "note": "Dense, sweet red perfumed aromas are followed by flavours of morello cherry, sweet spices & elegant ripe tannins." },
+      { "name": "Zinfandel, Turley Old Vines, Napa Valley, USA", "price": 99, "category": "red", "country": "USA", "grape": "Zinfandel", "note": "Bold & jammy with big flavours of blackberry, plum, vanilla & cedar." },
+      { "name": "Brunello di Montalcino, Tenuta di Argiano, Tuscany, Italy", "price": 101, "category": "red", "country": "Italy", "grape": "Sangiovese", "note": "Flavours of ripe cherry fruit with roasted herbs and sweet toasty oak. Complex & powerful wine with a ripe tannic structure." },
+      { "name": "Margaux, Chateau Rauzan-Ségla, Bordeaux, France", "price": 107, "category": "red", "country": "France", "grape": "Cabernet Sauvignon/Merlot", "note": "Very fresh with strawberry, mineral and flower aromas following through to a medium body and fine tannins." },
+      { "name": "Chateauneuf du Pape, Domaine La Barroche, Rhone, France", "price": 110, "category": "red", "country": "France", "grape": "Grenache/Syrah/Mourvèdre", "note": "A head turning bouquet of kirsch, blackberries, crushed herbs and pepper. Full bodied with silky and ripe tannins and a long finish." },
+      { "name": "Pommard 1er Cru, Jean Javillier et Fils, Burgundy, France", "price": 130, "category": "red", "country": "France", "grape": "Pinot Noir", "note": "A classic Pommard with light raspberry acidity and intense cherry fruit on the palate. A long oaky finish with surprisingly low tannins." },
+      { "name": "Pomerol, Château Gombaude Guillot, Bordeaux, France", "price": 150, "category": "red", "country": "France", "grape": "Merlot/Cabernet Franc", "note": "Bright fresh and yet aromatic blackcurrant fruit nose with a certain refined elegance. Broad and fine-grained tannins support lovely length." },
+      { "name": "Gevrey Chambertin, Domaine René Bouvier, Burgundy, France", "price": 160, "category": "red", "country": "France", "grape": "Pinot Noir", "note": "Ripe, spicy flavours of cherry & red berry fruits with a rich mineral depth." },
+
+      // ── SWEET WINE ──
+      { "name": "Coteaux du Layon Saint Lambert, Domaine Ogereau, France", "price": 5, "category": "dessert", "country": "France", "note": "Sweet pear & rich honeyed flavours of apple, peach & cinnamon. 50ml." },
+      { "name": "Banyuls Rimages, Domaine du Valcros, France", "price": 6, "category": "dessert", "country": "France", "note": "Rich notes of sweet, honeyed figs and prunes with underlying hints of chocolate. 50ml." },
+      { "name": "Lyrarakis Liastos Sun-dried, Crete, Greece", "price": 6, "category": "dessert", "country": "Greece", "note": "A blend of sun-dried local grapes, giving a concentrated juice with density of aromas and taste. 50ml." },
+      { "name": "Sauternes, Lieutenant de Sigalas, Bordeaux, France", "price": 7, "category": "dessert", "country": "France", "grape": "Sémillon/Sauvignon Blanc", "note": "Sumptuous, rich & vibrant with honey, lemon & orange. 50ml." },
+      { "name": "Tokaji Late Harvest Cuvée, Sauska, Hungary", "price": 8.4, "category": "dessert", "country": "Hungary", "grape": "Furmint", "note": "Rich fruity aromas of apricot, figs, pineapple, citrus to oriental spices. Long and rich aftertaste. 50ml." },
+
+      // ── SHERRY ──
+      { "name": "Fino, Cesar Florido", "price": 4, "category": "fortified", "country": "Spain", "note": "Light and soft with a pleasing saline quality. 50ml." },
+      { "name": "Pedro Ximenez, Bella Luna", "price": 5, "category": "fortified", "country": "Spain", "note": "Deep ebony colour, dense aromas of raisins, dates and honey. 50ml." },
+      { "name": "Tio Pepe", "price": 5.5, "category": "fortified", "country": "Spain", "note": "Bone dry, light, with a long finish with almond notes. 50ml." },
+      { "name": "Amontillado, Cesar Florido", "price": 6.5, "category": "fortified", "country": "Spain", "note": "A cross between fino and oloroso sherry. Dry, with notes of dried apricots, hazelnuts and touch of saline. 50ml." },
+
+      // ── PORT ──
+      { "name": "Galvin 10 Year Old Tawny Port", "price": 14, "category": "fortified", "country": "Portugal", "note": "Rich and elegant style. Powerful dried fruit, figs, honey and almonds with a long pleasing fresh finish. 100ml." }
+    ]
   }
 }
 
