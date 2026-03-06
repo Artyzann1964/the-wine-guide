@@ -35,9 +35,13 @@ src/
 
   data/
     wines.js                # All wine entries (232 wines) + REGIONS array
+    pairings.js             # Food pairing data for the pairing wizard
+    venueWineLists.js       # Venue wine lists (Gill & Co etc.) keyed by venue ID — aligned with Sheffield.jsx
 
   hooks/
     useCellar.js            # localStorage cellar state: bottles / wishlist / tasted
+    useExplorerQueue.js     # Explorer Queue — localStorage queue for venue wine candidates
+    useVenueSourceInbox.js  # Venue Source Inbox — localStorage inbox for venue URL submissions
 
   components/
     WineCard.jsx            # Card with compact mode, showPrice prop, pairing chips, quick ♡ wishlist button
@@ -49,13 +53,22 @@ src/
 
   pages/
     Home.jsx                # Landing page with featured wines
-    Explorer.jsx            # Browse/filter/sort 232 wines
+    Explorer.jsx            # Browse/filter/sort 232 wines + Explorer Queue panel
     WineDetail.jsx          # Full detail: tabs (overview/tasting/pairings/vintages/buy), add to cellar modal
-    Cellar.jsx              # Personal cellar tracker (bottles/wishlist/tasting notes)
+    Cellar.jsx              # Personal cellar tracker (bottles/wishlist/tasting notes) + wishlist share
     Education.jsx           # Wine School: production, labels, vintages, tasting vocab
     Sparkling.jsx           # Sparkling wine guide
     Pairing.jsx             # Food pairing wizard
     Critics.jsx             # Critics page — Tom Gilby picks + staff picks
+    Sheffield.jsx           # Amanda's Places — venue picks (Sheffield etc.), venue wine lists, Explorer Queue integration
+    WishlistShare.jsx       # Shareable wishlist view — decodes base64 URL payload, groups by price tier
+    TasteProfiler.jsx       # 4-question taste quiz → matched wines
+
+  utils/
+    retailerBrands.jsx      # Retailer brand config, RetailerBadge, RetailerLogo
+    ourTake.js              # "Our Take" quote generator for WineCard + WineDetail
+    wishlistShare.js        # Wishlist share encoding/decoding — base64url payload, price tier grouping
+    vivinoImport.js         # Vivino CSV parser — parseVivinoCsv(), vivinoRowsToTastedEntries()
 ```
 
 ---
@@ -195,6 +208,25 @@ The wines array is exported via `normalizeWine()` — the internal array is `con
 
 **Never write new wines using the old bulk schema** — always use the correct schema (lowercase category, named priceRange, £string price, object arrays).
 
+### useExplorerQueue Hook (`src/hooks/useExplorerQueue.js`)
+localStorage-backed queue for venue wine candidates discovered on the Places page. Used in **Explorer.jsx** (review/remove/link panel), **Home.jsx** (queue count badge), and **Sheffield.jsx** (add candidates from venue wine lists).
+
+Returns: `{ queue, queuedKeys, addCandidate, removeCandidate, clearQueue, markLinked }`
+
+Each candidate: `{ id, name, venueId, venueName, category, country, price, review, stars, sourceUrl, libraryWineId, matchKey, createdAt }`
+
+`buildExplorerCandidateFromVenue(venue, item, sourceUrl)` — helper to build a candidate from venue wine list data.
+
+Explorer Queue panel opens via `?queue=1` URL param or toggle in Explorer.
+
+### useVenueSourceInbox Hook (`src/hooks/useVenueSourceInbox.js`)
+localStorage-backed inbox for user-submitted venue source URLs. Used in **Sheffield.jsx**.
+
+Returns: `{ sources, addSource, removeSource, clearSources, markProcessed }`
+
+### Wishlist Share (`src/utils/wishlistShare.js`)
+Base64url-encoded shareable wishlist. Cellar page generates share URLs via `buildWishlistSharePayload()` → `encodeWishlistPayload()` → `buildWishlistShareUrl()`. WishlistShare page decodes via `decodeWishlistPayload()`. Groups wines by price tier (everyday/mid/premium/luxury/flexible).
+
 ### Cellar Drinking Window
 `drinkWindowStatus(bottle)` in `Cellar.jsx` — parses `drinkFrom`/`drinkBy` as year integers, returns `{ status, icon, label, cls }` or `null`.
 
@@ -253,15 +285,18 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 
 | Route | Page | Notes |
 |-------|------|-------|
-| `/` | Home | Featured wines, hero |
-| `/explore` | Explorer | Filter/sort 232 wines |
+| `/` | Home | Featured wines, hero, Explorer Queue badge |
+| `/explore` | Explorer | Filter/sort 232 wines + Explorer Queue panel |
 | `/explore/:id` | WineDetail | Full wine page, 5 tabs, cellar modal |
 | `/sparkling` | Sparkling | Sparkling wine guide |
 | `/pairing` | Pairing | Food pairing wizard |
-| `/taste-quiz` | TasteQuiz | 4-question profiler → matched wines |
-| `/cellar` | Cellar | Personal tracker (localStorage) |
+| `/taste-quiz` | TasteProfiler | 4-question profiler → matched wines |
+| `/cellar` | Cellar | Personal tracker (localStorage) + wishlist share |
 | `/learn` | Education | Wine school content |
 | `/shop` | Shop | Buy wines — retailer links |
+| `/places` | Sheffield (Places) | Amanda's venue picks, venue wine lists, Explorer Queue add |
+| `/sheffield` | Sheffield (alias) | Same component as `/places` |
+| `/wishlist-share` | WishlistShare | Shareable wishlist — decodes `?wl=` base64url payload |
 | `/critics` | Critics | Tom Gilby verdicts + staff picks |
 
 ---

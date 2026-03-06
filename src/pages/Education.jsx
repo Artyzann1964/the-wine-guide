@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const SECTIONS = [
@@ -14,19 +14,70 @@ const SECTIONS = [
   { id: 'corkscrews', label: 'Top 10 Corkscrews' },
 ]
 
+const SECTION_META = {
+  production: { icon: '🍇', minutes: 6 },
+  labels: { icon: '🏷️', minutes: 5 },
+  vintages: { icon: '📅', minutes: 6 },
+  tasting: { icon: '👃', minutes: 7 },
+  'dos-donts': { icon: '✅', minutes: 4 },
+  glassware: { icon: '🥂', minutes: 4 },
+  sparkling: { icon: '✨', minutes: 6 },
+  grapes: { icon: '🍷', minutes: 8 },
+  tech: { icon: '🧪', minutes: 4 },
+  corkscrews: { icon: '🪛', minutes: 3 },
+}
+
+const LEARN_COMPLETION_KEY = 'wine-guide-learn-completed'
+
+function readCompleted() {
+  try {
+    const raw = localStorage.getItem(LEARN_COMPLETION_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
 export default function Education() {
   const [activeSection, setActiveSection] = useState('production')
+  const [completedSections, setCompletedSections] = useState(readCompleted)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LEARN_COMPLETION_KEY, JSON.stringify(completedSections))
+    } catch {
+      // ignore storage issues
+    }
+  }, [completedSections])
+
+  const completedCount = completedSections.length
+  const totalSections = SECTIONS.length
+  const progress = Math.round((completedCount / totalSections) * 100)
+  const activeMeta = SECTION_META[activeSection] || { icon: '📘', minutes: 5 }
+  const totalMinutes = useMemo(
+    () => SECTIONS.reduce((sum, section) => sum + (SECTION_META[section.id]?.minutes || 0), 0),
+    [],
+  )
+
+  function toggleComplete(sectionId) {
+    setCompletedSections(prev => (
+      prev.includes(sectionId)
+        ? prev.filter(id => id !== sectionId)
+        : [...prev, sectionId]
+    ))
+  }
 
   return (
-    <div className="min-h-screen bg-ivory pt-20">
+    <div className="min-h-screen bg-ivory">
 
       {/* Hero */}
-      <section className="bg-slate text-white relative overflow-hidden">
+      <section className="hero-mesh text-white relative overflow-hidden pt-24 lg:pt-28 pb-16 border-b border-white/10">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-gold/10 translate-x-32 -translate-y-32" />
           <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-sage/10 -translate-x-16 translate-y-16" />
         </div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
           <p className="section-label text-gold/70 mb-3">Education</p>
           <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4">Wine School</h1>
           <p className="font-body text-lg text-white/60 max-w-2xl">
@@ -36,24 +87,95 @@ export default function Education() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10">
+        <div className="surface-panel p-5 lg:p-6 mb-6">
+          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-5">
+            <div>
+              <p className="section-label mb-2">Learning Progress</p>
+              <h2 className="font-display text-4xl text-slate mb-3">Build Amanda's wine knowledge track</h2>
+              <p className="font-body text-sm text-slate-lt leading-relaxed mb-4">
+                Progress is saved on this device. Work section-by-section, mark complete, and keep the visual flow fast on iPhone and desktop.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: 'Completed', value: completedCount },
+                  { label: 'Remaining', value: totalSections - completedCount },
+                  { label: 'Progress', value: `${progress}%` },
+                  { label: 'Read time', value: `${totalMinutes}m` },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="card p-4">
+              <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Current section</p>
+              <p className="font-display text-2xl text-slate">{activeMeta.icon} {SECTIONS.find(s => s.id === activeSection)?.label}</p>
+              <p className="font-body text-sm text-slate-lt mt-1">Est. {activeMeta.minutes} minutes</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  onClick={() => toggleComplete(activeSection)}
+                  className={`chip ${completedSections.includes(activeSection) ? 'bg-slate text-white' : 'bg-gold/10 border border-gold/30 text-gold'}`}
+                >
+                  {completedSections.includes(activeSection) ? 'Marked complete' : 'Mark this section complete'}
+                </button>
+              </div>
+              <div className="mt-4 h-2 rounded-full bg-cream overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-gold to-terracotta transition-all duration-500" style={{ width: `${progress}%` }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-10">
 
           {/* Sidebar nav */}
           <aside className="lg:w-56 flex-shrink-0">
-            <nav className="sticky top-24 space-y-1">
-              {SECTIONS.map(s => (
-                <button
-                  key={s.id}
-                  onClick={() => setActiveSection(s.id)}
-                  className={`w-full text-left px-4 py-3 rounded-xl font-body text-sm font-medium transition-all duration-200
-                    ${activeSection === s.id
-                      ? 'bg-gold text-white shadow-gold'
-                      : 'text-slate-lt hover:text-slate hover:bg-cream'
+            <nav className="lg:sticky lg:top-24">
+              <div className="lg:hidden flex gap-2 overflow-x-auto thin-scroll pb-1 mb-2">
+                {SECTIONS.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => setActiveSection(s.id)}
+                    className={`chip whitespace-nowrap ${
+                      activeSection === s.id
+                        ? 'bg-slate text-white'
+                        : 'bg-white border border-cream text-slate-lt'
                     }`}
-                >
-                  {s.label}
-                </button>
-              ))}
+                  >
+                    <span>{SECTION_META[s.id]?.icon || '📘'}</span>
+                    <span>{s.label}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="hidden lg:block menu-rail">
+                <p className="font-body text-[10px] tracking-[0.18em] uppercase text-slate-lt/70 mb-2 px-1">Section Menu</p>
+                <div className="space-y-1.5">
+                  {SECTIONS.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => setActiveSection(s.id)}
+                      className={`menu-item ${activeSection === s.id ? 'menu-item-active' : 'menu-item-idle'}`}
+                    >
+                      <span className="flex items-center justify-between gap-2">
+                        <span className="inline-flex items-center gap-2 min-w-0">
+                          <span>{SECTION_META[s.id]?.icon || '📘'}</span>
+                          <span className="truncate">{s.label}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <span className={`text-[10px] uppercase tracking-wider ${activeSection === s.id ? 'text-white/70' : 'text-slate-lt/70'}`}>
+                            {SECTION_META[s.id]?.minutes || 5}m
+                          </span>
+                          {completedSections.includes(s.id) && (
+                            <span className={`text-xs ${activeSection === s.id ? 'text-gold-lt' : 'text-gold'}`}>✓</span>
+                          )}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </nav>
           </aside>
 

@@ -1,389 +1,460 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import WineCard from '../components/WineCard'
+import { AmandaAvatar, AmandaBrandGlyph } from '../components/Logo'
 import { wines } from '../data/wines'
+import { useExplorerQueue } from '../hooks/useExplorerQueue'
 
-const FEATURED_IDS = [
-  'dom-perignon-2013',       // Sparkling — 97pts, luxury
-  'chateau-margaux-2015',    // Red — 100pts, luxury
-  'trimbach-clos-ste-hune',  // White — 98pts, luxury
-  'chateau-yquem-2015',      // Dessert — 100pts, luxury
+const DISCOVERY_MODES = [
+  {
+    id: 'dinner',
+    label: 'Dinner Ready',
+    description: 'Find a bottle for what is cooking tonight.',
+    ctaLabel: 'Open Pairing Wizard',
+    ctaTo: '/pairing',
+    chips: ['Roast chicken', 'Sea bass', 'Mushroom risotto', 'Steak night'],
+  },
+  {
+    id: 'discover',
+    label: 'Discover Regions',
+    description: 'Jump into classic countries and benchmark grapes.',
+    ctaLabel: 'Explore By Country',
+    ctaTo: '/explore',
+    chips: ['France', 'Italy', 'Spain', 'Argentina'],
+  },
+  {
+    id: 'cellar',
+    label: 'Build My Cellar',
+    description: 'Start a personal shortlist for future drinking windows.',
+    ctaLabel: 'Start My Cellar',
+    ctaTo: '/cellar',
+    chips: ['First Growth', 'Riesling', 'Vintage Port', 'Barolo'],
+  },
 ]
 
-const QUICK_LINKS = [
-  { label: 'Sparkling',  to: '/sparkling',            emoji: '🥂', desc: 'Champagne, Cava, Prosecco & more' },
-  { label: 'White',      to: '/explore?category=white', emoji: '🍋', desc: 'Burgundy, Riesling, Sancerre & beyond' },
-  { label: 'Red',        to: '/explore?category=red',   emoji: '🍷', desc: 'Bordeaux, Barolo, Shiraz & friends' },
-  { label: 'Rosé',       to: '/explore?category=rosé',  emoji: '🌸', desc: 'Provence, Bandol & summer favourites' },
-  { label: 'Dessert',    to: '/explore?category=dessert','emoji': '🍯', desc: 'Sauternes, Port, Tawny & more' },
-  { label: 'Pairings',   to: '/pairing',               emoji: '🍽️', desc: 'Match wine to what you\'re cooking' },
+const DISCOVERY_FLIGHTS = [
+  {
+    id: 'icons',
+    label: 'Icon Bottles',
+    description: 'Big names when only the best will do.',
+    wineIds: ['chateau-margaux-2015', 'dom-perignon-2013', 'trimbach-clos-ste-hune', 'chateau-yquem-2015'],
+    link: '/explore?price=luxury',
+  },
+  {
+    id: 'smart-buys',
+    label: 'Smart Buys',
+    description: 'High score for the money from supermarket shelves.',
+    wineIds: ['tesco-finest-chablis', 'aldi-exquisite-rioja-reserva', 'asda-extra-special-barossa-shiraz', 'waitrose-muga-rioja-reserva'],
+    link: '/explore?sort=value',
+  },
+  {
+    id: 'weekend',
+    label: 'Weekend Pairings',
+    description: 'Crowd-pleasers for Friday to Sunday cooking.',
+    wineIds: ['penfolds-grange', 'vega-sicilia-unico', 'barolo-conterno', 'bollinger-special-cuvee'],
+    link: '/pairing',
+  },
 ]
 
-const REGIONS = [
-  { label: 'France',      to: '/explore?country=France',      emoji: '🇫🇷' },
-  { label: 'Italy',       to: '/explore?country=Italy',       emoji: '🇮🇹' },
-  { label: 'Spain',       to: '/explore?country=Spain',       emoji: '🇪🇸' },
-  { label: 'Germany',     to: '/explore?country=Germany',     emoji: '🇩🇪' },
-  { label: 'Argentina',   to: '/explore?country=Argentina',   emoji: '🇦🇷' },
-  { label: 'England',     to: '/explore?country=England',     emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+const QUICK_ROUTES = [
+  { label: 'Places', sub: "Amanda's favourite venues", to: '/places', icon: 'places' },
+  { label: 'Sparkling', sub: 'Bubbles, methods, styles', to: '/sparkling', icon: 'sparkling' },
+  { label: 'Red', sub: 'Power to perfume spectrum', to: '/explore?category=red', icon: 'red' },
+  { label: 'White', sub: 'Mineral, textured, aromatic', to: '/explore?category=white', icon: 'white' },
+  { label: 'Rosé', sub: 'Dry Provence to gastronomic', to: '/explore?category=rosé', icon: 'rose' },
+  { label: 'Critics', sub: 'Who to trust and why', to: '/critics', icon: 'critics' },
+  { label: 'Learn', sub: 'Wine school and glass guide', to: '/learn', icon: 'learn' },
 ]
 
-const WINE_QUOTES = [
-  { quote: `Life is too short to drink bad wine.`,                                                   author: `Goethe` },
-  { quote: `In victory, you deserve Champagne; in defeat, you need it.`,                             author: `Napoleon Bonaparte` },
-  { quote: `Wine is sunlight, held together by water.`,                                              author: `Galileo Galilei` },
-  { quote: `My only regret in life is that I did not drink more Champagne.`,                         author: `John Maynard Keynes` },
-  { quote: `Wine is bottled poetry.`,                                                                author: `Robert Louis Stevenson` },
-  { quote: `I cook with wine. Sometimes I even add it to the food.`,                                 author: `W.C. Fields` },
-  { quote: `A bottle of wine contains more philosophy than all the books in the world.`,             author: `Louis Pasteur` },
-  { quote: `Quickly, bring me a beaker of wine so I may wet my mind and say something clever.`,     author: `Aristophanes` },
-  { quote: `Wine is the most civilised thing in the world.`,                                         author: `Ernest Hemingway` },
-  { quote: `Wine makes daily living easier, less hurried, with fewer tensions and more tolerance.`,  author: `Benjamin Franklin` },
-  { quote: `If food is the body of good living, wine is its soul.`,                                  author: `Clifton Fadiman` },
-  { quote: `Either give me more wine or leave me alone.`,                                            author: `Rumi` },
-  { quote: `Age is just a number — unless you happen to be a bottle of wine.`,                       author: `Joan Collins` },
-  { quote: `Beer is made by men, wine by God.`,                                                      author: `Martin Luther` },
-  { quote: `Penicillin cures, but wine makes people happy.`,                                         author: `Alexander Fleming` },
-  { quote: `Men are like wine — some turn to vinegar, but the best improve with age.`,               author: `Pope John XXIII` },
-  { quote: `One barrel of wine can work more miracles than a church full of saints.`,                author: `Italian Proverb` },
-  { quote: `A meal without wine is like a day without sunshine.`,                                    author: `Jean-Anthelme Brillat-Savarin` },
-  { quote: `To take wine into our mouths is to savour a droplet of the river of human history.`,    author: `Clifton Fadiman` },
-  { quote: `We are all mortal until the first kiss and the second glass of wine.`,                   author: `Eduardo Galeano` },
-  { quote: `A glass of wine is a great cure for a bad day.`,                                         author: `Anonymous` },
-  { quote: `Wine is proof that God loves us and wants us to be happy.`,                              author: `Benjamin Franklin` },
-  { quote: `Compromises are for relationships, not wine.`,                                           author: `Robert Scott Caywood` },
-  { quote: `Wine is the answer. What was the question?`,                                             author: `Unknown` },
-  { quote: `The best wines are the ones we drink with friends.`,                                     author: `Unknown` },
-  { quote: `A good wine is like a good friend. It will be with you for life.`,                       author: `Unknown` },
-  { quote: `I only drink Champagne on two occasions: when I am in love and when I am not.`,          author: `Coco Chanel` },
-  { quote: `With wine and hope, anything is possible.`,                                              author: `Spanish Proverb` },
-]
-
-const PAIRING_PROMPTS = [
-  'Coq au vin', 'Sunday roast beef', 'Lobster thermidor',
-  'Mushroom risotto', 'Thai green curry', 'Stilton & Port',
+const AMANDA_TOP_THREE = [
+  {
+    name: 'Gill & Co.',
+    to: '/places?venue=gill-and-co',
+    note: 'Discovery nights and by-the-glass exploration.',
+  },
+  {
+    name: 'The Harritt Wine Bar',
+    to: '/places?venue=harritt-wine-bar',
+    note: 'Food-led evenings with serious bottle choices.',
+  },
+  {
+    name: 'Rafters Restaurant',
+    to: '/places?venue=rafters-restaurant',
+    note: 'Special-occasion dining with premium glasses.',
+  },
 ]
 
 const RETAILERS = [
-  { name: 'Tesco',       bg: '#00539F', color: '#fff',     to: '/explore?retailer=Tesco' },
-  { name: "Sainsbury's", bg: '#EB6100', color: '#fff',     to: "/explore?retailer=Sainsbury's" },
-  { name: 'Waitrose',    bg: '#3d6b34', color: '#fff',     to: '/explore?retailer=Waitrose' },
-  { name: 'Asda',        bg: '#78BE20', color: '#1a3a00',  to: '/explore?retailer=Asda' },
-  { name: 'M&S',         bg: '#0A4F2E', color: '#fff',     to: '/explore?retailer=M%26S' },
-  { name: 'Aldi',        bg: '#1e3764', color: '#fff',     to: '/explore?retailer=Aldi' },
-  { name: 'Lidl',        bg: '#0050aa', color: '#fff',     to: '/explore?retailer=Lidl' },
-  { name: 'Morrisons',   bg: '#FFD700', color: '#004225',  to: '/explore?retailer=Morrisons' },
-  { name: 'Majestic',    bg: '#2C2C3E', color: '#C9973A',  to: '/explore?retailer=Majestic' },
-  { name: 'Le Bon Vin',  bg: '#7B1D2E', color: '#F7E7CE',  to: '/explore?retailer=Le+Bon+Vin' },
+  { name: 'Tesco', to: '/explore?retailer=Tesco' },
+  { name: "Sainsbury's", to: "/explore?retailer=Sainsbury's" },
+  { name: 'Waitrose', to: '/explore?retailer=Waitrose' },
+  { name: 'Asda', to: '/explore?retailer=Asda' },
+  { name: 'M&S', to: '/explore?retailer=M%26S' },
+  { name: 'Aldi', to: '/explore?retailer=Aldi' },
+  { name: 'Lidl', to: '/explore?retailer=Lidl' },
+  { name: 'Morrisons', to: '/explore?retailer=Morrisons' },
+  { name: 'Majestic', to: '/explore?retailer=Majestic' },
+  { name: 'Le Bon Vin', to: '/explore?retailer=Le+Bon+Vin' },
+]
+
+const REGIONS = [
+  { label: 'France', to: '/explore?country=France' },
+  { label: 'Italy', to: '/explore?country=Italy' },
+  { label: 'Spain', to: '/explore?country=Spain' },
+  { label: 'Germany', to: '/explore?country=Germany' },
+  { label: 'Argentina', to: '/explore?country=Argentina' },
+  { label: 'England', to: '/explore?country=England' },
 ]
 
 export default function Home() {
   const [prompt, setPrompt] = useState('')
+  const [mode, setMode] = useState(DISCOVERY_MODES[0].id)
+  const [flight, setFlight] = useState(DISCOVERY_FLIGHTS[0].id)
   const navigate = useNavigate()
-  const featured = FEATURED_IDS.map(id => wines.find(w => w.id === id)).filter(Boolean)
-  const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * WINE_QUOTES.length))
-  const [quoteFade, setQuoteFade] = useState(true)
+  const { queue } = useExplorerQueue()
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setQuoteFade(false)
-      setTimeout(() => {
-        setQuoteIdx(i => (i + 1) % WINE_QUOTES.length)
-        setQuoteFade(true)
-      }, 400)
-    }, 7000)
-    return () => clearInterval(timer)
-  }, [])
+  const countries = useMemo(() => new Set(wines.map(w => w.country)).size, [])
+  const regions = useMemo(() => new Set(wines.map(w => w.region)).size, [])
+  const sparklingCount = useMemo(() => wines.filter(w => w.category === 'sparkling').length, [])
+
+  const activeMode = DISCOVERY_MODES.find(item => item.id === mode) || DISCOVERY_MODES[0]
+  const activeFlight = DISCOVERY_FLIGHTS.find(item => item.id === flight) || DISCOVERY_FLIGHTS[0]
+  const featured = activeFlight.wineIds.map(id => wines.find(w => w.id === id)).filter(Boolean)
 
   const handlePromptSubmit = (e) => {
     e.preventDefault()
-    if (prompt.trim()) {
-      navigate(`/pairing?q=${encodeURIComponent(prompt.trim())}`)
-    }
+    if (!prompt.trim()) return
+    navigate(`/pairing?q=${encodeURIComponent(prompt.trim())}`)
   }
 
   return (
     <main>
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <section className="relative pt-28 pb-16 overflow-hidden bg-ivory">
-        {/* Decorative background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 right-0 w-[500px] h-[500px] rounded-full bg-gold/4 translate-x-40" />
-          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-terracotta/4 translate-y-16 -translate-x-16" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-fade-up">
-            <p className="section-label mb-4">A world-class wine companion</p>
-            <h1 className="font-display text-6xl lg:text-7xl font-light text-slate leading-[1.05] mb-6">
-              Discover the<br />
-              <em className="text-gold not-italic">world of wine</em>
-            </h1>
-            <p className="font-body text-lg text-slate-lt leading-relaxed mb-10 max-w-lg">
-              From Champagne to Barolo, Sancerre to Sauternes — explore curated wines from every corner of the globe, understand what makes them great, and learn exactly what to cook with them.
-            </p>
-
-            {/* CTA buttons */}
-            <div className="flex flex-wrap gap-3 mb-10">
-              <Link to="/explore" className="btn-primary">Explore the Guide</Link>
-              <Link to="/pairing" className="btn-secondary">Find a Pairing</Link>
-            </div>
-
-            {/* Pairing prompt */}
-            <form onSubmit={handlePromptSubmit} className="max-w-md">
-              <p className="font-body text-sm text-slate-lt mb-2">What are you cooking tonight?</p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={prompt}
-                  onChange={e => setPrompt(e.target.value)}
-                  placeholder="e.g. duck confit, lobster bisque..."
-                  className="flex-1 font-body text-sm px-4 py-2.5 rounded-full border border-cream bg-white/80
-                             focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all"
-                />
-                <button type="submit" className="btn-primary px-5 py-2.5 text-sm">
-                  Match →
-                </button>
-              </div>
-              {/* Quick prompts */}
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {PAIRING_PROMPTS.map(p => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => navigate(`/pairing?q=${encodeURIComponent(p)}`)}
-                    className="font-body text-xs px-2.5 py-1 rounded-full bg-cream text-slate-lt hover:bg-gold/10 hover:text-gold transition-colors"
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </form>
-
-            {/* Stats strip — visible at md–lg only (tablet; desktop handled by right column) */}
-            <div className="hidden md:flex lg:hidden gap-4 mt-8">
-              {[
-                { n: '232', label: 'Wines' },
-                { n: '20+', label: 'Countries' },
-                { n: '90+', label: 'Regions' },
-                { n: '∞',   label: 'Pairings' },
-              ].map(({ n, label }) => (
-                <div key={label} className="flex flex-col items-center px-4 py-3 rounded-xl border border-cream bg-white/60 flex-1">
-                  <p className="font-display text-2xl font-light text-gold">{n}</p>
-                  <p className="font-body text-xs text-slate-lt">{label}</p>
-                </div>
-              ))}
-            </div>
+      <section className="hero-mesh relative overflow-hidden pt-24 pb-16 lg:pt-28 lg:pb-20">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/72 via-[#232743]/40 to-transparent" />
+          <div className="absolute left-0 top-0 bottom-0 w-[62vw] max-w-[720px] hidden md:block overflow-hidden">
+            <img
+              src="/amanda-holmes.png"
+              alt=""
+              className="absolute left-[-33%] bottom-[-50%] h-[208%] max-w-none opacity-[0.34] grayscale contrast-105 brightness-95"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 58%, rgba(0,0,0,0) 100%)',
+                maskImage: 'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 58%, rgba(0,0,0,0) 100%)',
+              }}
+            />
           </div>
+          <div className="absolute left-0 top-0 bottom-0 w-[100vw] md:hidden overflow-hidden">
+            <img
+              src="/amanda-holmes.png"
+              alt=""
+              className="absolute left-[-18%] bottom-[-48%] h-[198%] max-w-none opacity-[0.3] grayscale contrast-105 brightness-95"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.9) 65%, rgba(0,0,0,0) 100%)',
+                maskImage: 'linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.9) 65%, rgba(0,0,0,0) 100%)',
+              }}
+            />
+          </div>
+          <div className="hero-orb w-60 h-60 bg-gold/30 right-[14%] top-[8%] animate-drift" />
+          <div className="hero-orb w-44 h-44 bg-terracotta/20 left-[30%] bottom-[12%] animate-drift" style={{ animationDelay: '1.3s' }} />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="grid xl:grid-cols-[1.25fr_0.95fr] gap-8 lg:gap-10 items-stretch">
+            <div className="text-white animate-fade-up">
+              <p className="section-label text-gold-lt/90 mb-4">Amanda's faster, sharper wine companion</p>
+              <h1 className="font-display text-[3.1rem] leading-[0.95] sm:text-6xl lg:text-7xl max-w-2xl mb-5">
+                Your best bottle,
+                <span className="block text-gradient-gold">for every moment.</span>
+              </h1>
+              <p className="font-body text-base sm:text-lg text-white/76 max-w-xl leading-relaxed">
+                Filter fast, compare styles, trust the right critics, and go from craving to confident choice in seconds.
+              </p>
+              <p className="font-body text-xs uppercase tracking-[0.18em] text-white/45 mt-3">
+                Amanda's Wine Guide · by Richard
+              </p>
 
-          {/* Hero visual — Amanda portrait + stats */}
-          <div className="hidden lg:flex flex-col gap-3 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+              <div className="flex flex-wrap gap-3 mt-7">
+                <Link to="/explore" className="btn-primary">Explore All Wines</Link>
+                <Link to={activeMode.ctaTo} className="btn-secondary">{activeMode.ctaLabel}</Link>
+              </div>
 
-            {/* Amanda portrait panel */}
-            <div className="rounded-2xl overflow-hidden shadow-hover" style={{ background: 'rgba(26,26,46,1)' }}>
-              <div className="flex items-stretch">
-                {/* Photo */}
-                <div className="w-44 flex-shrink-0">
-                  <img
-                    src="/amanda-holmes.png"
-                    alt="Amanda Holmes — Creator of The Wine Guide"
-                    className="w-full h-full object-cover object-top"
-                    style={{ filter: 'grayscale(100%) contrast(1.05) brightness(0.95)', minHeight: '210px' }}
+              <form onSubmit={handlePromptSubmit} className="surface-panel mt-7 p-4 sm:p-5 max-w-xl">
+                <p className="font-body text-xs tracking-[0.18em] uppercase text-slate-lt/80 mb-2">What are you cooking?</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={prompt}
+                    onChange={e => setPrompt(e.target.value)}
+                    placeholder="e.g. lobster pasta, lamb shoulder..."
+                    className="flex-1 min-w-0 font-body text-sm px-4 py-2.5 rounded-full bg-white border border-cream focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20"
                   />
+                  <button type="submit" className="btn-primary px-5 py-2.5">Match</button>
                 </div>
-                {/* Quote */}
-                <div className="flex-1 p-6 flex flex-col justify-center">
-                  <p className="font-body text-[11px] tracking-[0.18em] uppercase mb-3" style={{ color: 'rgba(201,151,58,0.65)' }}>
-                    From the creator
-                  </p>
-                  <p className="font-display text-lg lg:text-xl font-light italic text-white leading-snug mb-3">
-                    "Life is too short for bad Champagne — and too wonderful not to find the good stuff."
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-px" style={{ background: 'rgba(201,151,58,0.4)' }} />
-                    <p className="font-body text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Amanda Holmes</p>
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {activeMode.chips.map(chip => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => navigate(`/pairing?q=${encodeURIComponent(chip)}`)}
+                      className="chip bg-cream text-slate-lt hover:bg-gold/15 hover:text-slate"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              </form>
+            </div>
+
+            <div className="surface-panel interactive-lift p-4 sm:p-6 flex flex-col justify-between animate-fade-up" style={{ animationDelay: '0.08s' }}>
+              <div className="rounded-2xl p-4 sm:p-5 bg-slate text-white relative overflow-hidden">
+                <div className="absolute w-52 h-52 rounded-full bg-gold/10 -top-16 -right-14" />
+                <p className="font-body text-[11px] tracking-[0.2em] uppercase text-gold-lt/80 mb-4">Amanda's Sommelier Mode</p>
+                <div className="flex items-center gap-5">
+                  <div className="flex items-center gap-4">
+                    <AmandaAvatar size={46} />
+                    <AmandaBrandGlyph size={40} />
+                    <div>
+                      <p className="font-body text-[10px] tracking-[0.35em] uppercase text-gold-lt/70">The</p>
+                      <p className="font-display text-5xl leading-none">Wine Guide</p>
+                    </div>
+                  </div>
+                  <div className="hidden sm:block">
+                    <p className="font-display text-2xl leading-tight">Life is too short for guesswork.</p>
+                    <p className="font-body text-sm text-white/70 mt-2">Curated picks, clear reasons, better evenings.</p>
                   </div>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                {[
+                  { label: 'Wines', value: wines.length },
+                  { label: 'Countries', value: countries },
+                  { label: 'Regions', value: regions },
+                  { label: 'Sparkling', value: sparklingCount },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4">
+                <p className="font-body text-xs uppercase tracking-[0.16em] text-slate-lt mb-2">Start From Intent</p>
+                <div className="flex flex-wrap gap-2">
+                  {DISCOVERY_MODES.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setMode(item.id)}
+                      className={`chip ${
+                        item.id === mode
+                          ? 'bg-slate text-white shadow-card'
+                          : 'bg-white text-slate-lt border border-cream hover:border-gold/50'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="font-body text-sm text-slate-lt mt-2">{activeMode.description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="section-label mb-1">Quick Launch</p>
+              <h2 className="font-display text-4xl text-slate">Tap and go</h2>
+            </div>
+            <Link to={activeMode.ctaTo} className="hidden md:inline btn-ghost">Open active mode →</Link>
+          </div>
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 stagger">
+            {QUICK_ROUTES.map(item => (
+              <Link key={item.label} to={item.to} className="card interactive-lift p-4 flex items-start gap-3 hover:-translate-y-0.5">
+                <RouteIcon type={item.icon} />
+                <div>
+                  <p className="font-display text-xl text-slate leading-tight">{item.label}</p>
+                  <p className="font-body text-sm text-slate-lt mt-1">{item.sub}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-4">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="surface-panel p-5 lg:p-6">
+            <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+              <div>
+                <p className="section-label mb-1">Amanda's Top 3</p>
+                <h2 className="font-display text-4xl text-slate">Her favourite Sheffield picks</h2>
+              </div>
+              <Link to="/places" className="btn-ghost">Open full Places guide →</Link>
             </div>
 
-            {/* Compact stats row */}
-            <div className="grid grid-cols-4 gap-3">
-              {[
-                { n: '232', label: 'Wines' },
-                { n: '20+', label: 'Countries' },
-                { n: '90+', label: 'Regions' },
-                { n: '∞',   label: 'Pairings' },
-              ].map(({ n, label }) => (
-                <div key={label} className="card p-4 text-center">
-                  <p className="font-display text-3xl font-light text-gold mb-0.5">{n}</p>
-                  <p className="font-body text-xs text-slate-lt">{label}</p>
-                </div>
+            <div className="grid md:grid-cols-3 gap-3 stagger">
+              {AMANDA_TOP_THREE.map((place, index) => (
+                <Link key={place.name} to={place.to} className="card interactive-lift p-4 hover:-translate-y-0.5">
+                  <p className="section-label mb-1">Favourite {index + 1}</p>
+                  <p className="font-display text-2xl text-slate leading-tight">{place.name}</p>
+                  <p className="font-body text-sm text-slate-lt mt-2">{place.note}</p>
+                  <p className="font-body text-xs text-gold mt-3">Jump to venue →</p>
+                </Link>
               ))}
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ── RETAILER STRIP ───────────────────────────────── */}
-      <section className="py-8 bg-white border-y border-cream/60">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="font-body text-[11px] text-slate-lt/50 text-center mb-5 tracking-[0.22em] uppercase">
-            Wines sourced from
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-2">
-            {RETAILERS.map(({ name, bg, color, to }) => (
+      <section className="py-5 border-y border-cream/80 bg-white/55">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <p className="font-body text-[11px] tracking-[0.22em] uppercase text-slate-lt/70 text-center mb-3">Shop From</p>
+          <div className="flex gap-2 overflow-x-auto thin-scroll pb-1">
+            {RETAILERS.map(r => (
               <Link
-                key={name}
-                to={to}
-                className="font-body text-sm font-semibold px-4 py-2 rounded-lg hover:scale-105 hover:shadow-md transition-all duration-200"
-                style={{ background: bg, color }}
+                key={r.name}
+                to={r.to}
+                className="chip whitespace-nowrap bg-slate text-white hover:bg-slate-lt hover:-translate-y-0.5"
               >
-                {name}
+                {r.name}
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── QUICK CATEGORY LINKS ─────────────────────────── */}
-      <section className="py-16 bg-white border-y border-cream">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="section-label text-center mb-8">Explore by style</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 stagger">
-            {QUICK_LINKS.map(({ label, to, emoji, desc }) => (
-              <Link
-                key={label}
-                to={to}
-                className="card p-4 text-center hover:-translate-y-1 transition-all duration-300 group animate-fade-up"
-              >
-                <span className="text-3xl mb-2 block">{emoji}</span>
-                <p className="font-display font-semibold text-slate text-base">{label}</p>
-                <p className="font-body text-xs text-slate-lt mt-1 leading-tight">{desc}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED WINES ───────────────────────────────── */}
-      <section className="py-20 max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="flex items-end justify-between mb-10">
+      <section className="py-16 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+        <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
           <div>
-            <p className="section-label mb-2">Editor's selection</p>
-            <h2 className="font-display text-4xl text-slate">Featured Wines</h2>
+            <p className="section-label mb-1">Curated Flights</p>
+            <h2 className="font-display text-4xl text-slate">Start with the right shortlist</h2>
           </div>
-          <Link to="/explore" className="btn-ghost hidden sm:block">View all wines →</Link>
+          <Link to={activeFlight.link} className="btn-ghost">View this flight →</Link>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
+
+        <div className="flex flex-wrap gap-2 mb-5">
+          {DISCOVERY_FLIGHTS.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setFlight(item.id)}
+              className={`chip ${
+                item.id === flight
+                  ? 'bg-gold text-white shadow-gold'
+                  : 'bg-white text-slate-lt border border-cream hover:border-gold/45'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <p className="font-body text-slate-lt mb-5">{activeFlight.description}</p>
+
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
           {featured.map(wine => (
             <WineCard key={wine.id} wine={wine} />
           ))}
         </div>
-        <div className="text-center mt-8 sm:hidden">
-          <Link to="/explore" className="btn-secondary">View all wines</Link>
-        </div>
       </section>
 
-      {/* ── SPARKLING CALLOUT ─────────────────────────────── */}
-      <section className="bg-slate text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="grid lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="font-body text-xs tracking-[0.2em] uppercase text-gold mb-4">Special deep dive</p>
-              <h2 className="font-display text-4xl lg:text-5xl font-light leading-tight mb-5">
-                The Art of<br />
-                <em className="text-gold not-italic">Sparkling Wine</em>
-              </h2>
-              <p className="font-body text-white/70 leading-relaxed mb-8 max-w-lg">
-                From the ancient riddling caves of Champagne to the sun-drenched hillsides of Cartizze — discover how six very different methods create six very different wines, and why the bubbles in your glass tell a story.
-              </p>
-              <Link to="/sparkling" className="btn-primary">
-                Explore Sparkling Wines
-              </Link>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { label: 'Champagne', method: 'Traditional Method', emoji: '🥂' },
-                { label: 'Cava',      method: 'Traditional Method', emoji: '🍾' },
-                { label: 'Prosecco', method: 'Charmat / Tank',     emoji: '✨' },
-                { label: 'Crémant',  method: 'Traditional Method', emoji: '🫧' },
-                { label: 'English',  method: 'Traditional Method', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-                { label: 'Pét-Nat',  method: 'Ancestral Method',   emoji: '🌿' },
-              ].map(({ label, method, emoji }) => (
-                <Link
-                  key={label}
-                  to={`/sparkling#${label.toLowerCase()}`}
-                  className="bg-white/5 hover:bg-white/10 rounded-xl p-3 text-center transition-colors"
-                >
-                  <span className="text-2xl block mb-1">{emoji}</span>
-                  <p className="font-display text-sm text-white font-medium">{label}</p>
-                  <p className="font-body text-[10px] text-white/40 mt-0.5">{method}</p>
-                </Link>
-              ))}
-            </div>
+      <section className="py-14 bg-white/52 border-y border-cream/80">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="text-center mb-8">
+            <p className="section-label mb-1">Flow</p>
+            <h2 className="font-display text-4xl text-slate">Tonight in three steps</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Link to="/pairing" className="card p-5">
+              <p className="font-body text-xs tracking-[0.16em] uppercase text-gold mb-2">Step 1</p>
+              <p className="font-display text-2xl text-slate">Tell us the dish</p>
+              <p className="font-body text-sm text-slate-lt mt-2">Cuisine, protein, heat, richness.</p>
+            </Link>
+            <Link to="/explore?sort=value" className="card p-5">
+              <p className="font-body text-xs tracking-[0.16em] uppercase text-gold mb-2">Step 2</p>
+              <p className="font-display text-2xl text-slate">Compare options</p>
+              <p className="font-body text-sm text-slate-lt mt-2">Score, style profile, price confidence.</p>
+            </Link>
+            <Link to="/cellar" className="card p-5">
+              <p className="font-body text-xs tracking-[0.16em] uppercase text-gold mb-2">Step 3</p>
+              <p className="font-display text-2xl text-slate">Save your pick</p>
+              <p className="font-body text-sm text-slate-lt mt-2">Build your cellar memory over time.</p>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── EXPLORE BY COUNTRY ───────────────────────────── */}
-      <section className="py-20 bg-cream/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="text-center mb-10">
-            <p className="section-label mb-2">By provenance</p>
-            <h2 className="font-display text-4xl text-slate">Explore by Country</h2>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {REGIONS.map(({ label, to, emoji }) => (
-              <Link
-                key={label}
-                to={to}
-                className="card px-5 py-3 flex items-center gap-2.5 hover:-translate-y-0.5 transition-all duration-200"
-              >
-                <span className="text-xl">{emoji}</span>
-                <span className="font-body text-sm font-medium text-slate">{label}</span>
-              </Link>
-            ))}
-          </div>
+      <section className="py-16 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+        <div className="text-center mb-8">
+          <p className="section-label mb-1">By Provenance</p>
+          <h2 className="font-display text-4xl text-slate">Explore by country</h2>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2.5">
+          {REGIONS.map(region => (
+            <Link key={region.label} to={region.to} className="chip bg-white text-slate border border-cream hover:border-gold/60">
+              {region.label}
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* ── FOOD PAIRING CTA ─────────────────────────────── */}
-      <section className="py-20 max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="card p-8 lg:p-12 bg-gradient-to-br from-terracotta/5 to-gold/5">
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <p className="section-label mb-3">For the kitchen</p>
-              <h2 className="font-display text-4xl text-slate mb-4">
-                What Wine with<br /><em className="text-terracotta not-italic">Tonight's Dinner?</em>
-              </h2>
-              <p className="font-body text-slate-lt leading-relaxed mb-6">
-                Our food pairing wizard matches your dish to the perfect wine — and explains exactly <em>why</em> the pairing works, from the science of tannins and fat to the logic of regional affinity.
-              </p>
-              <Link to="/pairing" className="btn-primary">Open the Pairing Wizard</Link>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                ['🍗', 'Coq au Vin', 'Burgundy Pinot Noir'],
-                ['🦞', 'Lobster Thermidor', 'White Burgundy'],
-                ['🥩', 'Steak Frites', 'Bordeaux Rouge'],
-                ['🧀', 'Stilton & Walnuts', 'Vintage Port'],
-              ].map(([emoji, dish, wine]) => (
-                <Link
-                  key={dish}
-                  to={`/pairing?q=${encodeURIComponent(dish)}`}
-                  className="bg-white rounded-xl p-4 hover:shadow-hover transition-all duration-200"
-                >
-                  <span className="text-2xl block mb-2">{emoji}</span>
-                  <p className="font-display text-sm font-medium text-slate leading-tight">{dish}</p>
-                  <p className="font-body text-xs text-gold mt-1">{wine}</p>
-                </Link>
-              ))}
-            </div>
+      <section className="pb-14 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+        <div className="surface-panel p-6 sm:p-8 mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div>
+            <p className="section-label mb-2">Library Workflow</p>
+            <h3 className="font-display text-3xl text-slate">Explorer promotion queue</h3>
+            <p className="font-body text-slate-lt mt-2 max-w-2xl">
+              Keep venue discoveries in one place, then promote them into full Explorer records.
+              Queue size: <strong className="text-slate">{queue.length}</strong>.
+            </p>
           </div>
+          <Link to="/explore?queue=1" className="btn-secondary whitespace-nowrap">Open Queue</Link>
+        </div>
+
+        <div className="surface-panel p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div>
+            <p className="section-label mb-2">Nights Out</p>
+            <h3 className="font-display text-3xl text-slate">Amanda's favourite food and wine venues</h3>
+            <p className="font-body text-slate-lt mt-2 max-w-2xl">
+              Use Amanda's Places section for venue picks from Sheffield, Stroud, Morpeth and beyond, plus bottle style cues for the night.
+            </p>
+          </div>
+          <Link to="/places" className="btn-primary whitespace-nowrap">Open Places Guide</Link>
         </div>
       </section>
     </main>
+  )
+}
+
+function RouteIcon({ type }) {
+  return (
+    <span className="w-11 h-11 rounded-xl bg-slate text-white flex items-center justify-center flex-shrink-0">
+      <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
+        {type === 'sparkling' && (
+          <>
+            <path d="M9.9 3v10m0 0l-2.2 4m2.2-4l2.2 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="13.7" cy="5" r="1.4" stroke="currentColor" strokeWidth="1.3" />
+          </>
+        )}
+        {type === 'red' && <path d="M10 3c2.3 0 4 2 4 4.3 0 3.2-2.2 5.7-4 5.7s-4-2.5-4-5.7C6 5 7.7 3 10 3zM8 13h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />}
+        {type === 'white' && <path d="M7 3h6v3c0 2.2-1.8 4-4 4S7 8.2 7 6V3zm2 7v5m-2 0h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />}
+        {type === 'rose' && <path d="M10 3c2 0 3.5 1.8 3.5 3.9S11.7 12 10 12s-3.5-3-3.5-5.1S8 3 10 3zm0 9v4m-2.5 0h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />}
+        {type === 'critics' && (
+          <>
+            <circle cx="8" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M3 16c1.1-1.8 2.8-2.8 5-2.8 2.2 0 3.9 1 5 2.8M15 6l1 1 2-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </>
+        )}
+        {type === 'learn' && <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H16v13H6.5A2.5 2.5 0 0 0 4 18V5.5zm3.5 1h5m-5 3h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />}
+        {type === 'places' && (
+          <>
+            <path d="M10 3l5 2v4.8c0 3.2-2.1 6.1-5 7.2-2.9-1.1-5-4-5-7.2V5l5-2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+            <path d="M8 9.5h4M10 7.5v4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </>
+        )}
+      </svg>
+    </span>
   )
 }

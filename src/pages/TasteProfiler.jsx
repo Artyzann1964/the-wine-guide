@@ -464,7 +464,7 @@ function derivePersonality(target, answers) {
 
 function IntroScreen({ onStart }) {
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #1A1A2E 0%, #2C1810 55%, #1A1A2E 100%)' }}>
+    <div className="min-h-screen flex flex-col hero-mesh">
       <div className="flex-1 flex items-center justify-center px-6 py-20 pt-28">
         <div className="max-w-xl text-center animate-fade-in">
           <div className="text-6xl mb-6 select-none">🍷</div>
@@ -588,12 +588,9 @@ function QuizScreen({ question, questionNumber, totalQuestions, selected, onSele
 
 function ResultsScreen({ results, personality, onReset }) {
   return (
-    <div className="min-h-screen bg-ivory pt-16">
+    <div className="min-h-screen bg-ivory">
       {/* Personality hero */}
-      <div
-        className="py-16 px-5"
-        style={{ background: 'linear-gradient(160deg, #1A1A2E 0%, #2C1810 60%, #1A1A2E 100%)' }}
-      >
+      <section className="hero-mesh pt-24 lg:pt-28 pb-16 px-5 border-b border-white/10">
         <div className="max-w-2xl mx-auto text-center animate-fade-in">
           <p className="font-body text-xs tracking-[0.25em] uppercase mb-4"
              style={{ color: `${personality.accentColor}99` }}>
@@ -611,7 +608,7 @@ function ResultsScreen({ results, personality, onReset }) {
             style={{ background: personality.accentColor }}
           />
         </div>
-      </div>
+      </section>
 
       {/* Recommended wines */}
       <div className="max-w-6xl mx-auto px-5 py-14">

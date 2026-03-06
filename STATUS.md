@@ -1,6 +1,6 @@
 # The Wine Guide — Project Status
 
-**Last updated:** 2026-03-05
+**Last updated:** 2026-03-06
 **Build status:** ✅ Clean (zero errors, expected chunk size warning)
 **Deployment:** 🚀 Live on Railway — auto-deploys on every push to `main`
 
@@ -9,7 +9,7 @@
 ## Current State
 
 ### Wine Database
-- **144 wines** sourced from UK supermarkets + Le Bon Vin Sheffield
+- **232 wines** sourced from UK supermarkets + Le Bon Vin Sheffield
 - **~37 countries/regions** represented
 - Price range: £4.99 (Aldi) → £120 (Giacomo Conterno Barolo)
 - Ratings: 82–98 pts
@@ -34,19 +34,50 @@
 | Route | Page | Status | Notes |
 |-------|------|--------|-------|
 | `/` | Home | ✅ | Featured wines, hero, Amanda bio |
-| `/explore` | Explorer | ✅ | Colour legend, all filters, sort options |
+| `/explore` | Explorer | ✅ | Colour legend, all filters, sort options, Explorer Queue panel |
 | `/explore/:id` | Wine Detail | ✅ | 5 tabs, cellar modal, retailer logos in Buy tab |
 | `/sparkling` | Sparkling Guide | ✅ | Full sparkling guide page |
 | `/pairing` | Pairing Wizard | ✅ | Food → wine matcher |
 | `/taste-quiz` | Taste Profiler | ✅ | 4-question quiz → matched wines |
 | `/critics` | Critics | ✅ | Real critic photos, reviews |
 | `/shop` | Know Your Shop | ✅ | Retailer profiles + logos, wines by store |
-| `/cellar` | My Cellar | ✅ | Bottles/wishlist/tasted, drinking windows, cellar value |
+| `/cellar` | My Cellar | ✅ | Bottles/wishlist/tasted, drinking windows, cellar value, wishlist share |
+| `/places` | Amanda's Places | ✅ | Venue picks (Sheffield etc.), venue wine lists, Explorer Queue integration |
+| `/wishlist-share` | Wishlist Share | ✅ | Shareable wishlist view from base64url link |
 | `/learn` | Wine School | ✅ | 8 sections incl. Sparkling Wines, Grape Varieties, glass guide image |
 
 ---
 
-## Recent Session Work (2026-03-05)
+## Recent Session Work (2026-03-06)
+
+### 📋 Documentation Sync
+- Fixed wine count: 144 → **232 wines** (STATUS.md was stale after bulk generation sprint)
+- Added missing pages to CLAUDE.md + STATUS.md: Places, WishlistShare, TasteProfiler
+- Documented Explorer Queue hook, Venue Source Inbox hook, wishlist share utils
+- Updated file structure listing with all new hooks, data files, utils, and pages
+
+### 🏠 Amanda's Places Page (`/places`)
+- Sheffield venue picks: Gill & Co, Rafters, Silversmiths, Peppercorn, Le Bon Vin
+- Venue wine lists from sourced PDFs (2,300-line data file `venueWineLists.js`)
+- Explorer Queue integration — add venue wines as candidates for library matching
+- Venue Source Inbox — submit new venue URLs for future wine list sourcing
+- Nav bar updated with "Places" link (desktop + mobile dock)
+
+### 🎁 Wishlist Share (`/wishlist-share`)
+- Base64url-encoded shareable wishlist links generated from Cellar page
+- Groups wines by price tier (everyday / mid / premium / luxury)
+- Resolves shared wine IDs against the local database for full detail
+- Clean fallback UI for invalid/empty share links
+
+### 🔍 Explorer Queue
+- `useExplorerQueue` hook — localStorage queue for venue wine candidates
+- Used across 3 pages: Home (badge count), Explorer (review panel), Places (add candidates)
+- Deduplication via `matchKey` (venueId + normalised wine name)
+- Queue panel in Explorer: review, remove, link to library wine, or clear all
+
+---
+
+## Earlier Session Work (2026-03-05)
 
 ### 🥂 Site Logo
 - New `src/components/Logo.jsx` — hand-crafted SVG Champagne flute
@@ -77,7 +108,7 @@
 
 ## Earlier Session Work (2026-03-04 to 2026-03-05)
 
-### Database Expansion (72 → 144 wines)
+### Database Expansion (72 → 144 → 232 wines)
 - Bulk Python generation script parsing the UK Supermarket Wine Database Creation PDF
 - Added entirely new retailers: Asda (8 wines) and M&S (9 wines)
 - Expanded existing: Tesco, Sainsbury's, Waitrose, Aldi, Lidl, Morrisons, Le Bon Vin

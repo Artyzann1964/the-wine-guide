@@ -312,8 +312,8 @@ function RetailerCard({ retailer, selected, onSelect }) {
         </span>
       )}
       <div className="flex items-start gap-2.5">
-        <div className="shrink-0 w-8 h-8 rounded-lg bg-white border border-cream flex items-center justify-center overflow-hidden p-0.5">
-          <RetailerLogo name={retailer.name} size={26} className="max-w-full max-h-full" />
+        <div className="shrink-0 w-11 h-10 rounded-xl bg-white border border-cream/80 flex items-center justify-center overflow-hidden px-1.5 shadow-sm">
+          <RetailerLogo name={retailer.name} size={20} className="h-full w-full" />
         </div>
         <div className="min-w-0">
           <p className={`font-display font-semibold text-sm leading-tight ${selected ? 'text-gold' : 'text-slate'}`}>
@@ -340,8 +340,8 @@ function RetailerProfile({ retailer, wineCount }) {
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             <div>
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 rounded-2xl bg-white/95 flex items-center justify-center p-2 shadow-md shrink-0">
-                  <RetailerLogo name={retailer.name} size={52} className="max-w-full max-h-full" />
+                <div className="w-20 h-16 rounded-2xl bg-white/95 flex items-center justify-center px-2 shadow-md shrink-0 border border-white/40">
+                  <RetailerLogo name={retailer.name} size={34} className="h-full w-full" />
                 </div>
                 {retailer.type === 'specialist' && (
                   <span className="font-body text-xs font-medium bg-white/20 text-white/90 px-3 py-1 rounded-full">
@@ -435,7 +435,9 @@ function WineSection({ wines: wineList, retailer }) {
       <div className="sticky top-16 z-10 bg-ivory/95 backdrop-blur-sm border-b border-cream shadow-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 min-w-0">
-            <span className="text-lg shrink-0">{retailer.emoji}</span>
+            <span className="shrink-0 w-8 h-8 rounded-lg bg-white border border-cream flex items-center justify-center px-1">
+              <RetailerLogo name={retailer.name} size={15} className="h-full w-full" />
+            </span>
             <span className="font-display font-semibold text-slate text-sm truncate">
               {retailer.name}
             </span>
@@ -492,11 +494,11 @@ export default function Shop() {
   }, [selected])
 
   return (
-    <div className="min-h-screen bg-ivory pt-16">
+    <div className="min-h-screen bg-ivory">
 
       {/* Hero */}
-      <div className="bg-slate">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 md:py-20">
+      <section className="hero-mesh border-b border-white/10 pt-24 pb-16 md:pt-28 md:pb-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <p className="section-label text-gold/70 mb-3">The Honest Guide</p>
           <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
             Know Your Shop
@@ -505,8 +507,13 @@ export default function Shop() {
             Not all supermarket wine aisles were created equal. Here's the unvarnished truth about
             where to spend your money — and what to reach for when you get there.
           </p>
+          <div className="mt-6">
+            <Link to="/places" className="btn-primary">
+              Amanda's Favourite Places →
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Retailer selector grid */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10">

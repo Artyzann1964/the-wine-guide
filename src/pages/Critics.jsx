@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { wines } from '../data/wines'
 
@@ -30,7 +30,7 @@ const GILBY_TIERS = [
 // ── Critic profiles ────────────────────────────────────────────────────────────
 const CRITICS = [
   {
-    id:       'tom-gilby',
+    id:       'tom-gilbey',
     name:     'Tom Gilbey',
     title:    'The People\'s Wine Guy',
     emoji:    '🎬',
@@ -318,13 +318,23 @@ function CriticDetail({ critic }) {
 
 // ── Main page ──────────────────────────────────────────────────────────────────
 export default function Critics() {
-  const [selectedId, setSelectedId] = useState('tom-gilby')
+  const [selectedId, setSelectedId] = useState('tom-gilbey')
   const selected = CRITICS.find(c => c.id === selectedId) || CRITICS[0]
+  const detailRef = useRef(null)
+
+  function selectCritic(nextId, shouldScroll = false) {
+    setSelectedId(nextId)
+    if (!shouldScroll || !detailRef.current) return
+    window.requestAnimationFrame(() => {
+      const top = detailRef.current.getBoundingClientRect().top + window.scrollY - 84
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+    })
+  }
 
   return (
-    <main className="pt-16 min-h-screen bg-ivory">
+    <main className="min-h-screen bg-ivory">
       {/* Hero */}
-      <div className="bg-navy text-white py-16">
+      <section className="hero-mesh text-white pt-24 lg:pt-28 pb-16 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <p className="font-body text-xs tracking-[0.2em] uppercase text-gold mb-3">Critics & Commentators</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light leading-tight mb-4">
@@ -335,14 +345,14 @@ export default function Critics() {
             From Tom Gilbey's supermarket shelf verdicts (Pass, Class, or Arse) to Jancis Robinson's authoritative 20-point scale — meet the people who shape what the UK drinks.
           </p>
         </div>
-      </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
         {/* Tom Gilbey feature strip */}
         <div
           className="rounded-2xl p-6 mb-10 flex items-center gap-6 cursor-pointer hover:scale-[1.005] transition-transform"
           style={{ background: 'linear-gradient(135deg, #1A1A2E 0%, #2C1810 100%)' }}
-          onClick={() => setSelectedId('tom-gilby')}
+          onClick={() => selectCritic('tom-gilbey', true)}
         >
           <CriticAvatar critic={CRITICS[0]} size="md" frosted />
           <div className="flex-1">
@@ -375,14 +385,19 @@ export default function Critics() {
               <CriticCard
                 key={critic.id}
                 critic={critic}
-                onSelect={setSelectedId}
+                onSelect={(id) => selectCritic(id, true)}
                 isSelected={selectedId === critic.id}
               />
             ))}
           </div>
 
           {/* Detail panel */}
-          <div>
+          <div ref={detailRef}>
+            <div className="mb-3 px-4 py-2 rounded-xl bg-gold/10 border border-gold/30">
+              <p className="font-body text-xs text-slate-lt">
+                Now viewing: <strong className="text-slate">{selected.name}</strong>
+              </p>
+            </div>
             <CriticDetail critic={selected} />
           </div>
         </div>

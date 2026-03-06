@@ -366,10 +366,10 @@ export default function Sparkling() {
   })
 
   return (
-    <main className="pt-16 min-h-screen bg-ivory">
+    <main className="min-h-screen bg-ivory">
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%)' }}>
+      <section className="hero-mesh relative overflow-hidden pt-24 lg:pt-28 pb-16 border-b border-white/10">
         {/* Bubble animation */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {[...Array(18)].map((_, i) => (
@@ -387,7 +387,7 @@ export default function Sparkling() {
           ))}
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-20 md:py-28">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
           <div className="max-w-3xl">
             <p className="font-body text-xs font-semibold tracking-[0.2em] uppercase text-gold/70 mb-4">
               🥂 Amanda's Fizz Edit

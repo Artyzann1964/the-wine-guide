@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCellar } from '../hooks/useCellar'
 import { wines as wineDB } from '../data/wines'
+import { buildWishlistSharePayload, buildWishlistShareUrl, encodeWishlistPayload } from '../utils/wishlistShare'
+import { parseVivinoCsv, vivinoRowsToTastedEntries } from '../utils/vivinoImport'
 
 const TABS = [
   { id: 'bottles', label: 'My Bottles' },
@@ -16,6 +18,36 @@ const CATEGORY_COLORS = {
   rosé:      'bg-pink-50 text-pink-700 border-pink-200',
   dessert:   'bg-orange-50 text-orange-700 border-orange-200',
 }
+
+const PURCHASE_CHANNELS = [
+  { id: 'supermarket', label: 'Supermarket' },
+  { id: 'merchant', label: 'Wine merchant' },
+  { id: 'wine-bar', label: 'Wine bar' },
+  { id: 'restaurant', label: 'Restaurant' },
+  { id: 'online', label: 'Online' },
+  { id: 'gift', label: 'Gift' },
+  { id: 'other', label: 'Other' },
+]
+
+const RETAILER_OPTIONS = [
+  'Waitrose',
+  "Sainsbury's",
+  'Tesco',
+  'M&S',
+  'Asda',
+  'Aldi',
+  'Lidl',
+  'Morrisons',
+  'Co-op',
+  'Majestic',
+  'Le Bon Vin Sheffield',
+  'Gill & Co.',
+  'The Harritt Wine Bar',
+  'Rafters Restaurant',
+  'Other',
+]
+
+const WISHLIST_OWNER_KEY = 'wine-guide-wishlist-owner'
 
 // Returns drinking window status for a cellar bottle
 function drinkWindowStatus(bottle) {
@@ -38,7 +70,9 @@ function drinkWindowStatus(bottle) {
 export default function Cellar() {
   const [activeTab, setActiveTab] = useState('bottles')
   const [showAddModal, setShowAddModal] = useState(false)
-  const { bottles, wishlist, tasted, removeBottle, removeFromWishlist, stats } = useCellar()
+  const { bottles, wishlist, tasted, removeBottle, removeFromWishlist, importTastedEntries, stats } = useCellar()
+  const [vivinoStatus, setVivinoStatus] = useState({ tone: '', message: '' })
+  const [importingVivino, setImportingVivino] = useState(false)
 
   // Estimated cellar value
   const cellarValue = bottles.reduce((sum, b) => {
@@ -47,16 +81,43 @@ export default function Cellar() {
   }, 0)
   const hasValue = cellarValue > 0
 
+  async function importVivinoHistory() {
+    setImportingVivino(true)
+    setVivinoStatus({ tone: '', message: '' })
+    try {
+      const response = await fetch('/vivino_wines_export.csv', { cache: 'no-store' })
+      if (!response.ok) {
+        setVivinoStatus({ tone: 'error', message: 'Could not load `vivino_wines_export.csv` from public/. Please confirm the file exists.' })
+        return
+      }
+      const csvText = await response.text()
+      const rows = parseVivinoCsv(csvText)
+      const entries = vivinoRowsToTastedEntries(rows)
+      const result = importTastedEntries(entries)
+
+      if (result.added > 0) {
+        setVivinoStatus({ tone: 'success', message: `Imported ${result.added} Vivino wines into Tasting Notes.` })
+        setActiveTab('tasted')
+      } else {
+        setVivinoStatus({ tone: 'info', message: 'Vivino wines are already in your tasting notes (no new additions).' })
+      }
+    } catch {
+      setVivinoStatus({ tone: 'error', message: 'Vivino import failed. Please try again in a few seconds.' })
+    } finally {
+      setImportingVivino(false)
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-ivory pt-20">
+    <div className="min-h-screen bg-ivory">
 
       {/* Hero */}
-      <section className="bg-slate text-white relative overflow-hidden">
+      <section className="hero-mesh text-white relative overflow-hidden pt-24 lg:pt-28 pb-14 border-b border-white/10">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-gold/10 translate-x-24 -translate-y-24" />
           <div className="absolute bottom-0 left-1/3 w-48 h-48 rounded-full bg-terracotta/10 translate-y-12" />
         </div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
             <div>
               <p className="section-label text-gold/70 mb-3">Personal</p>
@@ -143,10 +204,13 @@ export default function Cellar() {
                 ctaLink="/explore"
               />
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {wishlist.map(w => (
-                  <WishlistCard key={w.id} item={w} onRemove={() => removeFromWishlist(w.id)} />
-                ))}
+              <div className="space-y-4">
+                <WishlistSharePanel wishlist={wishlist} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {wishlist.map(w => (
+                    <WishlistCard key={w.id} item={w} onRemove={() => removeFromWishlist(w.id)} />
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -154,7 +218,12 @@ export default function Cellar() {
 
         {/* Tab: Tasted */}
         {activeTab === 'tasted' && (
-          <div>
+          <div className="space-y-4">
+            <VivinoImportPanel
+              status={vivinoStatus}
+              importing={importingVivino}
+              onImport={importVivinoHistory}
+            />
             {tasted.length === 0 ? (
               <EmptyState
                 icon="📓"
@@ -195,12 +264,141 @@ export default function Cellar() {
   )
 }
 
+function VivinoImportPanel({ status, importing, onImport }) {
+  return (
+    <div className="surface-panel p-5 sm:p-6">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div className="max-w-2xl">
+          <p className="section-label mb-2">Vivino</p>
+          <h3 className="font-display font-semibold text-2xl text-slate mb-1">Import your Vivino history</h3>
+          <p className="font-body text-sm text-slate-lt">Loads wines from `public/vivino_wines_export.csv` into Tasting Notes with duplicate protection.</p>
+        </div>
+        <button onClick={onImport} disabled={importing} className={`btn-primary ${importing ? 'opacity-65 cursor-wait' : ''}`}>
+          {importing ? 'Importing…' : 'Import Vivino CSV'}
+        </button>
+      </div>
+
+      {status?.message && (
+        <div className={`mt-3 rounded-xl border px-3 py-2.5 ${
+          status.tone === 'success'
+            ? 'bg-emerald-50 border-emerald-200'
+            : status.tone === 'error'
+              ? 'bg-rose-50 border-rose-200'
+              : 'bg-gold/10 border-gold/30'
+        }`}>
+          <p className="font-body text-xs text-slate">{status.message}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function WishlistSharePanel({ wishlist }) {
+  const [ownerName, setOwnerName] = useState('')
+  const [copied, setCopied] = useState(false)
+  const [copyError, setCopyError] = useState('')
+
+  useEffect(() => {
+    try {
+      setOwnerName(localStorage.getItem(WISHLIST_OWNER_KEY) || '')
+    } catch {
+      setOwnerName('')
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(WISHLIST_OWNER_KEY, ownerName)
+    } catch {
+      // Ignore write failures
+    }
+  }, [ownerName])
+
+  const shareUrl = useMemo(() => {
+    const payload = buildWishlistSharePayload({
+      ownerName,
+      wishlist,
+      wineLookup: wineId => wineDB.find(w => w.id === wineId),
+    })
+    const encoded = encodeWishlistPayload(payload)
+    return buildWishlistShareUrl(encoded)
+  }, [ownerName, wishlist])
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setCopyError('')
+      setTimeout(() => setCopied(false), 2200)
+    } catch {
+      setCopyError('Could not copy automatically. Long-press to copy the link below.')
+    }
+  }
+
+  async function nativeShare() {
+    if (!navigator.share) {
+      copyLink()
+      return
+    }
+    try {
+      await navigator.share({
+        title: `${ownerName || 'Amanda'}'s Wine Wishlist`,
+        text: 'Gift ideas by price tier from Amanda’s Wine Guide',
+        url: shareUrl,
+      })
+    } catch {
+      // User cancelled share sheet.
+    }
+  }
+
+  return (
+    <div className="surface-panel p-5 sm:p-6">
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        <div className="max-w-2xl">
+          <p className="section-label mb-2">Wishlist Share</p>
+          <h3 className="font-display font-semibold text-2xl text-slate mb-1">Share gift ideas with friends</h3>
+          <p className="font-body text-sm text-slate-lt">Generate a private link that organises wines by budget so people can choose the right gift quickly.</p>
+        </div>
+        <div className="flex gap-2 w-full lg:w-auto">
+          <button onClick={nativeShare} className="btn-primary flex-1 lg:flex-none">Share</button>
+          <button onClick={copyLink} className="btn-secondary flex-1 lg:flex-none">
+            {copied ? 'Copied' : 'Copy Link'}
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-3 mt-4">
+        <label className="block">
+          <span className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Wishlist owner</span>
+          <input
+            value={ownerName}
+            onChange={e => setOwnerName(e.target.value)}
+            placeholder="Amanda"
+            className="w-full rounded-xl border border-cream bg-ivory px-4 py-2.5 font-body text-sm text-slate focus:outline-none focus:border-gold transition-colors"
+          />
+        </label>
+        <div className="rounded-xl border border-cream bg-white px-3 py-2.5 text-xs font-mono text-slate/75 break-all">
+          {shareUrl}
+        </div>
+      </div>
+
+      {copyError && (
+        <p className="font-body text-xs text-terracotta mt-2">{copyError}</p>
+      )}
+    </div>
+  )
+}
+
 // ── Sub-components ──────────────────────────────────────────────
 
 function BottleCard({ bottle, onRemove }) {
   const dbWine = wineDB.find(w => w.id === bottle.wineId)
   const cat    = bottle.category || dbWine?.category || 'red'
   const window = drinkWindowStatus(bottle)
+
+  const boughtFrom = bottle.purchaseRetailer === 'Other'
+    ? bottle.purchaseRetailerOther
+    : bottle.purchaseRetailer
 
   return (
     <div className="card p-5 flex flex-col gap-4">
@@ -244,6 +442,26 @@ function BottleCard({ bottle, onRemove }) {
           </div>
         )}
       </div>
+
+      {(bottle.purchaseSourceType || boughtFrom || bottle.location) && (
+        <div className="rounded-xl border border-cream bg-white/75 px-3 py-2.5 space-y-1">
+          {bottle.purchaseSourceType && (
+            <p className="font-body text-xs text-slate-lt">
+              <strong className="text-slate">Bought via:</strong> {PURCHASE_CHANNELS.find(c => c.id === bottle.purchaseSourceType)?.label || bottle.purchaseSourceType}
+            </p>
+          )}
+          {boughtFrom && (
+            <p className="font-body text-xs text-slate-lt">
+              <strong className="text-slate">Bought from:</strong> {boughtFrom}
+            </p>
+          )}
+          {bottle.location && (
+            <p className="font-body text-xs text-slate-lt">
+              <strong className="text-slate">Stored:</strong> {bottle.location}
+            </p>
+          )}
+        </div>
+      )}
 
       {bottle.notes && (
         <p className="font-body text-xs text-slate-lt leading-relaxed border-t border-cream pt-3 italic">
@@ -363,6 +581,9 @@ function AddBottleModal({ onClose }) {
   const [form, setForm] = useState({
     name: '', producer: '', vintage: '', category: 'red',
     quantity: 1, purchasePrice: '', location: '', notes: '',
+    purchaseSourceType: 'supermarket',
+    purchaseRetailer: '',
+    purchaseRetailerOther: '',
   })
   const [saved, setSaved] = useState(false)
 
@@ -466,7 +687,7 @@ function AddBottleModal({ onClose }) {
                 />
               </div>
               <div>
-                <label className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Location</label>
+                <label className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Storage location</label>
                 <input
                   type="text"
                   value={form.location}
@@ -476,6 +697,45 @@ function AddBottleModal({ onClose }) {
                 />
               </div>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Bought via</label>
+                <select
+                  value={form.purchaseSourceType}
+                  onChange={e => set('purchaseSourceType', e.target.value)}
+                  className="w-full rounded-xl border border-cream bg-ivory px-4 py-3 font-body text-sm text-slate focus:outline-none focus:border-gold transition-colors"
+                >
+                  {PURCHASE_CHANNELS.map(option => (
+                    <option key={option.id} value={option.id}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Bought from</label>
+                <select
+                  value={form.purchaseRetailer}
+                  onChange={e => set('purchaseRetailer', e.target.value)}
+                  className="w-full rounded-xl border border-cream bg-ivory px-4 py-3 font-body text-sm text-slate focus:outline-none focus:border-gold transition-colors"
+                >
+                  <option value="">Select retailer / venue</option>
+                  {RETAILER_OPTIONS.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {form.purchaseRetailer === 'Other' && (
+              <div>
+                <label className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Other retailer / venue</label>
+                <input
+                  type="text"
+                  value={form.purchaseRetailerOther}
+                  onChange={e => set('purchaseRetailerOther', e.target.value)}
+                  placeholder="Enter store or venue name"
+                  className="w-full rounded-xl border border-cream bg-ivory px-4 py-3 font-body text-sm text-slate focus:outline-none focus:border-gold transition-colors"
+                />
+              </div>
+            )}
             <div>
               <label className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Notes</label>
               <textarea

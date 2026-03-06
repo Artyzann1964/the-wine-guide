@@ -7,6 +7,7 @@ import WineCard from '../components/WineCard'
 const CUISINE_ICONS = {
   french: '🇫🇷', italian: '🇮🇹', spanish: '🇪🇸', british: '🇬🇧',
   seafood: '🦞', asian: '🥢', vegetarian: '🥦', cheese: '🧀',
+  indian: '🇮🇳', 'middle-eastern': '🥙', bbq: '🔥', mexican: '🌮',
 }
 
 export default function Pairing() {
@@ -34,15 +35,15 @@ export default function Pairing() {
   }
 
   return (
-    <div className="min-h-screen bg-ivory pt-20">
+    <div className="min-h-screen bg-ivory">
 
       {/* Hero */}
-      <section className="bg-slate text-white overflow-hidden relative">
+      <section className="hero-mesh text-white overflow-hidden relative pt-24 lg:pt-28 pb-16 border-b border-white/10">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-gold/10 translate-x-32 -translate-y-32" />
           <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-terracotta/10 -translate-x-16 translate-y-16" />
         </div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
           <p className="section-label text-gold/70 mb-3">Food &amp; Wine</p>
           <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
             The Pairing Wizard
@@ -62,7 +63,7 @@ export default function Pairing() {
             <span className="w-7 h-7 rounded-full bg-gold text-white font-body text-sm font-semibold flex items-center justify-center flex-shrink-0">1</span>
             <h2 className="font-display font-semibold text-2xl text-slate">What are you cooking?</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
             {cuisines.map(c => (
               <button
                 key={c.id}

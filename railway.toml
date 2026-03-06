@@ -1,2 +1,6 @@
 [deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+healthcheckTimeout = 120
 restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 5

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
 const STORAGE_KEY = 'wine-guide-cellar'
+const BACKUP_KEY = 'wine-guide-cellar-backup'
 
 const defaultCellar = {
   bottles: [],       // wines you own
@@ -8,19 +9,50 @@ const defaultCellar = {
   tasted: [],        // wines you've drunk with notes
 }
 
+function tastingSignature(entry) {
+  return [
+    entry?.producer || '',
+    entry?.name || '',
+    entry?.vintage || '',
+    entry?.country || '',
+  ].join('|').toLowerCase().trim()
+}
+
+function normalizeCellarShape(value) {
+  const data = value && typeof value === 'object' ? value : {}
+  return {
+    bottles: Array.isArray(data.bottles) ? data.bottles : [],
+    wishlist: Array.isArray(data.wishlist) ? data.wishlist : [],
+    tasted: Array.isArray(data.tasted) ? data.tasted : [],
+  }
+}
+
+function readStoredCellar() {
+  try {
+    const primary = localStorage.getItem(STORAGE_KEY)
+    if (primary) return normalizeCellarShape(JSON.parse(primary))
+  } catch {
+    // Fall through to backup key.
+  }
+
+  try {
+    const backup = localStorage.getItem(BACKUP_KEY)
+    if (backup) return normalizeCellarShape(JSON.parse(backup))
+  } catch {
+    // If both are unreadable, return defaults.
+  }
+
+  return defaultCellar
+}
+
 export function useCellar() {
-  const [cellar, setCellar] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      return stored ? JSON.parse(stored) : defaultCellar
-    } catch {
-      return defaultCellar
-    }
-  })
+  const [cellar, setCellar] = useState(readStoredCellar)
 
   useEffect(() => {
+    const payload = JSON.stringify(cellar)
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cellar))
+      localStorage.setItem(STORAGE_KEY, payload)
+      localStorage.setItem(BACKUP_KEY, payload)
     } catch {
       // storage full or unavailable
     }
@@ -44,6 +76,9 @@ export function useCellar() {
       drinkBy: wine.drinkBy || null,
       notes: wine.notes || '',
       location: wine.location || '',     // e.g. "Rack 3, Row 2"
+      purchaseSourceType: wine.purchaseSourceType || '',
+      purchaseRetailer: wine.purchaseRetailer || '',
+      purchaseRetailerOther: wine.purchaseRetailerOther || '',
       addedAt: new Date().toISOString(),
     }
     setCellar(prev => ({ ...prev, bottles: [entry, ...prev.bottles] }))
@@ -104,6 +139,42 @@ export function useCellar() {
     setCellar(prev => ({ ...prev, wishlist: prev.wishlist.filter(w => w.id !== id) }))
   }, [])
 
+  const importTastedEntries = useCallback((entries) => {
+    const safeEntries = Array.isArray(entries) ? entries : []
+    if (safeEntries.length === 0) return { added: 0, skipped: 0, total: 0 }
+
+    let result = { added: 0, skipped: 0, total: safeEntries.length }
+
+    setCellar(prev => {
+      const existingIds = new Set(prev.tasted.map(item => item.id).filter(Boolean))
+      const existingSignatures = new Set(prev.tasted.map(tastingSignature).filter(Boolean))
+
+      const toAdd = []
+      safeEntries.forEach(entry => {
+        const signature = tastingSignature(entry)
+        const duplicate = (entry.id && existingIds.has(entry.id)) || (signature && existingSignatures.has(signature))
+        if (duplicate) return
+        toAdd.push(entry)
+        if (entry.id) existingIds.add(entry.id)
+        if (signature) existingSignatures.add(signature)
+      })
+
+      result = {
+        added: toAdd.length,
+        skipped: safeEntries.length - toAdd.length,
+        total: safeEntries.length,
+      }
+
+      if (toAdd.length === 0) return prev
+      return {
+        ...prev,
+        tasted: [...toAdd, ...prev.tasted],
+      }
+    })
+
+    return result
+  }, [])
+
   // Check if a wine is in cellar / wishlist
   const isInCellar = useCallback((wineId) =>
     cellar.bottles.some(b => b.wineId === wineId), [cellar.bottles])
@@ -135,6 +206,7 @@ export function useCellar() {
     markTasted,
     addToWishlist,
     removeFromWishlist,
+    importTastedEntries,
     isInCellar,
     isInWishlist,
   }

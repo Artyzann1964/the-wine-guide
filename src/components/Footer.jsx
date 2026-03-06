@@ -1,20 +1,30 @@
 import { Link } from 'react-router-dom'
+import { AmandaAvatar, AmandaBrandGlyph } from './Logo'
 
 export default function Footer() {
   return (
-    <footer className="bg-slate text-white/70 mt-20">
+    <footer className="bg-slate text-white/70 mt-16 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
 
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-gold text-xl">⌀</span>
-              <span className="font-display text-lg text-white font-semibold">The Wine Guide</span>
+            <div className="flex items-center gap-3 mb-3">
+              <AmandaAvatar size={22} alt="Amanda Holmes" />
+              <AmandaBrandGlyph size={18} />
+              <div>
+                <p className="font-body text-[10px] tracking-[0.2em] uppercase text-gold/80">Amanda's</p>
+                <p className="font-display text-lg text-white font-semibold leading-none">Wine Guide</p>
+                <p className="font-body text-[10px] tracking-[0.16em] uppercase text-white/45 mt-0.5">by Richard</p>
+              </div>
             </div>
             <p className="font-body text-xs leading-relaxed text-white/50">
-              A curated guide to the world's finest wines — built for curious drinkers, enthusiastic cooks, and anyone who believes life is too short for bad wine.
+              Amanda's curated guide to the world's finest wines — a personal gift by Richard, built for curious drinkers, enthusiastic cooks, and anyone who believes life is too short for bad wine.
             </p>
+            <div className="flex gap-2 mt-4">
+              <Link to="/explore" className="chip bg-white/10 text-white hover:bg-white/20">Explore</Link>
+              <Link to="/pairing" className="chip bg-gold/20 text-gold-lt hover:bg-gold/30">Pairings</Link>
+            </div>
           </div>
 
           {/* Explore */}
@@ -70,7 +80,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-body text-xs text-white/30">
-            © {new Date().getFullYear()} The Wine Guide. All wine notes are for informational purposes.
+            © {new Date().getFullYear()} Amanda's Wine Guide by Richard. All wine notes are for informational purposes.
           </p>
           <p className="font-body text-xs text-white/30">
             Please drink responsibly. Must be 18+ to purchase alcohol.

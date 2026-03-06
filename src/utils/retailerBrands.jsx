@@ -14,6 +14,7 @@ export const RETAILER_BRANDS = {
   'Le Bon Vin':   { bg: '#2C2C3E', text: '#C9973A', border: '#1a1a2e' },
   'Majestic':     { bg: '#5C1A3A', text: '#F0CB71', border: '#3d1028' },
   'Co-op':        { bg: '#003E71', text: '#FFFFFF', border: '#002850' },
+  'Le Bon Vin Sheffield': { bg: '#2C2C3E', text: '#C9973A', border: '#1a1a2e' },
 }
 
 // Logo image paths (in /public, served at /)
@@ -29,6 +30,7 @@ const RETAILER_LOGOS = {
   'Le Bon Vin':   '/le-bon-vin-wine-merchants-sheffield-uk-S13PHFITKR.jpg',
   'Majestic':     '/Majestic.jpg',
   'Co-op':        '/coop-logo.avif',
+  'Le Bon Vin Sheffield': '/le-bon-vin-wine-merchants-sheffield-uk-S13PHFITKR.jpg',
 }
 
 // Fallback lettermarks (used if logo fails to load)
@@ -44,6 +46,25 @@ const RETAILER_MARKS = {
   'Le Bon Vin':   'LB',
   'Majestic':     'Mj',
   'Co-op':        'Co',
+  'Le Bon Vin Sheffield': 'LB',
+}
+
+function normaliseRetailerName(name = '') {
+  const value = String(name).trim()
+  if (!value) return value
+  const key = value.toLowerCase().replace(/\s+/g, ' ')
+  const aliasMap = {
+    'marks and spencer': 'M&S',
+    'marks & spencer': 'M&S',
+    'm and s': 'M&S',
+    'le bon vin sheffield': 'Le Bon Vin Sheffield',
+    'le bon vin': 'Le Bon Vin',
+    'coop': 'Co-op',
+    'co op': 'Co-op',
+    'co-operative': 'Co-op',
+    'sainsburys': "Sainsbury's",
+  }
+  return aliasMap[key] || value
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -52,9 +73,10 @@ const RETAILER_MARKS = {
 // Falls back to coloured lettermark if logo is unavailable
 // ─────────────────────────────────────────────────────────────
 export function RetailerBadge({ name, className = '' }) {
-  const logo = RETAILER_LOGOS[name]
-  const brand = RETAILER_BRANDS[name]
-  const mark = RETAILER_MARKS[name] || name.slice(0, 1).toUpperCase()
+  const canonical = normaliseRetailerName(name)
+  const logo = RETAILER_LOGOS[canonical]
+  const brand = RETAILER_BRANDS[canonical]
+  const mark = RETAILER_MARKS[canonical] || canonical.slice(0, 1).toUpperCase()
 
   if (logo) {
     return (
@@ -63,7 +85,7 @@ export function RetailerBadge({ name, className = '' }) {
       >
         <img
           src={logo}
-          alt={name}
+          alt={canonical}
           className="h-4 w-auto object-contain"
           style={{ maxWidth: 36 }}
           onError={e => { e.currentTarget.style.display = 'none' }}
@@ -111,18 +133,20 @@ export function RetailerBadge({ name, className = '' }) {
 // Use in Explorer filter chips, Shop page cards, etc.
 // ─────────────────────────────────────────────────────────────
 export function RetailerLogo({ name, size = 24, className = '' }) {
-  const logo = RETAILER_LOGOS[name]
-  const brand = RETAILER_BRANDS[name]
-  const mark = RETAILER_MARKS[name] || name.slice(0, 1).toUpperCase()
+  const canonical = normaliseRetailerName(name)
+  const logo = RETAILER_LOGOS[canonical]
+  const brand = RETAILER_BRANDS[canonical]
+  const mark = RETAILER_MARKS[canonical] || canonical.slice(0, 1).toUpperCase()
 
   if (logo) {
     return (
       <img
         src={logo}
-        alt={name}
-        title={name}
-        className={`object-contain ${className}`}
-        style={{ height: size, width: 'auto', maxWidth: size * 2 }}
+        alt={canonical}
+        title={canonical}
+        width={Math.round(size * 1.8)}
+        height={size}
+        className={`object-contain object-center max-w-full max-h-full ${className}`}
         onError={e => { e.currentTarget.style.display = 'none' }}
       />
     )

@@ -13,8 +13,10 @@ const Pairing   = lazy(() => import('./pages/Pairing'))
 const Cellar    = lazy(() => import('./pages/Cellar'))
 const Education = lazy(() => import('./pages/Education'))
 const Shop      = lazy(() => import('./pages/Shop'))
+const Places = lazy(() => import('./pages/Sheffield'))
 const Critics        = lazy(() => import('./pages/Critics'))
 const TasteProfiler  = lazy(() => import('./pages/TasteProfiler'))
+const WishlistShare  = lazy(() => import('./pages/WishlistShare'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -33,21 +35,26 @@ function AppLayout() {
     <>
       <ScrollToTop />
       <Nav />
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/explore" element={<Explorer />} />
-          <Route path="/explore/:id" element={<WineDetail />} />
-          <Route path="/sparkling" element={<Sparkling />} />
-          <Route path="/pairing" element={<Pairing />} />
-          <Route path="/cellar" element={<Cellar />} />
-          <Route path="/learn" element={<Education />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/critics" element={<Critics />} />
-          <Route path="/taste-quiz" element={<TasteProfiler />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <div className="mobile-page-padding lg:pb-0">
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/explore" element={<Explorer />} />
+            <Route path="/explore/:id" element={<WineDetail />} />
+            <Route path="/sparkling" element={<Sparkling />} />
+            <Route path="/pairing" element={<Pairing />} />
+            <Route path="/cellar" element={<Cellar />} />
+            <Route path="/wishlist-share" element={<WishlistShare />} />
+            <Route path="/learn" element={<Education />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/places" element={<Places />} />
+            <Route path="/sheffield" element={<Places />} />
+            <Route path="/critics" element={<Critics />} />
+            <Route path="/taste-quiz" element={<TasteProfiler />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </div>
       <Footer />
     </>
   )
