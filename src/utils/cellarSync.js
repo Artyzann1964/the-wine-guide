@@ -1,4 +1,6 @@
 const CELLAR_SYNC_PREFIX = 'WGCS1_'
+export const CLOUD_SYNC_ID_KEY = 'wine-guide-cloud-sync-id'
+export const CLOUD_SYNC_EVENT = 'wine-guide-cloud-sync-id-updated'
 
 function toBinaryString(bytes) {
   let binary = ''
@@ -18,6 +20,19 @@ function fromBase64Url(encoded) {
     .padEnd(Math.ceil(String(encoded || '').length / 4) * 4, '=')
   const binary = atob(base64)
   return Uint8Array.from(binary, ch => ch.charCodeAt(0))
+}
+
+export function normalizeCloudSyncId(value) {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  if (!/^[a-zA-Z0-9_-]{8,96}$/.test(raw)) return ''
+  return raw
+}
+
+export function generateCloudSyncId() {
+  const bytes = new Uint8Array(12)
+  crypto.getRandomValues(bytes)
+  return `wg-${toBase64Url(bytes)}`
 }
 
 export function buildCellarSyncPayload({ bottles = [], wishlist = [], tasted = [] }) {

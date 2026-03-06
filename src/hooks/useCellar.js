@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 const STORAGE_KEY = 'wine-guide-cellar'
 const BACKUP_KEY = 'wine-guide-cellar-backup'
+const REVISION_KEY = 'wine-guide-cellar-revision'
 const CELLAR_EVENT = 'wine-guide-cellar-updated'
 
 const defaultCellar = {
@@ -66,11 +67,21 @@ function readStoredCellar() {
   return defaultCellar
 }
 
-function persistCellar(nextCellar) {
+function readStoredRevision() {
+  try {
+    const value = Number(localStorage.getItem(REVISION_KEY) || 0)
+    return Number.isFinite(value) ? value : 0
+  } catch {
+    return 0
+  }
+}
+
+function persistCellar(nextCellar, revision = Date.now()) {
   const payload = JSON.stringify(nextCellar)
   try {
     localStorage.setItem(STORAGE_KEY, payload)
     localStorage.setItem(BACKUP_KEY, payload)
+    localStorage.setItem(REVISION_KEY, String(revision))
   } catch {
     // storage full or unavailable
   }
@@ -83,12 +94,14 @@ function broadcastCellarUpdate() {
 
 export function useCellar() {
   const [cellar, setCellar] = useState(readStoredCellar)
+  const [cellarRevision, setCellarRevision] = useState(readStoredRevision)
   
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
 
     const syncFromStorage = () => {
       setCellar(readStoredCellar())
+      setCellarRevision(readStoredRevision())
     }
 
     const onStorage = (event) => {
@@ -106,13 +119,15 @@ export function useCellar() {
   }, [])
 
   const applyUpdate = useCallback((updater) => {
+    const revision = Date.now()
+    setCellarRevision(revision)
     setCellar(() => {
       const latest = readStoredCellar()
       const base = normalizeCellarShape(latest)
       const next = normalizeCellarShape(
         typeof updater === 'function' ? updater(base) : updater
       )
-      persistCellar(next)
+      persistCellar(next, revision)
       broadcastCellarUpdate()
       return next
     })
@@ -358,6 +373,7 @@ export function useCellar() {
     bottles: cellar.bottles,
     wishlist: cellar.wishlist,
     tasted: cellar.tasted,
+    cellarRevision,
     stats,
     addBottle,
     removeBottle,

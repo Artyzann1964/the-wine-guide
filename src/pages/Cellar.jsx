@@ -4,7 +4,15 @@ import { useCellar } from '../hooks/useCellar'
 import { wines as wineDB } from '../data/wines'
 import { buildWishlistSharePayload, buildWishlistShareUrl, encodeWishlistPayload } from '../utils/wishlistShare'
 import { parseVivinoCsv, vivinoRowsToTastedEntries } from '../utils/vivinoImport'
-import { buildCellarSyncPayload, decodeCellarSyncPayload, encodeCellarSyncPayload } from '../utils/cellarSync'
+import {
+  buildCellarSyncPayload,
+  CLOUD_SYNC_EVENT,
+  CLOUD_SYNC_ID_KEY,
+  decodeCellarSyncPayload,
+  encodeCellarSyncPayload,
+  generateCloudSyncId,
+  normalizeCloudSyncId,
+} from '../utils/cellarSync'
 
 const TABS = [
   { id: 'bottles', label: 'My Bottles' },
@@ -414,6 +422,8 @@ function CellarSyncPanel({ bottles, wishlist, tasted, importCellarData, syncSeed
   const [showImport, setShowImport] = useState(false)
   const [syncInput, setSyncInput] = useState('')
   const [syncStatus, setSyncStatus] = useState({ tone: '', message: '' })
+  const [cloudSyncId, setCloudSyncId] = useState('')
+  const [cloudSyncInput, setCloudSyncInput] = useState('')
 
   useEffect(() => {
     if (!syncSeed) return
@@ -422,6 +432,17 @@ function CellarSyncPanel({ bottles, wishlist, tasted, importCellarData, syncSeed
     setSyncStatus({ tone: 'info', message: 'Sync code detected in this link. Tap Merge on this device to import it.' })
     onSyncSeedConsumed?.()
   }, [syncSeed, onSyncSeedConsumed])
+
+  useEffect(() => {
+    try {
+      const existing = normalizeCloudSyncId(localStorage.getItem(CLOUD_SYNC_ID_KEY))
+      setCloudSyncId(existing)
+      setCloudSyncInput(existing)
+    } catch {
+      setCloudSyncId('')
+      setCloudSyncInput('')
+    }
+  }, [])
 
   const syncCode = useMemo(() => {
     const payload = buildCellarSyncPayload({ bottles, wishlist, tasted })
@@ -433,6 +454,42 @@ function CellarSyncPanel({ bottles, wishlist, tasted, importCellarData, syncSeed
     const safe = encodeURIComponent(syncCode)
     return `${window.location.origin}${window.location.pathname}#/cellar?cs=${safe}`
   }, [syncCode])
+
+  function applyCloudSyncId(nextId) {
+    const normalized = normalizeCloudSyncId(nextId)
+    try {
+      if (normalized) localStorage.setItem(CLOUD_SYNC_ID_KEY, normalized)
+      else localStorage.removeItem(CLOUD_SYNC_ID_KEY)
+    } catch {
+      // Ignore storage write failures.
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event(CLOUD_SYNC_EVENT))
+    }
+    setCloudSyncId(normalized)
+    setCloudSyncInput(normalized)
+  }
+
+  function connectCloudSync() {
+    const normalized = normalizeCloudSyncId(cloudSyncInput)
+    if (!normalized) {
+      setSyncStatus({ tone: 'error', message: 'Enter a valid cloud sync code (letters, numbers, - or _).' })
+      return
+    }
+    applyCloudSyncId(normalized)
+    setSyncStatus({ tone: 'success', message: 'Automatic sync enabled on this device. Use the same code on your other device.' })
+  }
+
+  function generateCloudSync() {
+    const generated = generateCloudSyncId()
+    applyCloudSyncId(generated)
+    setSyncStatus({ tone: 'success', message: 'New automatic sync code created and enabled on this device.' })
+  }
+
+  function disableCloudSync() {
+    applyCloudSyncId('')
+    setSyncStatus({ tone: 'info', message: 'Automatic cloud sync disabled on this device.' })
+  }
 
   async function copySyncCode() {
     try {
@@ -449,6 +506,20 @@ function CellarSyncPanel({ bottles, wishlist, tasted, importCellarData, syncSeed
       setSyncStatus({ tone: 'success', message: 'Sync link copied. Open it on your other device to import quickly.' })
     } catch {
       setSyncStatus({ tone: 'error', message: 'Clipboard was blocked. Copy the link manually from the box below.' })
+    }
+  }
+
+  async function copyCloudSyncCode() {
+    const code = cloudSyncId || normalizeCloudSyncId(cloudSyncInput)
+    if (!code) {
+      setSyncStatus({ tone: 'error', message: 'No cloud sync code to copy yet. Generate one first.' })
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(code)
+      setSyncStatus({ tone: 'success', message: 'Cloud sync code copied. Paste this exact code on your other device.' })
+    } catch {
+      setSyncStatus({ tone: 'error', message: 'Clipboard was blocked. Copy the cloud sync code manually from the input.' })
     }
   }
 
@@ -486,14 +557,40 @@ function CellarSyncPanel({ bottles, wishlist, tasted, importCellarData, syncSeed
       <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4">
         <div className="max-w-2xl">
           <p className="section-label mb-2">Cross-device Sync</p>
-          <h3 className="font-display font-semibold text-2xl text-slate mb-1">Move your cellar to another device</h3>
+          <h3 className="font-display font-semibold text-2xl text-slate mb-1">Automatic and manual sync</h3>
           <p className="font-body text-sm text-slate-lt">
-            Cellar data is local to each browser. Copy a sync code (or link) from this device, then import it on your other phone/laptop.
+            Link both devices with one cloud sync code for automatic background updates. Manual code/link import is still available as backup.
           </p>
         </div>
-        <div className="flex gap-2 w-full xl:w-auto">
+        <div className="flex gap-2 w-full xl:w-auto flex-wrap">
+          <button onClick={copyCloudSyncCode} className="btn-primary flex-1 xl:flex-none">Copy Cloud Code</button>
           <button onClick={copySyncCode} className="btn-primary flex-1 xl:flex-none">Copy Sync Code</button>
           <button onClick={copySyncLink} className="btn-secondary flex-1 xl:flex-none">Copy Sync Link</button>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-xl border border-cream bg-white/80 p-3 space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-body text-xs uppercase tracking-widest text-slate-lt">Automatic Cloud Sync</p>
+          <span className={`tag border ${cloudSyncId ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-cream border-cream text-slate-lt'}`}>
+            {cloudSyncId ? 'Active' : 'Not linked'}
+          </span>
+        </div>
+        <label className="block">
+          <span className="font-body text-xs text-slate-lt block mb-1.5">Cloud sync code (use the same on every device)</span>
+          <input
+            value={cloudSyncInput}
+            onChange={e => setCloudSyncInput(e.target.value)}
+            placeholder="wg-..."
+            className="w-full rounded-xl border border-cream bg-ivory px-3 py-2.5 font-mono text-xs text-slate focus:outline-none focus:border-gold"
+          />
+        </label>
+        <div className="flex flex-wrap gap-2">
+          <button onClick={connectCloudSync} className="btn-primary text-xs">Enable with This Code</button>
+          <button onClick={generateCloudSync} className="btn-secondary text-xs">Generate New Code</button>
+          {cloudSyncId && (
+            <button onClick={disableCloudSync} className="btn-ghost text-xs text-terracotta/70 hover:text-terracotta">Disable Cloud Sync</button>
+          )}
         </div>
       </div>
 
