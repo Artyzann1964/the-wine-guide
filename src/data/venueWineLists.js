@@ -1333,7 +1333,7 @@ export const venueWineLists = {
       }
     ]
   },
-  "swan-and-anchor": {
+  "the-swan-walton": {
     "source": "The Swan at Walton wine menu page",
     "sourceUrl": "https://theswanatwalton.co.uk/menu/14",
     "checkedOn": "2026-03-05",
@@ -2303,6 +2303,30 @@ export const venueWineLists = {
       }
     ],
     "curatedProfile": true
+  },
+  "crown-and-glove": {
+    "source": "Crown & Glove drinks menu",
+    "sourceUrl": "https://www.crownandglove.com/drink/",
+    "checkedOn": "2026-03-06",
+    "priceNote": "Prices not listed on website.",
+    "items": [
+      { "name": "Hardys 202 Main Road Chardonnay", "category": "white", "country": "Australia" },
+      { "name": "Jack Rabbit Sauvignon Blanc", "category": "white", "country": "Chile" },
+      { "name": "Vignana Pinot Grigio", "category": "white", "country": "Italy" },
+      { "name": "Millstream Chenin Blanc", "category": "white", "country": "Chile" },
+      { "name": "Ponte Pinot Grigio", "category": "white", "country": "Italy" },
+      { "name": "Nobilo Sauvignon Blanc", "category": "white", "country": "New Zealand" },
+      { "name": "Hardys 202 Main Road Shiraz", "category": "red", "country": "Australia" },
+      { "name": "Jack Rabbit Merlot", "category": "red", "country": "Chile" },
+      { "name": "Most Wanted Malbec", "category": "red", "country": "South Africa" },
+      { "name": "Finca Del Oro Rioja", "category": "red", "country": "Spain" },
+      { "name": "Barefoot White Zinfandel", "category": "rosé", "country": "USA" },
+      { "name": "Vignana Pinot Grigio Blush", "category": "rosé", "country": "Italy" },
+      { "name": "Henri Gaillard Provence", "category": "rosé", "country": "France" },
+      { "name": "Morajo Prosecco", "category": "sparkling", "country": "Italy" },
+      { "name": "Vignana Prosecco Rosé", "category": "sparkling", "country": "Italy" },
+      { "name": "Laurent Perrier Brut NV", "category": "sparkling", "country": "France" }
+    ]
   }
 }
 
