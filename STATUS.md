@@ -34,7 +34,7 @@
 | Route | Page | Status | Notes |
 |-------|------|--------|-------|
 | `/` | Home | ✅ | Featured wines, hero, Amanda bio |
-| `/explore` | Explorer | ✅ | Colour legend, all filters, sort options, Explorer Queue panel |
+| `/explore` | Explorer | ✅ | Colour legend, all filters, sort options |
 | `/explore/:id` | Wine Detail | ✅ | 5 tabs, cellar modal, retailer logos in Buy tab |
 | `/sparkling` | Sparkling Guide | ✅ | Full sparkling guide page |
 | `/pairing` | Pairing Wizard | ✅ | Food → wine matcher |
@@ -42,7 +42,7 @@
 | `/critics` | Critics | ✅ | Real critic photos, reviews |
 | `/shop` | Know Your Shop | ✅ | Retailer profiles + logos, wines by store |
 | `/cellar` | My Cellar | ✅ | Bottles/wishlist/tasted, drinking windows, cellar value, wishlist share |
-| `/places` | Amanda's Places | ✅ | Venue picks (Sheffield etc.), venue wine lists, Explorer Queue integration |
+| `/places` | Amanda's Places | ✅ | 13 venue picks (Sheffield, Stannington, Walton-on-Thames, Stroud, Morpeth), venue wine lists |
 | `/wishlist-share` | Wishlist Share | ✅ | Shareable wishlist view from base64url link |
 | `/learn` | Wine School | ✅ | 8 sections incl. Sparkling Wines, Grape Varieties, glass guide image |
 
@@ -50,18 +50,19 @@
 
 ## Recent Session Work (2026-03-06)
 
-### 📋 Documentation Sync
-- Fixed wine count: 144 → **232 wines** (STATUS.md was stale after bulk generation sprint)
-- Added missing pages to CLAUDE.md + STATUS.md: Places, WishlistShare, TasteProfiler
-- Documented Explorer Queue hook, Venue Source Inbox hook, wishlist share utils
-- Updated file structure listing with all new hooks, data files, utils, and pages
-
 ### 🏠 Amanda's Places Page (`/places`)
-- Sheffield venue picks: Gill & Co, Rafters, Silversmiths, Peppercorn, Le Bon Vin
-- Venue wine lists from sourced PDFs (2,300-line data file `venueWineLists.js`)
-- Explorer Queue integration — add venue wines as candidates for library matching
+- 13 venue picks across Sheffield, Stannington, Walton-on-Thames, Stroud, Morpeth
+- Venue wine lists from sourced PDFs/websites (2,300-line data file `venueWineLists.js`)
+- Wine lists sourced for 7 of 13 venues
 - Venue Source Inbox — submit new venue URLs for future wine list sourcing
 - Nav bar updated with "Places" link (desktop + mobile dock)
+
+### 🏘️ Venue Corrections (latest)
+- Split `swan-and-anchor` into two separate Walton-on-Thames pubs: **The Swan** (Young's riverside, swanwalton.com) and **The Anglers** (restaurant pub)
+- Added **The Crown & Glove** (Stannington, crownandglove.com) with 16-wine list scraped from website
+- Added Peacock Inn website URL (peacock-stannington.co.uk)
+- Removed Explorer Queue feature entirely (was not requested, added by mistake in earlier session)
+- Deleted dead `useExplorerQueue.js` hook file
 
 ### 🎁 Wishlist Share (`/wishlist-share`)
 - Base64url-encoded shareable wishlist links generated from Cellar page
@@ -69,11 +70,10 @@
 - Resolves shared wine IDs against the local database for full detail
 - Clean fallback UI for invalid/empty share links
 
-### 🔍 Explorer Queue
-- `useExplorerQueue` hook — localStorage queue for venue wine candidates
-- Used across 3 pages: Home (badge count), Explorer (review panel), Places (add candidates)
-- Deduplication via `matchKey` (venueId + normalised wine name)
-- Queue panel in Explorer: review, remove, link to library wine, or clear all
+### 📋 Documentation Sync
+- Fixed wine count: 144 → **232 wines** (STATUS.md was stale after bulk generation sprint)
+- Added missing pages to CLAUDE.md + STATUS.md: Places, WishlistShare, TasteProfiler
+- Removed all Explorer Queue references from docs
 
 ---
 

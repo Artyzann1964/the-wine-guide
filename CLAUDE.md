@@ -40,7 +40,6 @@ src/
 
   hooks/
     useCellar.js            # localStorage cellar state: bottles / wishlist / tasted
-    useExplorerQueue.js     # Explorer Queue — localStorage queue for venue wine candidates
     useVenueSourceInbox.js  # Venue Source Inbox — localStorage inbox for venue URL submissions
 
   components/
@@ -53,14 +52,14 @@ src/
 
   pages/
     Home.jsx                # Landing page with featured wines
-    Explorer.jsx            # Browse/filter/sort 232 wines + Explorer Queue panel
+    Explorer.jsx            # Browse/filter/sort 232 wines
     WineDetail.jsx          # Full detail: tabs (overview/tasting/pairings/vintages/buy), add to cellar modal
     Cellar.jsx              # Personal cellar tracker (bottles/wishlist/tasting notes) + wishlist share
     Education.jsx           # Wine School: production, labels, vintages, tasting vocab
     Sparkling.jsx           # Sparkling wine guide
     Pairing.jsx             # Food pairing wizard
     Critics.jsx             # Critics page — Tom Gilby picks + staff picks
-    Sheffield.jsx           # Amanda's Places — venue picks (Sheffield etc.), venue wine lists, Explorer Queue integration
+    Sheffield.jsx           # Amanda's Places — venue picks (Sheffield, Stannington, Walton-on-Thames, Stroud, Morpeth), venue wine lists
     WishlistShare.jsx       # Shareable wishlist view — decodes base64 URL payload, groups by price tier
     TasteProfiler.jsx       # 4-question taste quiz → matched wines
 
@@ -208,17 +207,6 @@ The wines array is exported via `normalizeWine()` — the internal array is `con
 
 **Never write new wines using the old bulk schema** — always use the correct schema (lowercase category, named priceRange, £string price, object arrays).
 
-### useExplorerQueue Hook (`src/hooks/useExplorerQueue.js`)
-localStorage-backed queue for venue wine candidates discovered on the Places page. Used in **Explorer.jsx** (review/remove/link panel), **Home.jsx** (queue count badge), and **Sheffield.jsx** (add candidates from venue wine lists).
-
-Returns: `{ queue, queuedKeys, addCandidate, removeCandidate, clearQueue, markLinked }`
-
-Each candidate: `{ id, name, venueId, venueName, category, country, price, review, stars, sourceUrl, libraryWineId, matchKey, createdAt }`
-
-`buildExplorerCandidateFromVenue(venue, item, sourceUrl)` — helper to build a candidate from venue wine list data.
-
-Explorer Queue panel opens via `?queue=1` URL param or toggle in Explorer.
-
 ### useVenueSourceInbox Hook (`src/hooks/useVenueSourceInbox.js`)
 localStorage-backed inbox for user-submitted venue source URLs. Used in **Sheffield.jsx**.
 
@@ -285,8 +273,8 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 
 | Route | Page | Notes |
 |-------|------|-------|
-| `/` | Home | Featured wines, hero, Explorer Queue badge |
-| `/explore` | Explorer | Filter/sort 232 wines + Explorer Queue panel |
+| `/` | Home | Featured wines, hero |
+| `/explore` | Explorer | Filter/sort 232 wines |
 | `/explore/:id` | WineDetail | Full wine page, 5 tabs, cellar modal |
 | `/sparkling` | Sparkling | Sparkling wine guide |
 | `/pairing` | Pairing | Food pairing wizard |
@@ -294,7 +282,7 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 | `/cellar` | Cellar | Personal tracker (localStorage) + wishlist share |
 | `/learn` | Education | Wine school content |
 | `/shop` | Shop | Buy wines — retailer links |
-| `/places` | Sheffield (Places) | Amanda's venue picks, venue wine lists, Explorer Queue add |
+| `/places` | Sheffield (Places) | Amanda's venue picks (13 venues), venue wine lists |
 | `/sheffield` | Sheffield (alias) | Same component as `/places` |
 | `/wishlist-share` | WishlistShare | Shareable wishlist — decodes `?wl=` base64url payload |
 | `/critics` | Critics | Tom Gilby verdicts + staff picks |
