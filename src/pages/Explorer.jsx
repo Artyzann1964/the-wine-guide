@@ -120,11 +120,6 @@ export default function Explorer() {
   const priceFilter = searchParams.get('price') || 'all'
   const retailerFilter = searchParams.get('retailer') || 'all'
   const grapeFilter = searchParams.get('grape') || 'all'
-  const queueParam = searchParams.get('queue') || ''
-
-  useEffect(() => {
-    if (queueParam === '1') setShowQueuePanel(true)
-  }, [queueParam])
 
   useEffect(() => {
     if (countryFilter !== 'all' || retailerFilter !== 'all' || grapeFilter !== 'all') {
