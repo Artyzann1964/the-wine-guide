@@ -323,16 +323,6 @@ export default function Explorer() {
                   </button>
                 ))}
               </div>
-              {queuedPending.length > 0 && (
-                <div className="mt-3">
-                  <button
-                    onClick={() => setShowQueuePanel(v => !v)}
-                    className={`chip ${showQueuePanel ? 'bg-terracotta text-white' : 'bg-white/12 text-gold-lt border border-gold/30 hover:bg-gold/20'}`}
-                  >
-                    📋 Explorer queue ({queuedPending.length})
-                  </button>
-                </div>
-              )}
               <div className="mt-4 grid sm:grid-cols-2 gap-3 max-w-3xl">
                 <div className="rounded-2xl border border-white/15 bg-white/8 p-3 interactive-lift">
                   <p className="font-body text-[10px] tracking-[0.18em] uppercase text-gold-lt/85 mb-2">France Classics</p>
@@ -390,6 +380,16 @@ export default function Explorer() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
+        {queuedPending.length > 0 && !showQueuePanel && (
+          <button
+            onClick={() => setShowQueuePanel(true)}
+            className="mb-4 flex items-center gap-2 rounded-xl border border-gold/25 bg-gold/8 px-4 py-2.5 font-body text-sm text-gold hover:bg-gold/15 transition-colors"
+          >
+            <span>📋</span>
+            <span>{queuedPending.length} wine{queuedPending.length !== 1 ? 's' : ''} queued from Places</span>
+            <span className="text-gold/60 text-xs ml-1">— tap to review</span>
+          </button>
+        )}
         {showQueuePanel && (
           <div className="surface-panel p-4 mb-5">
             <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
