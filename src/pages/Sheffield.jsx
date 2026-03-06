@@ -3,7 +3,6 @@ import { Link, useSearchParams } from 'react-router-dom'
 import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
 import { venueWineLists } from '../data/venueWineLists'
-import { buildExplorerCandidateFromVenue, useExplorerQueue } from '../hooks/useExplorerQueue'
 import { useVenueSourceInbox } from '../hooks/useVenueSourceInbox'
 
 function mapUrl(name, town) {
@@ -47,9 +46,6 @@ function renderStars(value) {
   return '★'.repeat(full) + '☆'.repeat(5 - full)
 }
 
-function buildVenueWineQueueKey(venueId, itemName) {
-  return `${venueId || 'venue'}::${String(itemName || '').toLowerCase().trim()}`
-}
 
 const VENUES = [
   {
@@ -268,9 +264,7 @@ export default function Places() {
   const [scrollToDetail, setScrollToDetail] = useState(false)
   const [showSourceModal, setShowSourceModal] = useState(false)
   const [sourceForm, setSourceForm] = useState({ venueName: '', town: '', sourceUrl: '', notes: '' })
-  const [queueNotice, setQueueNotice] = useState('')
   const detailRef = useRef(null)
-  const { queue, queuedKeys, addCandidate } = useExplorerQueue()
   const { sources, addSource, removeSource, markProcessed } = useVenueSourceInbox()
 
   const visibleVenues = useMemo(
@@ -388,20 +382,9 @@ export default function Places() {
   const visibleVenueWineItems = filteredVenueWineItems.slice(0, venueWineLimit)
   const hasMoreVenueWineItems = filteredVenueWineItems.length > visibleVenueWineItems.length
   const amandaFavourites = VENUES.filter(v => v.amandaFavourite).map(v => v.name)
-  const queuedForCurrentVenue = queue.filter(item => item.venueId === venue.id).length
-
   function handleVenueSelect(nextVenueId) {
     setVenueId(nextVenueId)
     setScrollToDetail(true)
-  }
-
-  function queueVenueWine(item) {
-    const candidate = buildExplorerCandidateFromVenue(venue, item, venueWineInfo?.sourceUrl || '')
-    const result = addCandidate(candidate)
-    setQueueNotice(result.added
-      ? `"${item.name}" added to Explorer queue.`
-      : `"${item.name}" is already in the Explorer queue.`)
-    window.setTimeout(() => setQueueNotice(''), 2200)
   }
 
   function updateSourceForm(key, value) {
@@ -462,14 +445,6 @@ export default function Places() {
           <p className="font-body text-xs text-slate-lt mt-3">
             Live wine lists sourced for {VENUES.filter(v => venueWineLists[v.id]?.items?.length).length} of {VENUES.length} venues.
           </p>
-          <p className="font-body text-xs text-slate-lt mt-1">
-            Explorer queue currently holds <strong className="text-slate">{queue.length}</strong> candidate wine{queue.length !== 1 ? 's' : ''}.
-          </p>
-          <div className="mt-2">
-            <Link to="/explore?queue=1" className="chip bg-gold/10 border border-gold/30 text-gold">
-              Open Explorer queue →
-            </Link>
-          </div>
           {sources.length > 0 && (
             <div className="mt-3 border-t border-cream pt-3">
               <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Source inbox</p>
@@ -618,16 +593,8 @@ export default function Places() {
               <p className="font-body text-sm text-slate-lt">
                 {venueWineInfo?.items?.length ? `${venueWineInfo.items.length} wines captured` : 'No public list captured yet'}
               </p>
-              <p className="font-body text-xs text-slate-lt">
-                {queuedForCurrentVenue} queued for Explorer
-              </p>
             </div>
           </div>
-          {queueNotice && (
-            <div className="mb-4 rounded-xl border border-gold/35 bg-gold/10 px-3 py-2">
-              <p className="font-body text-xs text-slate">{queueNotice}</p>
-            </div>
-          )}
 
           {venueWineInfo?.items?.length ? (
             <>
@@ -711,20 +678,6 @@ export default function Places() {
                                 </Link>
                               )}
                             </div>
-                          </div>
-                        )}
-                        {!item.libraryWineId && (
-                          <div className="mt-3 pt-3 border-t border-cream">
-                            {queuedKeys.has(buildVenueWineQueueKey(venue.id, item.name)) ? (
-                              <span className="chip bg-slate text-white">Queued for Explorer</span>
-                            ) : (
-                              <button
-                                onClick={() => queueVenueWine(item)}
-                                className="chip bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20"
-                              >
-                                + Add to Explorer queue
-                              </button>
-                            )}
                           </div>
                         )}
                       </article>

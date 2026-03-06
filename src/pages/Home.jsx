@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import WineCard from '../components/WineCard'
 import { AmandaAvatar, AmandaBrandGlyph } from '../components/Logo'
 import { wines } from '../data/wines'
-import { useExplorerQueue } from '../hooks/useExplorerQueue'
 
 const DISCOVERY_MODES = [
   {
@@ -111,8 +110,6 @@ export default function Home() {
   const [mode, setMode] = useState(DISCOVERY_MODES[0].id)
   const [flight, setFlight] = useState(DISCOVERY_FLIGHTS[0].id)
   const navigate = useNavigate()
-  const { queue } = useExplorerQueue()
-
   const countries = useMemo(() => new Set(wines.map(w => w.country)).size, [])
   const regions = useMemo(() => new Set(wines.map(w => w.region)).size, [])
   const sparklingCount = useMemo(() => wines.filter(w => w.category === 'sparkling').length, [])
@@ -401,18 +398,6 @@ export default function Home() {
       </section>
 
       <section className="pb-14 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-        <div className="surface-panel p-6 sm:p-8 mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-          <div>
-            <p className="section-label mb-2">Library Workflow</p>
-            <h3 className="font-display text-3xl text-slate">Explorer promotion queue</h3>
-            <p className="font-body text-slate-lt mt-2 max-w-2xl">
-              Keep venue discoveries in one place, then promote them into full Explorer records.
-              Queue size: <strong className="text-slate">{queue.length}</strong>.
-            </p>
-          </div>
-          <Link to="/explore?queue=1" className="btn-secondary whitespace-nowrap">Open Queue</Link>
-        </div>
-
         <div className="surface-panel p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
           <div>
             <p className="section-label mb-2">Nights Out</p>

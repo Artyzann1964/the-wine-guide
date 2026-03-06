@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom'
 import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
 import { RetailerLogo } from '../utils/retailerBrands'
-import { useExplorerQueue } from '../hooks/useExplorerQueue'
 
 const CATEGORIES = [
   { id: 'all', label: 'All Wines' },
@@ -114,9 +113,6 @@ export default function Explorer() {
   const [showAllGrapes, setShowAllGrapes] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
-  const [showQueuePanel, setShowQueuePanel] = useState(false)
-  const [copyNotice, setCopyNotice] = useState('')
-  const { queue, removeCandidate, clearQueue, markLinked } = useExplorerQueue()
 
   const categoryFilter = searchParams.get('category') || 'all'
   const regionFilter = searchParams.get('region') || 'all'
@@ -266,34 +262,6 @@ export default function Explorer() {
   ].filter(Boolean)
 
   const countriesCount = useMemo(() => new Set(wines.map(w => w.country)).size, [])
-  const queuedPending = queue.filter(item => !item.libraryWineId)
-
-  async function copyQueueDraft(item) {
-    const payload = {
-      name: item.name,
-      venue: item.venueName,
-      category: item.category,
-      country: item.country,
-      price: item.price,
-      review: item.review,
-      stars: item.stars,
-      sourceUrl: item.sourceUrl,
-    }
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
-      setCopyNotice(`Draft copied: ${item.name}`)
-    } catch {
-      setCopyNotice('Clipboard unavailable on this device/browser.')
-    }
-    window.setTimeout(() => setCopyNotice(''), 2200)
-  }
-
-  function linkQueueItem(item) {
-    const entry = window.prompt(`Enter library wine id for "${item.name}"`, item.libraryWineId || '')
-    if (!entry) return
-    markLinked(item.id, entry)
-  }
-
   return (
     <main className="min-h-screen">
       <section className="hero-mesh relative overflow-hidden pt-24 lg:pt-28 pb-8 border-b border-white/10">
@@ -363,7 +331,6 @@ export default function Explorer() {
                   { label: 'Countries', value: countriesCount },
                   { label: 'Filtered', value: filtered.length },
                   { label: 'Active filters', value: activeFilterCount },
-                  { label: 'Queue', value: queuedPending.length },
                 ].map(stat => (
                   <div key={stat.label} className="card interactive-lift p-3 text-center">
                     <p className="font-display text-3xl text-gold leading-none">{stat.value}</p>
@@ -380,72 +347,6 @@ export default function Explorer() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
-        {queuedPending.length > 0 && !showQueuePanel && (
-          <button
-            onClick={() => setShowQueuePanel(true)}
-            className="mb-4 flex items-center gap-2 rounded-xl border border-gold/25 bg-gold/8 px-4 py-2.5 font-body text-sm text-gold hover:bg-gold/15 transition-colors"
-          >
-            <span>📋</span>
-            <span>{queuedPending.length} wine{queuedPending.length !== 1 ? 's' : ''} queued from Places</span>
-            <span className="text-gold/60 text-xs ml-1">— tap to review</span>
-          </button>
-        )}
-        {showQueuePanel && (
-          <div className="surface-panel p-4 mb-5">
-            <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
-              <div>
-                <p className="section-label mb-1">Library Workflow</p>
-                <h2 className="font-display text-3xl text-slate">Explorer Promotion Queue</h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button onClick={() => setShowQueuePanel(false)} className="btn-ghost px-4 py-2">Hide</button>
-                {queue.length > 0 && (
-                  <button onClick={clearQueue} className="btn-secondary px-4 py-2">Clear queue</button>
-                )}
-              </div>
-            </div>
-            <p className="font-body text-sm text-slate-lt mb-3">
-              Queue wines from Places, then link each one to a full Explorer id after you add it to the library.
-            </p>
-            {copyNotice && (
-              <div className="mb-3 rounded-xl border border-gold/35 bg-gold/10 px-3 py-2">
-                <p className="font-body text-xs text-slate">{copyNotice}</p>
-              </div>
-            )}
-            {queue.length === 0 ? (
-              <p className="font-body text-sm text-slate-lt">No queued wines yet. Add from Places → live wine cards.</p>
-            ) : (
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 stagger">
-                {queue.map(item => (
-                  <article key={item.id} className="card interactive-lift p-4">
-                    <p className="font-body text-sm text-slate leading-snug">{item.name}</p>
-                    <p className="font-body text-xs text-slate-lt mt-1">
-                      {item.venueName || 'Venue'} · {item.country || 'Country pending'}
-                    </p>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      <span className="chip bg-cream text-slate-lt capitalize">{item.category || 'wine'}</span>
-                      {typeof item.price === 'number' && (
-                        <span className="chip bg-white border border-cream text-slate-lt">£{item.price}</span>
-                      )}
-                      {item.libraryWineId && (
-                        <span className="chip bg-gold/10 border border-gold/30 text-gold">Linked: {item.libraryWineId}</span>
-                      )}
-                    </div>
-                    {item.review && (
-                      <p className="font-body text-xs text-slate-lt mt-2 leading-relaxed">{item.review}</p>
-                    )}
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <button onClick={() => copyQueueDraft(item)} className="chip bg-slate text-white">Copy draft JSON</button>
-                      <button onClick={() => linkQueueItem(item)} className="chip bg-gold/10 border border-gold/30 text-gold">Link id</button>
-                      <button onClick={() => removeCandidate(item.id)} className="chip bg-white border border-cream text-slate-lt">Remove</button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
         <div className="md:hidden sticky top-16 z-30 mb-4 glass-panel p-2.5 flex items-center gap-2">
           <button
             onClick={() => setShowMobileFilters(v => !v)}
