@@ -322,13 +322,17 @@ export default function Explorer() {
                     {cat.label}
                   </button>
                 ))}
-                <button
-                  onClick={() => setShowQueuePanel(v => !v)}
-                  className={`chip ${showQueuePanel ? 'bg-gold text-white' : 'premium-chip'}`}
-                >
-                  Explorer queue ({queuedPending.length})
-                </button>
               </div>
+              {queuedPending.length > 0 && (
+                <div className="mt-3">
+                  <button
+                    onClick={() => setShowQueuePanel(v => !v)}
+                    className={`chip ${showQueuePanel ? 'bg-terracotta text-white' : 'bg-white/12 text-gold-lt border border-gold/30 hover:bg-gold/20'}`}
+                  >
+                    📋 Explorer queue ({queuedPending.length})
+                  </button>
+                </div>
+              )}
               <div className="mt-4 grid sm:grid-cols-2 gap-3 max-w-3xl">
                 <div className="rounded-2xl border border-white/15 bg-white/8 p-3 interactive-lift">
                   <p className="font-body text-[10px] tracking-[0.18em] uppercase text-gold-lt/85 mb-2">France Classics</p>
