@@ -30,7 +30,7 @@ Build is clean — zero errors, zero warnings. Code-split via `React.lazy()` —
 ```
 src/
   App.jsx                   # Routes + React.lazy() page imports + Suspense wrapper
-  main.jsx                  # Entry, BrowserRouter wrapper uses HashRouter internally
+  main.jsx                  # Entry point, mounts <App /> (routing wrapper is in App.jsx)
   index.css                 # Tailwind directives + custom utilities
 
   data/
@@ -265,7 +265,7 @@ Always update `REGIONS` array at the bottom of `wines.js` when adding new countr
 
 - **Chunk sizes (post code-split)** — `vendor.js` 163 kB/53 kB gzip · `wines.js` 477 kB/100 kB gzip · pages 8–60 kB each. Zero warnings. If the DB grows past ~400 wines, consider lazy-loading wine data by category.
 - **localStorage only** — cellar data is browser-local, not synced across devices. Fine for v1 but noted for future backend consideration.
-- **whereToBuy retailer names** — must be exactly consistent across wines for the Explorer retailer filter to work correctly (case-sensitive string match). The 11 retailers are: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Majestic`, `Co-op`, `Le Bon Vin`.
+- **whereToBuy retailer names** — Explorer retailer filtering is case-sensitive string matching, so use one exact name per retailer across all wines (including specialist merchants). The core branded supermarket/specialist set in `retailerBrands.jsx` is: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Majestic`, `Co-op`, `Le Bon Vin`.
 
 ---
 

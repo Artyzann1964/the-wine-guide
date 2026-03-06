@@ -1,7 +1,7 @@
 # The Wine Guide — Project Status
 
 **Last updated:** 2026-03-06
-**Build status:** ✅ Clean (zero errors, expected chunk size warning)
+**Build status:** ✅ Clean (zero errors, no chunk size warnings)
 **Deployment:** 🚀 Live on Railway — auto-deploys on every push to `main`
 
 ---

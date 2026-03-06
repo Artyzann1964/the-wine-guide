@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 const STORAGE_KEY = 'wine-guide-cellar'
 const BACKUP_KEY = 'wine-guide-cellar-backup'
+const CELLAR_EVENT = 'wine-guide-cellar-updated'
 
 const defaultCellar = {
   bottles: [],       // wines you own
@@ -45,18 +46,57 @@ function readStoredCellar() {
   return defaultCellar
 }
 
+function persistCellar(nextCellar) {
+  const payload = JSON.stringify(nextCellar)
+  try {
+    localStorage.setItem(STORAGE_KEY, payload)
+    localStorage.setItem(BACKUP_KEY, payload)
+  } catch {
+    // storage full or unavailable
+  }
+}
+
+function broadcastCellarUpdate() {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(CELLAR_EVENT))
+}
+
 export function useCellar() {
   const [cellar, setCellar] = useState(readStoredCellar)
-
+  
   useEffect(() => {
-    const payload = JSON.stringify(cellar)
-    try {
-      localStorage.setItem(STORAGE_KEY, payload)
-      localStorage.setItem(BACKUP_KEY, payload)
-    } catch {
-      // storage full or unavailable
+    if (typeof window === 'undefined') return undefined
+
+    const syncFromStorage = () => {
+      setCellar(readStoredCellar())
     }
-  }, [cellar])
+
+    const onStorage = (event) => {
+      if (event.key !== STORAGE_KEY && event.key !== BACKUP_KEY) return
+      syncFromStorage()
+    }
+
+    window.addEventListener(CELLAR_EVENT, syncFromStorage)
+    window.addEventListener('storage', onStorage)
+
+    return () => {
+      window.removeEventListener(CELLAR_EVENT, syncFromStorage)
+      window.removeEventListener('storage', onStorage)
+    }
+  }, [])
+
+  const applyUpdate = useCallback((updater) => {
+    setCellar(() => {
+      const latest = readStoredCellar()
+      const base = normalizeCellarShape(latest)
+      const next = normalizeCellarShape(
+        typeof updater === 'function' ? updater(base) : updater
+      )
+      persistCellar(next)
+      broadcastCellarUpdate()
+      return next
+    })
+  }, [])
 
   // Add a bottle to the cellar
   const addBottle = useCallback((wine) => {
@@ -81,26 +121,26 @@ export function useCellar() {
       purchaseRetailerOther: wine.purchaseRetailerOther || '',
       addedAt: new Date().toISOString(),
     }
-    setCellar(prev => ({ ...prev, bottles: [entry, ...prev.bottles] }))
+    applyUpdate(prev => ({ ...prev, bottles: [entry, ...prev.bottles] }))
     return entry
-  }, [])
+  }, [applyUpdate])
 
   // Remove a bottle from cellar
   const removeBottle = useCallback((id) => {
-    setCellar(prev => ({ ...prev, bottles: prev.bottles.filter(b => b.id !== id) }))
-  }, [])
+    applyUpdate(prev => ({ ...prev, bottles: prev.bottles.filter(b => b.id !== id) }))
+  }, [applyUpdate])
 
   // Update a bottle's details
   const updateBottle = useCallback((id, updates) => {
-    setCellar(prev => ({
+    applyUpdate(prev => ({
       ...prev,
       bottles: prev.bottles.map(b => b.id === id ? { ...b, ...updates } : b),
     }))
-  }, [])
+  }, [applyUpdate])
 
   // Mark a bottle as tasted (move from bottles → tasted)
   const markTasted = useCallback((bottleId, tastingNote) => {
-    setCellar(prev => {
+    applyUpdate(prev => {
       const bottle = prev.bottles.find(b => b.id === bottleId)
       if (!bottle) return prev
       const tastedEntry = {
@@ -116,7 +156,7 @@ export function useCellar() {
         tasted: [tastedEntry, ...prev.tasted],
       }
     })
-  }, [])
+  }, [applyUpdate])
 
   // Add to wishlist
   const addToWishlist = useCallback((wine) => {
@@ -130,14 +170,14 @@ export function useCellar() {
       notes: wine.notes || '',
       addedAt: new Date().toISOString(),
     }
-    setCellar(prev => ({ ...prev, wishlist: [entry, ...prev.wishlist] }))
+    applyUpdate(prev => ({ ...prev, wishlist: [entry, ...prev.wishlist] }))
     return entry
-  }, [])
+  }, [applyUpdate])
 
   // Remove from wishlist
   const removeFromWishlist = useCallback((id) => {
-    setCellar(prev => ({ ...prev, wishlist: prev.wishlist.filter(w => w.id !== id) }))
-  }, [])
+    applyUpdate(prev => ({ ...prev, wishlist: prev.wishlist.filter(w => w.id !== id) }))
+  }, [applyUpdate])
 
   const importTastedEntries = useCallback((entries) => {
     const safeEntries = Array.isArray(entries) ? entries : []
@@ -145,7 +185,7 @@ export function useCellar() {
 
     let result = { added: 0, skipped: 0, total: safeEntries.length }
 
-    setCellar(prev => {
+    applyUpdate(prev => {
       const existingIds = new Set(prev.tasted.map(item => item.id).filter(Boolean))
       const existingSignatures = new Set(prev.tasted.map(tastingSignature).filter(Boolean))
 
@@ -173,7 +213,7 @@ export function useCellar() {
     })
 
     return result
-  }, [])
+  }, [applyUpdate])
 
   // Check if a wine is in cellar / wishlist
   const isInCellar = useCallback((wineId) =>
