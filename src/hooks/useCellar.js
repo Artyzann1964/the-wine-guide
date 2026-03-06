@@ -40,6 +40,17 @@ function wishlistSignature(entry) {
   ].join('|').toLowerCase().trim()
 }
 
+function hasAnyCellarData(cellar) {
+  if (!cellar || typeof cellar !== 'object') return false
+  return (
+    Array.isArray(cellar.bottles) && cellar.bottles.length > 0
+  ) || (
+    Array.isArray(cellar.wishlist) && cellar.wishlist.length > 0
+  ) || (
+    Array.isArray(cellar.tasted) && cellar.tasted.length > 0
+  )
+}
+
 function normalizeCellarShape(value) {
   const data = value && typeof value === 'object' ? value : {}
   return {
@@ -117,6 +128,15 @@ export function useCellar() {
       window.removeEventListener('storage', onStorage)
     }
   }, [])
+
+  useEffect(() => {
+    if (cellarRevision > 0) return
+    if (!hasAnyCellarData(cellar)) return
+    const migratedRevision = Date.now()
+    persistCellar(cellar, migratedRevision)
+    setCellarRevision(migratedRevision)
+    broadcastCellarUpdate()
+  }, [cellar, cellarRevision])
 
   const applyUpdate = useCallback((updater) => {
     const revision = Date.now()
