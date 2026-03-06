@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useCellar } from '../hooks/useCellar'
 import { wines as wineDB } from '../data/wines'
 import { buildWishlistSharePayload, buildWishlistShareUrl, encodeWishlistPayload } from '../utils/wishlistShare'
 import { parseVivinoCsv, vivinoRowsToTastedEntries } from '../utils/vivinoImport'
+import { buildCellarSyncPayload, decodeCellarSyncPayload, encodeCellarSyncPayload } from '../utils/cellarSync'
 
 const TABS = [
   { id: 'bottles', label: 'My Bottles' },
@@ -68,9 +69,11 @@ function drinkWindowStatus(bottle) {
 }
 
 export default function Cellar() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState('bottles')
   const [showAddModal, setShowAddModal] = useState(false)
-  const { bottles, wishlist, tasted, removeBottle, removeFromWishlist, importTastedEntries, stats } = useCellar()
+  const [syncSeed, setSyncSeed] = useState('')
+  const { bottles, wishlist, tasted, removeBottle, removeFromWishlist, importTastedEntries, importCellarData, stats } = useCellar()
   const [vivinoStatus, setVivinoStatus] = useState({ tone: '', message: '' })
   const [importingVivino, setImportingVivino] = useState(false)
 
@@ -80,6 +83,15 @@ export default function Cellar() {
     return sum + price * (b.quantity || 1)
   }, 0)
   const hasValue = cellarValue > 0
+
+  useEffect(() => {
+    const syncFromUrl = searchParams.get('cs')
+    if (!syncFromUrl) return
+    setSyncSeed(syncFromUrl)
+    const next = new URLSearchParams(searchParams)
+    next.delete('cs')
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
 
   async function importVivinoHistory() {
     setImportingVivino(true)
@@ -170,6 +182,15 @@ export default function Cellar() {
             </button>
           ))}
         </div>
+
+        <CellarSyncPanel
+          bottles={bottles}
+          wishlist={wishlist}
+          tasted={tasted}
+          importCellarData={importCellarData}
+          syncSeed={syncSeed}
+          onSyncSeedConsumed={() => setSyncSeed('')}
+        />
 
         {/* Tab: Bottles */}
         {activeTab === 'bottles' && (
@@ -384,6 +405,142 @@ function WishlistSharePanel({ wishlist }) {
 
       {copyError && (
         <p className="font-body text-xs text-terracotta mt-2">{copyError}</p>
+      )}
+    </div>
+  )
+}
+
+function CellarSyncPanel({ bottles, wishlist, tasted, importCellarData, syncSeed, onSyncSeedConsumed }) {
+  const [showImport, setShowImport] = useState(false)
+  const [syncInput, setSyncInput] = useState('')
+  const [syncStatus, setSyncStatus] = useState({ tone: '', message: '' })
+
+  useEffect(() => {
+    if (!syncSeed) return
+    setSyncInput(syncSeed)
+    setShowImport(true)
+    setSyncStatus({ tone: 'info', message: 'Sync code detected in this link. Tap Merge on this device to import it.' })
+    onSyncSeedConsumed?.()
+  }, [syncSeed, onSyncSeedConsumed])
+
+  const syncCode = useMemo(() => {
+    const payload = buildCellarSyncPayload({ bottles, wishlist, tasted })
+    return encodeCellarSyncPayload(payload)
+  }, [bottles, wishlist, tasted])
+
+  const syncLink = useMemo(() => {
+    if (typeof window === 'undefined') return ''
+    const safe = encodeURIComponent(syncCode)
+    return `${window.location.origin}${window.location.pathname}#/cellar?cs=${safe}`
+  }, [syncCode])
+
+  async function copySyncCode() {
+    try {
+      await navigator.clipboard.writeText(syncCode)
+      setSyncStatus({ tone: 'success', message: 'Sync code copied. Paste it on your other device and import.' })
+    } catch {
+      setSyncStatus({ tone: 'error', message: 'Clipboard was blocked. Copy the code manually from the box below.' })
+    }
+  }
+
+  async function copySyncLink() {
+    try {
+      await navigator.clipboard.writeText(syncLink)
+      setSyncStatus({ tone: 'success', message: 'Sync link copied. Open it on your other device to import quickly.' })
+    } catch {
+      setSyncStatus({ tone: 'error', message: 'Clipboard was blocked. Copy the link manually from the box below.' })
+    }
+  }
+
+  function importFromCode(mode = 'merge') {
+    const parsed = decodeCellarSyncPayload(syncInput.trim())
+    if (!parsed) {
+      setSyncStatus({ tone: 'error', message: 'Invalid sync code. Copy it again from the source device and retry.' })
+      return
+    }
+
+    if (mode === 'replace') {
+      const confirmed = window.confirm('Replace all cellar data on this device with the imported data?')
+      if (!confirmed) return
+    }
+
+    const result = importCellarData(parsed, mode)
+    if (mode === 'replace') {
+      setSyncStatus({
+        tone: 'success',
+        message: `Replaced this device: ${result.totals.bottles} bottles, ${result.totals.wishlist} wishlist, ${result.totals.tasted} tasted.`,
+      })
+      return
+    }
+
+    const totalAdded = result.added.bottles + result.added.wishlist + result.added.tasted
+    const totalSkipped = result.skipped.bottles + result.skipped.wishlist + result.skipped.tasted
+    setSyncStatus({
+      tone: 'success',
+      message: `Merged ${totalAdded} items (${result.added.bottles} bottles, ${result.added.wishlist} wishlist, ${result.added.tasted} tasted). Skipped ${totalSkipped} duplicates.`,
+    })
+  }
+
+  return (
+    <div className="surface-panel p-5 sm:p-6 mb-8">
+      <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4">
+        <div className="max-w-2xl">
+          <p className="section-label mb-2">Cross-device Sync</p>
+          <h3 className="font-display font-semibold text-2xl text-slate mb-1">Move your cellar to another device</h3>
+          <p className="font-body text-sm text-slate-lt">
+            Cellar data is local to each browser. Copy a sync code (or link) from this device, then import it on your other phone/laptop.
+          </p>
+        </div>
+        <div className="flex gap-2 w-full xl:w-auto">
+          <button onClick={copySyncCode} className="btn-primary flex-1 xl:flex-none">Copy Sync Code</button>
+          <button onClick={copySyncLink} className="btn-secondary flex-1 xl:flex-none">Copy Sync Link</button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 mt-4">
+        <div className="rounded-xl border border-cream bg-white px-3 py-2.5 text-[11px] font-mono text-slate/75 break-all max-h-32 overflow-y-auto">
+          {syncCode}
+        </div>
+        <div className="rounded-xl border border-cream bg-white px-3 py-2.5 text-[11px] font-mono text-slate/75 break-all max-h-32 overflow-y-auto">
+          {syncLink}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <button onClick={() => setShowImport(v => !v)} className="btn-ghost text-xs">
+          {showImport ? 'Hide Import' : 'Import on This Device'}
+        </button>
+      </div>
+
+      {showImport && (
+        <div className="mt-3 rounded-xl border border-cream bg-white/80 p-3 space-y-3">
+          <label className="block">
+            <span className="font-body text-xs text-slate-lt uppercase tracking-widest block mb-1.5">Paste sync code</span>
+            <textarea
+              value={syncInput}
+              onChange={e => setSyncInput(e.target.value)}
+              rows={4}
+              placeholder="Paste the WGCS1_... code from your other device"
+              className="w-full rounded-xl border border-cream bg-ivory px-3 py-2.5 font-mono text-xs text-slate focus:outline-none focus:border-gold resize-y"
+            />
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => importFromCode('merge')} className="btn-primary text-xs">Merge into This Device</button>
+            <button onClick={() => importFromCode('replace')} className="btn-secondary text-xs">Replace This Device</button>
+          </div>
+        </div>
+      )}
+
+      {syncStatus.message && (
+        <div className={`mt-3 rounded-xl border px-3 py-2.5 ${
+          syncStatus.tone === 'success'
+            ? 'bg-emerald-50 border-emerald-200'
+            : syncStatus.tone === 'error'
+              ? 'bg-rose-50 border-rose-200'
+              : 'bg-gold/10 border-gold/30'
+        }`}>
+          <p className="font-body text-xs text-slate">{syncStatus.message}</p>
+        </div>
       )}
     </div>
   )

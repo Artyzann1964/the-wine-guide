@@ -19,6 +19,26 @@ function tastingSignature(entry) {
   ].join('|').toLowerCase().trim()
 }
 
+function bottleSignature(entry) {
+  return [
+    entry?.wineId || '',
+    entry?.producer || '',
+    entry?.name || '',
+    entry?.vintage || '',
+    entry?.purchaseDate || '',
+    entry?.location || '',
+  ].join('|').toLowerCase().trim()
+}
+
+function wishlistSignature(entry) {
+  return [
+    entry?.wineId || '',
+    entry?.producer || '',
+    entry?.name || '',
+    entry?.vintage || '',
+  ].join('|').toLowerCase().trim()
+}
+
 function normalizeCellarShape(value) {
   const data = value && typeof value === 'object' ? value : {}
   return {
@@ -215,6 +235,105 @@ export function useCellar() {
     return result
   }, [applyUpdate])
 
+  const importCellarData = useCallback((incomingCellar, mode = 'merge') => {
+    const incoming = normalizeCellarShape(incomingCellar)
+    let result = {
+      mode,
+      added: { bottles: 0, wishlist: 0, tasted: 0 },
+      skipped: { bottles: 0, wishlist: 0, tasted: 0 },
+      totals: { bottles: 0, wishlist: 0, tasted: 0 },
+    }
+
+    applyUpdate(prev => {
+      if (mode === 'replace') {
+        result = {
+          mode,
+          added: {
+            bottles: incoming.bottles.length,
+            wishlist: incoming.wishlist.length,
+            tasted: incoming.tasted.length,
+          },
+          skipped: { bottles: 0, wishlist: 0, tasted: 0 },
+          totals: {
+            bottles: incoming.bottles.length,
+            wishlist: incoming.wishlist.length,
+            tasted: incoming.tasted.length,
+          },
+        }
+        return incoming
+      }
+
+      const existingBottleIds = new Set(prev.bottles.map(item => item.id).filter(Boolean))
+      const existingBottleSignatures = new Set(prev.bottles.map(bottleSignature).filter(Boolean))
+      const existingWishlistIds = new Set(prev.wishlist.map(item => item.id).filter(Boolean))
+      const existingWishlistSignatures = new Set(prev.wishlist.map(wishlistSignature).filter(Boolean))
+      const existingTastedIds = new Set(prev.tasted.map(item => item.id).filter(Boolean))
+      const existingTastedSignatures = new Set(prev.tasted.map(tastingSignature).filter(Boolean))
+
+      const bottlesToAdd = []
+      incoming.bottles.forEach(entry => {
+        const signature = bottleSignature(entry)
+        const duplicate = (entry.id && existingBottleIds.has(entry.id)) || (signature && existingBottleSignatures.has(signature))
+        if (duplicate) return
+        bottlesToAdd.push(entry)
+        if (entry.id) existingBottleIds.add(entry.id)
+        if (signature) existingBottleSignatures.add(signature)
+      })
+
+      const wishlistToAdd = []
+      incoming.wishlist.forEach(entry => {
+        const signature = wishlistSignature(entry)
+        const duplicate = (entry.id && existingWishlistIds.has(entry.id)) || (signature && existingWishlistSignatures.has(signature))
+        if (duplicate) return
+        wishlistToAdd.push(entry)
+        if (entry.id) existingWishlistIds.add(entry.id)
+        if (signature) existingWishlistSignatures.add(signature)
+      })
+
+      const tastedToAdd = []
+      incoming.tasted.forEach(entry => {
+        const signature = tastingSignature(entry)
+        const duplicate = (entry.id && existingTastedIds.has(entry.id)) || (signature && existingTastedSignatures.has(signature))
+        if (duplicate) return
+        tastedToAdd.push(entry)
+        if (entry.id) existingTastedIds.add(entry.id)
+        if (signature) existingTastedSignatures.add(signature)
+      })
+
+      result = {
+        mode,
+        added: {
+          bottles: bottlesToAdd.length,
+          wishlist: wishlistToAdd.length,
+          tasted: tastedToAdd.length,
+        },
+        skipped: {
+          bottles: incoming.bottles.length - bottlesToAdd.length,
+          wishlist: incoming.wishlist.length - wishlistToAdd.length,
+          tasted: incoming.tasted.length - tastedToAdd.length,
+        },
+        totals: {
+          bottles: prev.bottles.length + bottlesToAdd.length,
+          wishlist: prev.wishlist.length + wishlistToAdd.length,
+          tasted: prev.tasted.length + tastedToAdd.length,
+        },
+      }
+
+      if (bottlesToAdd.length === 0 && wishlistToAdd.length === 0 && tastedToAdd.length === 0) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        bottles: [...bottlesToAdd, ...prev.bottles],
+        wishlist: [...wishlistToAdd, ...prev.wishlist],
+        tasted: [...tastedToAdd, ...prev.tasted],
+      }
+    })
+
+    return result
+  }, [applyUpdate])
+
   // Check if a wine is in cellar / wishlist
   const isInCellar = useCallback((wineId) =>
     cellar.bottles.some(b => b.wineId === wineId), [cellar.bottles])
@@ -247,6 +366,7 @@ export function useCellar() {
     addToWishlist,
     removeFromWishlist,
     importTastedEntries,
+    importCellarData,
     isInCellar,
     isInWishlist,
   }
