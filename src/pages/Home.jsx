@@ -151,6 +151,17 @@ export default function Home() {
               }}
             />
           </div>
+          <div className="absolute right-0 top-0 bottom-0 w-[45vw] max-w-[480px] hidden lg:block overflow-hidden">
+            <img
+              src="/amanda-wine.png"
+              alt=""
+              className="absolute right-[-15%] bottom-[-20%] h-[148%] max-w-none opacity-[0.22] grayscale contrast-110 brightness-90"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 100%)',
+                maskImage: 'linear-gradient(to left, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 100%)',
+              }}
+            />
+          </div>
           <div className="hero-orb w-60 h-60 bg-gold/30 right-[14%] top-[8%] animate-drift" />
           <div className="hero-orb w-44 h-44 bg-terracotta/20 left-[30%] bottom-[12%] animate-drift" style={{ animationDelay: '1.3s' }} />
         </div>

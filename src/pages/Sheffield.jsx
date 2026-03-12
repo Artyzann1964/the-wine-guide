@@ -458,21 +458,35 @@ export default function Places() {
   return (
     <main className="min-h-screen">
       <section className="hero-mesh pt-24 lg:pt-28 pb-14 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="section-label text-gold-lt/85 mb-3">Amanda's Places Guide</p>
-          <h1 className="font-display text-5xl lg:text-6xl text-white leading-[1.03] mb-4">
-            Favourite venues,
-            <span className="block text-gradient-gold">chosen the Amanda way.</span>
-          </h1>
-          <p className="font-body text-white/75 max-w-3xl text-lg leading-relaxed">
-            From Sheffield to Stroud to Morpeth and beyond, use Amanda's venue list to decide where to go and what to order.
-          </p>
-          <p className="font-body text-sm text-gold-lt/90 mt-3">
-            Amanda favourites: {amandaFavourites.join(', ')}.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/pairing" className="btn-primary">Open Pairing Wizard</Link>
-            <Link to="/shop" className="btn-secondary">Compare Retailers</Link>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-10">
+          <div className="flex-1">
+            <p className="section-label text-gold-lt/85 mb-3">Amanda's Places Guide</p>
+            <h1 className="font-display text-5xl lg:text-6xl text-white leading-[1.03] mb-4">
+              Favourite venues,
+              <span className="block text-gradient-gold">chosen the Amanda way.</span>
+            </h1>
+            <p className="font-body text-white/75 max-w-3xl text-lg leading-relaxed">
+              From Sheffield to Stroud to Morpeth and beyond, use Amanda's venue list to decide where to go and what to order.
+            </p>
+            <p className="font-body text-sm text-gold-lt/90 mt-3">
+              Amanda favourites: {amandaFavourites.join(', ')}.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link to="/pairing" className="btn-primary">Open Pairing Wizard</Link>
+              <Link to="/shop" className="btn-secondary">Compare Retailers</Link>
+            </div>
+          </div>
+          <div className="flex gap-3 flex-shrink-0">
+            <img
+              src="/amanda-wine.png"
+              alt="Amanda Holmes"
+              className="w-32 h-40 lg:w-40 lg:h-52 object-cover rounded-2xl shadow-xl ring-2 ring-gold/30"
+            />
+            <img
+              src="/amanda-holmes.png"
+              alt="Amanda Holmes"
+              className="w-32 h-40 lg:w-40 lg:h-52 object-cover rounded-2xl shadow-xl ring-2 ring-white/10 mt-6"
+            />
           </div>
         </div>
       </section>
