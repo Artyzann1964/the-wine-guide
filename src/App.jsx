@@ -18,6 +18,8 @@ const Places = lazy(() => import('./pages/Sheffield'))
 const Critics        = lazy(() => import('./pages/Critics'))
 const TasteProfiler  = lazy(() => import('./pages/TasteProfiler'))
 const WishlistShare  = lazy(() => import('./pages/WishlistShare'))
+const Producers      = lazy(() => import('./pages/Producers'))
+const ProducerDetail = lazy(() => import('./pages/ProducerDetail'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -53,6 +55,8 @@ function AppLayout() {
             <Route path="/sheffield" element={<Places />} />
             <Route path="/critics" element={<Critics />} />
             <Route path="/taste-quiz" element={<TasteProfiler />} />
+            <Route path="/producers" element={<Producers />} />
+            <Route path="/producers/:slug" element={<ProducerDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

@@ -5,6 +5,7 @@ import { useCellar } from '../hooks/useCellar'
 import TasteProfile from '../components/TasteProfile'
 import { generateOurTake } from '../utils/ourTake'
 import { RetailerBadge } from '../utils/retailerBrands'
+import { getRecommendations } from '../utils/wineRecommendations'
 
 const RATING_LABEL = { exceptional: '★★★ Exceptional', great: '★★ Great', good: '★ Good', average: '— Average' }
 const RATING_COLOR = { exceptional: 'text-gold', great: 'text-sage', good: 'text-slate-lt', average: 'text-slate-lt/50' }
@@ -31,9 +32,7 @@ export default function WineDetail() {
     )
   }
 
-  const related = wines
-    .filter(w => w.id !== wine.id && (w.category === wine.category || w.region === wine.region))
-    .slice(0, 3)
+  const related = getRecommendations(wine, wines, 3)
 
   const handleWishlist = () => {
     addToWishlist({ wineId: wine.id, name: wine.name, producer: wine.producer, vintage: wine.vintage, region: wine.region, category: wine.category })
@@ -76,7 +75,7 @@ export default function WineDetail() {
               <h1 className="font-display text-5xl lg:text-6xl font-semibold text-slate leading-tight mb-2">
                 {wine.name}
               </h1>
-              <p className="font-display text-xl text-slate-lt italic mb-4">{wine.producer}</p>
+              <Link to={`/producers/${wine.producer?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`} className="font-display text-xl text-slate-lt italic mb-4 hover:text-gold transition-colors inline-block">{wine.producer}</Link>
 
               <div className="flex flex-wrap items-center gap-4 mb-5">
                 <div className="flex items-center gap-1.5">
