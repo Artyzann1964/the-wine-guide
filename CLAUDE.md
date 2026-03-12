@@ -31,7 +31,7 @@ Current dataset facts:
 - Categories: 106 red, 93 white, 39 sparkling, 10 dessert, 19 rosé
 - 14 venues in Amanda's Places
 - 8 venue wine-list sources in `src/data/venueWineLists.js`
-- 8 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem)
+- 14 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem, plus 6 others)
 
 ## Commands
 
@@ -62,7 +62,8 @@ src/hooks/useCellar.js                  Cellar state, persistence, import helper
 src/hooks/useVenueSourceInbox.js        Venue source inbox local storage hook
 
 src/components/CellarCloudSyncBridge.jsx  Background push/pull sync bridge
-src/components/Nav.jsx                  Navigation
+src/components/GlobalSearch.jsx         Cmd+K full-screen search overlay (pre-built index, keyboard nav)
+src/components/Nav.jsx                  Navigation (search button wired to GlobalSearch)
 src/components/Footer.jsx               Footer
 src/components/Logo.jsx                 Brand marks and Amanda visuals
 src/components/TasteProfile.jsx         Radar chart
@@ -72,20 +73,22 @@ src/components/cellar/constants.js      TABS, CATEGORY_COLORS, PURCHASE_CHANNELS
 src/components/cellar/StarRating.jsx    StarIcon, StarDisplay, StarInput (shared star components)
 src/components/cellar/CellarHero.jsx    Hero section with stats cards
 src/components/cellar/CellarTabs.jsx    Tab bar
-src/components/cellar/BottleCard.jsx    Bottle card with star rating display
+src/components/cellar/BottleCard.jsx    Bottle card with star rating display + Edit button (onEdit prop)
 src/components/cellar/WishlistCard.jsx  Wishlist card
-src/components/cellar/TastedReviewTable.jsx  Review table for tasting notes (desktop table + mobile cards)
+src/components/cellar/TastedReviewTable.jsx  Review table (desktop + mobile; renders structured tasting tags)
 src/components/cellar/EmptyState.jsx    Empty state component
 src/components/cellar/AddBottleModal.jsx     Add bottle form with optional star rating
-src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted form with quality + wouldBuyAgain ratings
+src/components/cellar/EditBottleModal.jsx    Edit existing bottle (pre-populated, calls updateBottle)
+src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted form with structured notes (colour/nose/body/acidity/tannins/finish)
+src/components/cellar/CellarStatsDashboard.jsx  Cellar overview: donut chart, summary cards, 6-month timeline
 src/components/cellar/VivinoImportPanel.jsx  Vivino CSV import
 src/components/cellar/WishlistSharePanel.jsx Wishlist share URL generation
 src/components/cellar/CellarSyncPanel.jsx    Cloud sync + manual backup
 
-src/pages/Home.jsx                      Homepage
+src/pages/Home.jsx                      Homepage (single amanda-eindhoven.jpg ghost hero, right-anchored, opacity 0.18)
 src/pages/Explorer.jsx                  Main explorer/filter page
-src/pages/WineDetail.jsx                Detail page + add-to-cellar modal (shows labelImage)
-src/pages/Cellar.jsx                    Cellar orchestrator (~200 lines, imports sub-components)
+src/pages/WineDetail.jsx                Detail page + add-to-cellar modal (similarity-based related wines)
+src/pages/Cellar.jsx                    Cellar orchestrator (bottles/wishlist/tasted/sync + stats dashboard + edit modal)
 src/pages/Shop.jsx                      Retailer guide and retailer-specific wine views
 src/pages/Sheffield.jsx                 Amanda's Places page
 src/pages/WishlistShare.jsx             Shared wishlist page
@@ -94,12 +97,16 @@ src/pages/Sparkling.jsx                 Sparkling guide
 src/pages/Pairing.jsx                   Pairing wizard
 src/pages/Critics.jsx                   Critics page
 src/pages/TasteProfiler.jsx             Taste quiz
+src/pages/VintageGuide.jsx              Vintage quality grid — 19 regions × 2010-2024, colour-coded scores, country+category filters
+src/pages/Producers.jsx                 Producer index with search + producer cards
+src/pages/ProducerDetail.jsx            Producer detail — wines grid + aggregate taste profile radar
 
 src/utils/cellarSync.js                 Cloud sync id/payload helpers
 src/utils/wishlistShare.js              Wishlist share encoding/decoding helpers
 src/utils/vivinoImport.js               CSV parser and Vivino -> tasted entry mapper
 src/utils/retailerBrands.jsx            Retailer logo/badge config
 src/utils/ourTake.js                    Generated "Our Take" copy
+src/utils/wineRecommendations.js        Similarity engine: getRecommendations() + getCellarRecommendations()
 ```
 
 ## Routing
@@ -119,6 +126,9 @@ Routes currently registered in `App.jsx`:
 - `/sheffield`
 - `/critics`
 - `/taste-quiz`
+- `/vintages`
+- `/producers`
+- `/producers/:slug`
 
 Because the app uses `HashRouter`, deployed links resolve as `/#/route`.
 
@@ -234,11 +244,13 @@ Build config:
 - the wine dataset still lands in its own large shared chunk
 
 Current verified build output from 2026-03-12:
-- `wines`: 537.52 kB / 113.20 kB gzip
+- `index` (wines dataset): 579.59 kB / 126.69 kB gzip
 - `Education`: 100.69 kB / 30.46 kB gzip
-- `Sheffield`: 88.94 kB / 24.56 kB gzip
-- `Cellar`: 59.22 kB / 13.37 kB gzip
+- `Sheffield`: 105.57 kB / 29.59 kB gzip
+- `Cellar`: 86.11 kB / 18.40 kB gzip
+- `VintageGuide`: 18.66 kB / 4.46 kB gzip
 - `vendor`: 162.98 kB / 53.24 kB gzip
+- PWA: sw.js + workbox generated, 30 entries precached
 
 Railway notes:
 - `railway.toml` starts the app with `npm start`
@@ -251,7 +263,8 @@ These are active review findings and should be assumed true until fixed:
 
 1. `src/components/CellarCloudSyncBridge.jsx` and `server.mjs`
    Sync now merges item adds, updates, and removals centrally. Ownership has an owner email, recovery key, passphrase rotation, and linked-device revocation, but there is still no signed-in account model or verified email channel.
-2. Wine label images cover 8 iconic wines via Wikimedia Commons. More wines could benefit from labels if suitable CC-licensed images are found.
+2. Wine label images cover 14 wines. More could be added via Wikimedia Commons CC-licensed images.
+3. `Cellar.jsx` is growing (~400+ lines) and could be split further as features are added.
 
 ## Session Guidance
 
@@ -266,3 +279,12 @@ When changing retailer-related code:
 
 When changing cellar features:
 - check `useCellar.js`, `Cellar.jsx`, `CellarCloudSyncBridge.jsx`, and `server.mjs` together
+
+When changing the GlobalSearch overlay:
+- The search index is pre-built at module load time in `GlobalSearch.jsx`
+- Scoring: name-start(100) > producer-start(80) > name-includes(60) > producer-includes(50) > full-text(30) > multi-token(20)
+- Triggered by Cmd+K (Mac) / Ctrl+K (Windows) or the search icon in Nav
+
+When adding new pages/routes:
+- Add lazy import + Route in `src/App.jsx`
+- Add Nav link in `src/components/Nav.jsx` (mobile menu list + desktop if appropriate)
