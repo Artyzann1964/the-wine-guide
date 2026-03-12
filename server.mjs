@@ -1053,6 +1053,70 @@ app.put('/api/cellar-items/:syncId', async (req, res) => {
   }
 })
 
+// ── YouTube recent videos proxy ────────────────────────────────────────────────
+// Resolves a YouTube @handle → channel ID → RSS feed → last 5 videos.
+// No API key required; uses the public RSS feed + channel page scrape.
+const youtubeChannelIdCache = new Map()
+
+app.get('/api/youtube-recent', async (req, res) => {
+  const handle = String(req.query.handle || '').replace(/^@/, '').trim()
+  if (!handle || !/^[A-Za-z0-9_.-]{2,60}$/.test(handle)) {
+    return res.status(400).json({ error: 'Invalid handle' })
+  }
+
+  try {
+    let channelId = youtubeChannelIdCache.get(handle)
+
+    if (!channelId) {
+      const pageResp = await fetch(`https://www.youtube.com/@${handle}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept-Language': 'en-GB,en;q=0.9',
+        },
+        signal: AbortSignal.timeout(8000),
+      })
+      if (!pageResp.ok) return res.status(502).json({ error: 'channel_page_unavailable' })
+      const html = await pageResp.text()
+      const match = html.match(/"channelId":"(UC[A-Za-z0-9_-]{22})"/)
+      if (!match) return res.status(404).json({ error: 'channel_id_not_found' })
+      channelId = match[1]
+      youtubeChannelIdCache.set(handle, channelId)
+    }
+
+    const rssResp = await fetch(
+      `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+      { signal: AbortSignal.timeout(8000) }
+    )
+    if (!rssResp.ok) return res.status(502).json({ error: 'rss_unavailable' })
+    const xml = await rssResp.text()
+
+    const videos = []
+    const entryRe = /<entry>([\s\S]*?)<\/entry>/g
+    let m
+    while ((m = entryRe.exec(xml)) !== null && videos.length < 5) {
+      const block = m[1]
+      const get = (tag) => { const x = block.match(new RegExp(`<${tag}><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}>([^<]*)<\\/${tag}>`)); return x ? (x[1] ?? x[2] ?? '').trim() : '' }
+      const videoId = get('yt:videoId')
+      const title = get('title')
+      const published = get('published')
+      if (videoId && title) {
+        videos.push({
+          videoId,
+          title,
+          published,
+          thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          url: `https://www.youtube.com/watch?v=${videoId}`,
+        })
+      }
+    }
+
+    res.set('Cache-Control', 'public, max-age=3600')
+    return res.json({ channelId, handle, videos })
+  } catch (err) {
+    return res.status(502).json({ error: 'youtube_fetch_failed' })
+  }
+})
+
 app.use(express.static(DIST_DIR, { index: false }))
 
 app.get('*', (req, res) => {

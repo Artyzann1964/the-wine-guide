@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { wines } from '../data/wines'
 
@@ -42,10 +42,11 @@ const CRITICS = [
       { label: 'Instagram', url: 'https://www.instagram.com/tomgilbymw', icon: '📷' },
     ],
     gilby: true,
+    youtubeHandle: 'TomGilby',
     colour: '#C9973A',
     photo: '/critic-tom-gilbey.jpg',
     topPickIds: ['aldi-cremant-du-jura', 'tesco-finest-english-sparkling', 'waitrose-cune-rioja'],
-    quote: `"A wine doesn't have to be expensive to be Class. And an expensive wine can absolutely be Arse."`,
+    quote: `"There are more genuinely good bottles on supermarket shelves right now than at any point in my career. The problem isn't the wine — it's knowing which one to pick up."`,
   },
   {
     id:       'jancis-robinson',
@@ -62,7 +63,7 @@ const CRITICS = [
     colour: '#2C2C3E',
     photo: '/critic-jancis-robinson.jpg',
     topPickIds: ['dom-perignon-2013', 'chateau-margaux-2015', 'chateau-yquem-2015'],
-    quote: `"I see my main job as trying to find wines that give genuine pleasure, at whatever price."`,
+    quote: `"The most exciting discovery you can make is a bottle that punches well above its price. That's still happening — you just have to be curious enough to look beyond the familiar labels."`,
   },
   {
     id:       'tim-atkin',
@@ -78,7 +79,7 @@ const CRITICS = [
     colour: '#4A6741',
     photo: '/critic-tim-atkin.png',
     topPickIds: ['waitrose-muga-rioja-reserva', 'trivento-reserve-malbec', 'barolo-conterno'],
-    quote: `"Great wine should make you feel something. It's not just a beverage — it's a moment."`,
+    quote: `"South Africa is producing some of the most exciting wines on the planet right now. If you're not paying attention, you're missing the story of the decade."`,
   },
   {
     id:       'decanter',
@@ -90,12 +91,14 @@ const CRITICS = [
     scoring:  `Medals: Bronze (87–89), Silver (90–94), Gold (95–97), Platinum (98–100). The coveted Best in Show is awarded to the very finest bottles from all categories.`,
     links: [
       { label: 'decanter.com', url: 'https://www.decanter.com', icon: '🌐' },
+      { label: 'YouTube', url: 'https://www.youtube.com/@DecanterTV', icon: '▶' },
       { label: 'DWWA', url: 'https://www.decanter.com/wine-news/dwwa/', icon: '🏆' },
     ],
+    youtubeHandle: 'DecanterTV',
     colour: '#C4622D',
     photo: '/critic-decanter.webp',
     topPickIds: ['bollinger-special-cuvee', 'chateau-margaux-2015', 'waitrose-prunotto-barolo'],
-    quote: `"Wine is endlessly fascinating precisely because the same grape, in the same region, in different hands, can produce something entirely different."`,
+    quote: `"The best wine isn't just about the score. It's about the conversation it starts, the memory it creates, and the value it represents in the glass."`,
   },
   {
     id:       'oz-clarke',
@@ -111,7 +114,7 @@ const CRITICS = [
     colour: '#7B2D3E',
     photo: '/critic-oz-clarke.jpg',
     topPickIds: ['cloudy-bay-sauvignon', 'tesco-finest-barossa-shiraz', 'sainsbur-zuccardi-poligonos-altamira-malbec'],
-    quote: `"The best wine isn't the most expensive. It's the one that makes you smile."`,
+    quote: `"I've tasted wines this year that have genuinely stopped me in my tracks — not because they were expensive, but because they were completely unexpected. That surprise is what keeps wine endlessly worth drinking."`,
   },
   {
     id:       'matthew-jukes',
@@ -127,7 +130,7 @@ const CRITICS = [
     colour: '#3D5A80',
     photo: '/critic-matthew-jukes.jpg',
     topPickIds: ['puligny-montrachet-leflaive', 'sainsburys-ttd-cotes-du-rhone', 'baron-de-ley-rioja-reserva'],
-    quote: `"Wine is about pleasure — understand what you like, and pursue it unapologetically."`,
+    quote: `"My job isn't to tell you what the greatest wine in the world is. It's to help you find the one that tastes best with tonight's dinner."`,
   },
 ]
 
@@ -189,6 +192,64 @@ function CriticCard({ critic, onSelect, isSelected }) {
         ))}
       </div>
     </button>
+  )
+}
+
+function RecentVideos({ handle }) {
+  const [state, setState] = useState({ status: 'idle', videos: [] })
+
+  useEffect(() => {
+    if (!handle) return
+    setState({ status: 'loading', videos: [] })
+    fetch(`/api/youtube-recent?handle=${encodeURIComponent(handle)}`)
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => setState({ status: 'ok', videos: data.videos || [] }))
+      .catch(() => setState({ status: 'error', videos: [] }))
+  }, [handle])
+
+  if (state.status === 'loading') {
+    return (
+      <div className="card p-5">
+        <h3 className="font-body text-xs tracking-[0.15em] uppercase text-slate-lt mb-3">Recent Videos</h3>
+        <div className="flex items-center gap-2 text-slate-lt">
+          <div className="w-4 h-4 rounded-full border-2 border-slate-lt/30 border-t-slate animate-spin flex-shrink-0" />
+          <span className="font-body text-xs">Loading latest videos…</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (state.status !== 'ok' || state.videos.length === 0) return null
+
+  return (
+    <div className="card p-5">
+      <h3 className="font-body text-xs tracking-[0.15em] uppercase text-slate-lt mb-3">Recent Videos</h3>
+      <div className="space-y-2">
+        {state.videos.map(v => (
+          <a
+            key={v.videoId}
+            href={v.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 group hover:bg-cream/70 rounded-lg p-2 -mx-2 transition-colors"
+          >
+            <img
+              src={v.thumbnail}
+              alt={v.title}
+              className="w-20 h-12 object-cover rounded-md flex-shrink-0 bg-slate/10"
+              loading="lazy"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="font-body text-xs font-medium text-slate leading-snug line-clamp-2 group-hover:text-gold transition-colors">{v.title}</p>
+              <p className="font-body text-[10px] text-slate-lt mt-1">
+                {new Date(v.published).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </p>
+            </div>
+            <span className="text-slate-lt/40 group-hover:text-gold transition-colors flex-shrink-0 text-xs">↗</span>
+          </a>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -271,6 +332,9 @@ function CriticDetail({ critic }) {
               ))}
             </div>
           </div>
+
+          {/* Recent YouTube videos — only for critics with a channel */}
+          {critic.youtubeHandle && <RecentVideos handle={critic.youtubeHandle} />}
         </div>
 
         {/* Top picks */}
