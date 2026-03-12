@@ -249,7 +249,7 @@ const RETAILERS = [
   },
   {
     id: 'le-bon-vin',
-    name: 'Le Bon Vin Sheffield',
+    name: 'Le Bon Vin',
     type: 'specialist',
     emoji: '🍾',
     color: '#6B1F3A',

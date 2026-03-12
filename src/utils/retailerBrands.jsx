@@ -14,7 +14,6 @@ export const RETAILER_BRANDS = {
   'Le Bon Vin':   { bg: '#2C2C3E', text: '#C9973A', border: '#1a1a2e' },
   'Majestic':     { bg: '#5C1A3A', text: '#F0CB71', border: '#3d1028' },
   'Co-op':        { bg: '#003E71', text: '#FFFFFF', border: '#002850' },
-  'Le Bon Vin Sheffield': { bg: '#2C2C3E', text: '#C9973A', border: '#1a1a2e' },
 }
 
 // Logo image paths (in /public, served at /)
@@ -30,7 +29,6 @@ const RETAILER_LOGOS = {
   'Le Bon Vin':   '/le-bon-vin-wine-merchants-sheffield-uk-S13PHFITKR.jpg',
   'Majestic':     '/Majestic.jpg',
   'Co-op':        '/coop-logo.avif',
-  'Le Bon Vin Sheffield': '/le-bon-vin-wine-merchants-sheffield-uk-S13PHFITKR.jpg',
 }
 
 // Fallback lettermarks (used if logo fails to load)
@@ -46,7 +44,6 @@ const RETAILER_MARKS = {
   'Le Bon Vin':   'LB',
   'Majestic':     'Mj',
   'Co-op':        'Co',
-  'Le Bon Vin Sheffield': 'LB',
 }
 
 function normaliseRetailerName(name = '') {
@@ -57,7 +54,7 @@ function normaliseRetailerName(name = '') {
     'marks and spencer': 'M&S',
     'marks & spencer': 'M&S',
     'm and s': 'M&S',
-    'le bon vin sheffield': 'Le Bon Vin Sheffield',
+    'le bon vin sheffield': 'Le Bon Vin',
     'le bon vin': 'Le Bon Vin',
     'coop': 'Co-op',
     'co op': 'Co-op',

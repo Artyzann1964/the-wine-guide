@@ -133,6 +133,17 @@ export default function WineDetail() {
 
             {/* Right panel */}
             <div className="flex flex-col gap-4">
+              {/* Label image */}
+              {wine.labelImage && (
+                <div className="card p-5 flex justify-center">
+                  <img
+                    src={wine.labelImage}
+                    alt={`${wine.name} label`}
+                    className="max-h-40 object-contain rounded-lg"
+                    loading="lazy"
+                  />
+                </div>
+              )}
               {/* Taste profile */}
               <div className="card p-5">
                 <h3 className="font-body text-xs tracking-[0.15em] uppercase text-slate-lt mb-4">Tasting Profile</h3>

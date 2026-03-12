@@ -1,317 +1,268 @@
-# The Wine Guide — CLAUDE.md
+# The Wine Guide - CLAUDE.md
 
-Project memory for Claude Code sessions. Keep this updated as the project evolves.
+Project memory for future coding sessions. Keep this aligned with the live codebase.
 
----
+## Overview
 
-## Project Overview
+The Wine Guide is a React 18 + Vite wine reference app with a personal cellar tracker.
 
-A React SPA wine reference and personal cellar tracker aimed at UK consumers. Covers 232 wines sourced from UK supermarkets (Tesco, Sainsbury's, Waitrose, Asda, M&S, Aldi, Lidl, Morrisons), specialist retailers (Majestic, Co-op) and Sheffield specialist Le Bon Vin, with full tasting profiles, food pairings, and vintage guides.
+Current architecture:
+- Frontend: React 18, React Router 6, Tailwind CSS 3
+- Server: Express (`server.mjs`)
+- Routing: `HashRouter`
+- Build: Vite 5
+- Persistence:
+  - local `localStorage` for cellar state on each device
+  - normalized internal cellar `items` model in the frontend
+  - optional cross-device sync via `/api/cellar-items/:syncId`
+  - sync sessions are bootstrapped via `/api/cellar-sync-session/:syncId`
+  - new device sessions require the shared sync code plus a shared sync passphrase
+  - new sync spaces record an owner email and return a recovery key
+  - owner-management sessions are bootstrapped via `/api/cellar-sync-owner/:syncId/session`
+  - passphrase rotation and session revocation are handled by `/api/cellar-sync-owner/:syncId/rotate-passphrase`
+  - linked device tokens can be listed and revoked via `/api/cellar-sync-owner/:syncId/devices`
+  - item sync uses PostgreSQL when `DATABASE_URL` is set, otherwise file-backed storage
+  - removals are propagated as tombstones via `deletedAt`
 
-**Stack:** React 18 · React Router 6 (HashRouter) · Vite 5 · Tailwind CSS v3 · localStorage for cellar persistence · No backend
-
----
+Current dataset facts:
+- 267 wines
+- 21 countries
+- 97 region strings
+- Categories: 106 red, 93 white, 39 sparkling, 10 dessert, 19 rosé
+- 14 venues in Amanda's Places
+- 8 venue wine-list sources in `src/data/venueWineLists.js`
+- 8 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem)
 
 ## Commands
 
 ```bash
-npm run dev       # dev server on :5173
-npm run build     # production build → dist/
-npm run preview   # serve dist/ on :3000 (same as Railway)
-npm start         # alias for preview with $PORT support
+npm run dev       # Vite dev server on :5173
+npm run build     # production build -> dist/
+npm run preview   # Vite preview on :3000 (or $PORT)
+npm start         # Express server, serves dist/ and the sync APIs
 ```
 
-Build is clean — zero errors, zero warnings. Code-split via `React.lazy()` — wine data lands in its own chunk, pages are separate chunks.
+Notes:
+- `npm start` is not Vite preview. It runs `node server.mjs`.
+- `npm run build` is currently clean.
 
----
+## Important Files
 
-## File Structure
+```text
+server.mjs                              Express server + cellar sync API + static dist serving
+src/App.jsx                             Route table + lazy page loading
+src/main.jsx                            React entry point
+src/index.css                           Tailwind entry + app utility classes
 
-```
-src/
-  App.jsx                   # Routes + React.lazy() page imports + Suspense wrapper
-  main.jsx                  # Entry point, mounts <App /> (routing wrapper is in App.jsx)
-  index.css                 # Tailwind directives + custom utilities
+src/data/wines.js                       Main wine dataset + schema normalizer
+src/data/pairings.js                    Pairing wizard data
+src/data/venueWineLists.js              Venue wine-list data keyed by venue id
 
-  data/
-    wines.js                # All wine entries (232 wines) + REGIONS array
-    pairings.js             # Food pairing data for the pairing wizard
-    venueWineLists.js       # Venue wine lists (Gill & Co etc.) keyed by venue ID — aligned with Sheffield.jsx
+src/hooks/useCellar.js                  Cellar state, persistence, import helpers
+src/hooks/useVenueSourceInbox.js        Venue source inbox local storage hook
 
-  hooks/
-    useCellar.js            # localStorage cellar state: bottles / wishlist / tasted
-    useVenueSourceInbox.js  # Venue Source Inbox — localStorage inbox for venue URL submissions
+src/components/CellarCloudSyncBridge.jsx  Background push/pull sync bridge
+src/components/Nav.jsx                  Navigation
+src/components/Footer.jsx               Footer
+src/components/Logo.jsx                 Brand marks and Amanda visuals
+src/components/TasteProfile.jsx         Radar chart
+src/components/WineCard.jsx             Standard wine card (shows labelImage as subtle overlay)
 
-  components/
-    WineCard.jsx            # Card with compact mode, showPrice prop, pairing chips, quick ♡ wishlist button
-    TasteProfile.jsx        # SVG radar/spider chart for taste profile
-    Nav.jsx                 # Top navigation bar — uses NavLogo from Logo.jsx
-    Logo.jsx                # Brand logo — WineGlassSVG (flute SVG with animated bubbles),
-                            #   NavLogo (icon + wordmark), HeroLogo (large stacked),
-                            #   LogoMark (icon-only). All from a single file.
+src/components/cellar/constants.js      TABS, CATEGORY_COLORS, PURCHASE_CHANNELS, RETAILER_OPTIONS, drinkWindowStatus()
+src/components/cellar/StarRating.jsx    StarIcon, StarDisplay, StarInput (shared star components)
+src/components/cellar/CellarHero.jsx    Hero section with stats cards
+src/components/cellar/CellarTabs.jsx    Tab bar
+src/components/cellar/BottleCard.jsx    Bottle card with star rating display
+src/components/cellar/WishlistCard.jsx  Wishlist card
+src/components/cellar/TastedReviewTable.jsx  Review table for tasting notes (desktop table + mobile cards)
+src/components/cellar/EmptyState.jsx    Empty state component
+src/components/cellar/AddBottleModal.jsx     Add bottle form with optional star rating
+src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted form with quality + wouldBuyAgain ratings
+src/components/cellar/VivinoImportPanel.jsx  Vivino CSV import
+src/components/cellar/WishlistSharePanel.jsx Wishlist share URL generation
+src/components/cellar/CellarSyncPanel.jsx    Cloud sync + manual backup
 
-  pages/
-    Home.jsx                # Landing page with featured wines
-    Explorer.jsx            # Browse/filter/sort 232 wines
-    WineDetail.jsx          # Full detail: tabs (overview/tasting/pairings/vintages/buy), add to cellar modal
-    Cellar.jsx              # Personal cellar tracker (bottles/wishlist/tasting notes) + wishlist share
-    Education.jsx           # Wine School: production, labels, vintages, tasting vocab
-    Sparkling.jsx           # Sparkling wine guide
-    Pairing.jsx             # Food pairing wizard
-    Critics.jsx             # Critics page — Tom Gilby picks + staff picks
-    Sheffield.jsx           # Amanda's Places — venue picks (Sheffield, Stannington, Walton-on-Thames, Stroud, Morpeth), venue wine lists
-    WishlistShare.jsx       # Shareable wishlist view — decodes base64 URL payload, groups by price tier
-    TasteProfiler.jsx       # 4-question taste quiz → matched wines
+src/pages/Home.jsx                      Homepage
+src/pages/Explorer.jsx                  Main explorer/filter page
+src/pages/WineDetail.jsx                Detail page + add-to-cellar modal (shows labelImage)
+src/pages/Cellar.jsx                    Cellar orchestrator (~200 lines, imports sub-components)
+src/pages/Shop.jsx                      Retailer guide and retailer-specific wine views
+src/pages/Sheffield.jsx                 Amanda's Places page
+src/pages/WishlistShare.jsx             Shared wishlist page
+src/pages/Education.jsx                 Wine school
+src/pages/Sparkling.jsx                 Sparkling guide
+src/pages/Pairing.jsx                   Pairing wizard
+src/pages/Critics.jsx                   Critics page
+src/pages/TasteProfiler.jsx             Taste quiz
 
-  utils/
-    retailerBrands.jsx      # Retailer brand config, RetailerBadge, RetailerLogo
-    ourTake.js              # "Our Take" quote generator for WineCard + WineDetail
-    wishlistShare.js        # Wishlist share encoding/decoding — base64url payload, price tier grouping
-    vivinoImport.js         # Vivino CSV parser — parseVivinoCsv(), vivinoRowsToTastedEntries()
-```
-
----
-
-## Wine Data Schema (`src/data/wines.js`)
-
-Each entry in the `wines` array:
-
-```js
-{
-  id: 'kebab-case-unique-id',        // used in URL: /explore/:id
-  name: `Wine Name`,
-  producer: `Producer Name`,
-  vintage: 2022,                     // number, or 'NV' string
-  category: 'red',                   // 'red' | 'white' | 'sparkling' | 'rosé' | 'dessert'
-  subcategory: `Barolo DOCG`,        // optional, more specific
-  region: `Piedmont`,
-  subregion: `Langhe`,               // optional
-  country: `Italy`,
-  grapes: [`Nebbiolo`],              // array of strings
-  grapeNotes: `...`,                 // prose about the grape variety
-  style: [`full-bodied`, `tannic`],  // array of style descriptors
-  priceRange: 'premium',             // 'budget' | 'mid' | 'premium' | 'luxury'
-  price: `£45.00`,                   // display string, used for actual price sort
-  rating: 94,                        // numeric 0–100
-  tasteProfile: {
-    sweetness: 1, acidity: 4, tannin: 5, body: 5, fruitiness: 3,  // 1–5
-  },
-  cardColor: `#6B1F3A`,
-  cardGradient: `linear-gradient(135deg, #6B1F3A, #8B2050)`,
-  tastingNotes: {
-    colour: `...`,
-    nose: `...`,
-    palate: `...`,
-    finish: `...`,
-  },
-  background: `...`,                 // producer/wine background prose
-  terroir: `...`,                    // terroir description
-  servingTemp: `16–18°C`,
-  decant: `2 hours`,                 // or null
-  glassware: `Bordeaux glass`,
-  processType: `oak aged`,
-  pairings: [
-    { dish: `Beef Wellington`, cuisine: `British`, reason: `...` },
-  ],
-  vintageGuide: [
-    { year: 2021, rating: 'great', notes: `...` },  // 'exceptional'|'great'|'good'|'average'
-  ],
-  whereToBuy: [
-    { name: `Tesco`, type: `supermarket`, note: `...` },
-    { name: `Wine Society`, type: `specialist`, note: `...` },
-  ],
-  tags: [`award winner`, `organic`],
-  drinkFrom: 2025,                   // optional year number — used for drinking window in Cellar
-  drinkBy: 2035,                     // optional year number
-  // Tom Gilby critic fields (optional — only on wines rated by Tom Gilby)
-  gilbyRating: 'class',              // 'class' | 'arse'
-  gilbyNote: `...`,                  // one-line summary of Gilby's verdict
-  gilbyVideoUrl: `https://...`,      // optional YouTube link to his review
-}
+src/utils/cellarSync.js                 Cloud sync id/payload helpers
+src/utils/wishlistShare.js              Wishlist share encoding/decoding helpers
+src/utils/vivinoImport.js               CSV parser and Vivino -> tasted entry mapper
+src/utils/retailerBrands.jsx            Retailer logo/badge config
+src/utils/ourTake.js                    Generated "Our Take" copy
 ```
 
-**`REGIONS` array** at the bottom of `wines.js` — keep in sync when adding new regions.
+## Routing
 
-All prose strings use backtick template literals, not single/double quotes.
+Routes currently registered in `App.jsx`:
 
----
+- `/`
+- `/explore`
+- `/explore/:id`
+- `/sparkling`
+- `/pairing`
+- `/cellar`
+- `/wishlist-share`
+- `/learn`
+- `/shop`
+- `/places`
+- `/sheffield`
+- `/critics`
+- `/taste-quiz`
 
-## Key Patterns & Conventions
+Because the app uses `HashRouter`, deployed links resolve as `/#/route`.
 
-### Routing
-Uses `HashRouter` — all routes are `/#/path`. Wine detail URLs: `/#/explore/:id`. The `id` field in wines.js IS the route param, so it must be kebab-case and URL-safe.
+## Data Notes
 
-### Tailwind Custom Palette (tailwind.config.js)
-```
-// Core backgrounds
-ivory      = #FAF8F4   (page bg)
-cream      = #F5EFE6   (light borders, panels)
-champagne  = #F7E7CE   (warm accent bg)
+`src/data/wines.js` exports `wines`, which is the normalized result of `_wines.map(normalizeWine)`.
 
-// Gold accent
-gold       = #C9973A   (primary accent)
-gold-lt    = #E8C97A   (light gold tint)
+The normalizer currently standardizes:
+- `category`
+- `priceRange`
+- `price`
+- `grapes`
+- `style`
+- `pairings`
+- `vintageGuide`
+- `whereToBuy`
+- `decant`
 
-// Terracotta — CTA buttons
-terracotta = #C4622D   (btn-primary bg)
-terra-lt   = #E8A07A   (light terracotta)
-terra-dk   = #A8501F   (btn-primary hover — replaces [#A8501F])
+The normalizer uses spread (`{ ...w, ... }`) so additional fields like `labelImage` pass through without changes.
 
-// Text / dark backgrounds
-slate      = #2C2C3E   (primary text, dark)
-slate-lt   = #4A4A60   (muted text)
-navy       = #1A1A2E   (nav bar & dark-panel bg — replaces [#1A1A2E])
+Do not add new wines using the old bulk-generation schema. Write new entries in the normalized shape.
 
-// Supplementary
-sage       = #8FAF8A   (success / "in cellar")
-wine-red   = #7B1D2E   (deep wine)
-blush      = #F2C4CE   (pale pink)
-```
-Custom utilities defined in `index.css`: `.btn-primary`, `.btn-secondary`, `.btn-ghost`, `.card`, `.tag`, `.section-label`, `.wine-dot`, `.animate-fade-in`, `.animate-scale-in`, `.ruled`, `.stagger`.
+Retailer names matter. Current canonical branded set:
+- `Tesco`
+- `Sainsbury's`
+- `Waitrose`
+- `Asda`
+- `M&S`
+- `Aldi`
+- `Lidl`
+- `Morrisons`
+- `Le Bon Vin`
+- `Majestic`
+- `Co-op`
 
-**Token discipline:** never use `[#1A1A2E]` or `[#A8501F]` as arbitrary Tailwind values — use `navy` and `terra-dk` respectively. Per-wine card gradients (in wine data) remain as hex, not tokens.
+## Cellar and Sync
 
-### useCellar Hook
-Returns: `{ cellar, bottles, wishlist, tasted, stats, addBottle, removeBottle, updateBottle, markTasted, addToWishlist, removeFromWishlist, isInCellar, isInWishlist }`
+`useCellar()` returns:
+- `cellar`
+- `items`
+- `bottles`
+- `wishlist`
+- `tasted`
+- `cellarRevision`
+- `stats`
+- `addBottle`
+- `removeBottle`
+- `updateBottle`
+- `markTasted`
+- `addToWishlist`
+- `removeFromWishlist`
+- `importTastedEntries`
+- `importCellarData`
+- `isInCellar`
+- `isInWishlist`
 
-Note: `bottles`, `wishlist`, `tasted` are returned **directly** (not just nested in `cellar`) — this is intentional, both forms are available.
+Cellar item model (via `normalizeCellarItem` in `useCellar.js`):
+- `rating`: 1-5 star quality rating (nullable, settable from AddBottleModal and TastingNoteModal)
+- `wouldBuyAgain`: 1-5 star "would buy again" rating (nullable, settable from TastingNoteModal)
+- Both are sync-safe: nullable fields propagate through JSON sync payload; old devices ignore unknown fields
 
-`stats` object: `{ totalBottles, totalWines, wishlistCount, tastedCount, byCategory{} }`
+Cross-device sync flow:
+- Local cellar state is persisted in `localStorage`
+- The hook stores a single normalized `items` list and derives legacy bucket views from it
+- `CellarCloudSyncBridge.jsx` watches local revisions
+- The bridge first mints or refreshes a device session through `/api/cellar-sync-session/:syncId`
+- Session bootstrap requires the shared sync passphrase stored by the Cellar settings UI
+- New sync spaces also store an owner email and issue a recovery key back to the UI
+- `Cellar.jsx` can mint a separate owner-management session through `/api/cellar-sync-owner/:syncId/session`
+- Owner-management sessions can fetch `/api/cellar-sync-owner/:syncId/devices` and revoke stale device tokens
+- `Cellar.jsx` can rotate the passphrase with either the current passphrase or the recovery key, and the server revokes existing sessions when that happens
+- The bridge talks to `/api/cellar-items/:syncId`
+- Item sync requests require a bearer token returned by the session bootstrap endpoint
+- `server.mjs` supports PostgreSQL-backed item sync when `DATABASE_URL` is available
+- legacy `/api/cellar-sync/:syncId` remains for the manual snapshot sync path
 
-### WineCard Props
-`wine` (required), `compact` (bool, default false), `showPrice` (bool — shows actual price string instead of £/££/£££ tier)
+Production Railway variables currently in use:
+- `CELLAR_SYNC_STORE_PATH=/app/data/cellar-sync-store.json`
+- `RAILWAY_VOLUME_MOUNT_PATH=/app/data`
 
-Card body layout (standard mode): category badge → status badges → wine name (`line-clamp-2`) → producer (`truncate`) → region/vintage row → grape chips (cream, up to 2) → pairing chips (sage-green `bg-sage/10 border-sage/20 text-sage`, up to 2) → Our Take quote → footer (rating / price tier / wishlist button). Handles both `{dish}` pairing objects and raw string pairings.
+This means production sync can run in two modes:
+- Postgres-backed centralized item sync when Railway Postgres is attached
+- volume-backed file persistence when only the Railway volume is configured
 
-### Explorer Filters
-All filters synced to URL search params (except `sort` and `search` which are local state). URL params: `category`, `country`, `price`, `retailer`, `grape`.
+## Wishlist Share
 
-### Retailer Branding (`src/utils/retailerBrands.jsx`)
-Exports:
-- `RETAILER_BRANDS` — bg/text/border colour config for all 11 retailers
-- `RetailerBadge` — white pill with actual logo image + retailer name; falls back to coloured lettermark if image fails. Use wherever a styled retailer pill is needed: `<RetailerBadge name="Waitrose" />`
-- `RetailerLogo` — logo image only (no pill/text), for tighter spaces: `<RetailerLogo name="Tesco" size={32} />`
+Wishlist sharing is handled by `src/utils/wishlistShare.js`.
 
-Logo images live in `/public` and are mapped in `RETAILER_LOGOS` inside the file. The 11 retailers: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Le Bon Vin`, `Majestic`, `Co-op`.
+Flow:
+- build payload from wishlist entries
+- encode to base64url
+- generate `#/wishlist-share?wl=...`
+- decode on `WishlistShare.jsx`
 
-**Watch-out:** two filenames were renamed to be URL-safe: `aldi logo.webp` → `aldi-logo.webp`, `Co opLogo.jpg.avif` → `coop-logo.avif`. Never add logo files with spaces in the name.
+The shared page resolves wishlist entries back against the local wine dataset when possible.
 
-### Schema Normalizer (`src/data/wines.js`)
-The wines array is exported via `normalizeWine()` — the internal array is `const _wines = [...]`, the public export is `export const wines = _wines.map(normalizeWine)`. The normalizer reconciles two schemas (original hand-crafted wines vs bulk-generated wines):
-- `category` → always lowercase
-- `priceRange` → `'£'/'££'/'£££'` symbol strings → `'budget'/'mid'/'premium'` named tiers
-- `price` → number → `'£X.XX'` display string
-- `pairings` → string[] → `[{dish, cuisine, reason}][]`
-- `vintageGuide` → string[] → `[{year, rating, notes}][]`
-- `whereToBuy` → `{store}` shape → `{name, type, note}` shape
+## Vivino Import
 
-**Never write new wines using the old bulk schema** — always use the correct schema (lowercase category, named priceRange, £string price, object arrays).
+Current preferred flow:
+- Cellar page button loads `public/vivino_wines_export.csv`
+- `parseVivinoCsv()` reads rows
+- `vivinoRowsToTastedEntries()` converts them to tasted entries
+- `importTastedEntries()` merges with duplicate protection
 
-### useVenueSourceInbox Hook (`src/hooks/useVenueSourceInbox.js`)
-localStorage-backed inbox for user-submitted venue source URLs. Used in **Sheffield.jsx**.
+Legacy support still present:
+- `public/vivino_import.js` can still be pasted into the browser console
 
-Returns: `{ sources, addSource, removeSource, clearSources, markProcessed }`
+## Build and Deployment
 
-### Wishlist Share (`src/utils/wishlistShare.js`)
-Base64url-encoded shareable wishlist. Cellar page generates share URLs via `buildWishlistSharePayload()` → `encodeWishlistPayload()` → `buildWishlistShareUrl()`. WishlistShare page decodes via `decodeWishlistPayload()`. Groups wines by price tier (everyday/mid/premium/luxury/flexible).
+Build config:
+- `vite.config.js` manually extracts a `vendor` chunk
+- chunk size warning limit is raised to `800`
+- the wine dataset still lands in its own large shared chunk
 
-### Cellar Drinking Window
-`drinkWindowStatus(bottle)` in `Cellar.jsx` — parses `drinkFrom`/`drinkBy` as year integers, returns `{ status, icon, label, cls }` or `null`.
+Current verified build output from 2026-03-12:
+- `wines`: 537.52 kB / 113.20 kB gzip
+- `Education`: 100.69 kB / 30.46 kB gzip
+- `Sheffield`: 88.94 kB / 24.56 kB gzip
+- `Cellar`: 59.22 kB / 13.37 kB gzip
+- `vendor`: 162.98 kB / 53.24 kB gzip
 
----
+Railway notes:
+- `railway.toml` starts the app with `npm start`
+- `nixpacks.toml` installs with `npm ci` and builds with `npm run build`
+- the Express server serves the built SPA and the sync API together
 
-## Bulk Wine Generation
+## Current Known Issues
 
-**Latest script:** `/tmp/generate_supermarket80.py` — reads `top_wines_dataset_updated3.csv`, skips Le Bon Vin rows (no price/year/rating) and already-imported Gilby rows, infers category/priceRange/tasteProfile/style from grape + region + notes, deduplicates against existing IDs and wine names, outputs to `/tmp/supermarket_wines_80.js`. Used to add 76 wines (sprint 6 — total 232).
+These are active review findings and should be assumed true until fixed:
 
-**Legacy script:** `/tmp/generate_wines2.py` — earlier hand-encoded template approach, output to `/tmp/wines_additions2.js`.
+1. `src/components/CellarCloudSyncBridge.jsx` and `server.mjs`
+   Sync now merges item adds, updates, and removals centrally. Ownership has an owner email, recovery key, passphrase rotation, and linked-device revocation, but there is still no signed-in account model or verified email channel.
+2. Wine label images cover 8 iconic wines via Wikimedia Commons. More wines could benefit from labels if suitable CC-licensed images are found.
 
-**Key generation gotchas:**
-- Use `json.dumps(x, ensure_ascii=False)` — prevents £ being escaped as `\u00a3`
-- Category inference must check `row['Region'].lower()` in addition to name/grapes — e.g. Champagne wines don't always have "champagne" in their name
-- Fall back to `row['Stockist']` when `row['Producer']` is empty (some M&S wines)
-- CSV from this project starts with a leading newline — use `content.lstrip('\n')` before `csv.DictReader`
+## Session Guidance
 
-**Injection pattern:**
-```python
-# Find last `},` before the `// Schema normalizer` comment, insert after it
-insert_at = content[:marker_idx].rfind('},') + 2
-content = content[:insert_at] + insertion + content[insert_at:]
-```
+When updating docs or status notes:
+- prefer exact current counts over rough estimates
+- verify data counts from `src/data/wines.js`
+- verify route tables from `src/App.jsx`
+- verify deployment claims from `server.mjs`, `railway.toml`, `nixpacks.toml`, and Railway variables
 
-Always update `REGIONS` array at the bottom of `wines.js` when adding new countries/regions.
+When changing retailer-related code:
+- keep canonical retailer names aligned between `wines.js`, `retailerBrands.jsx`, `Explorer.jsx`, and `Shop.jsx`
 
----
-
-## Railway Deployment
-
-**Status: Live — auto-deploys on every push to `main` via GitHub integration.** Config in place:
-
-- `railway.toml` — nixpacks builder, `npm install && npm run build`, start with `npm start`
-- `package.json` `start` script — `vite preview --host 0.0.0.0 --port ${PORT:-3000}`
-- `vite.config.js` — preview host `0.0.0.0`, reads `process.env.PORT`
-
-**Deploy steps:**
-1. Push to GitHub (or connect repo in Railway dashboard)
-2. Railway auto-detects `railway.toml`, runs nixpacks build
-3. No environment variables required — fully static SPA, cellar data in browser localStorage
-4. HashRouter means no server-side routing config needed
-
-**Known Railway gotcha:** `vite preview` serves the pre-built `dist/` directory. If you change source files, you must rebuild — Railway does this automatically on each deploy.
-
----
-
-## Known Issues / Watch-outs
-
-- **Chunk sizes (post code-split)** — `vendor.js` 163 kB/53 kB gzip · `wines.js` 477 kB/100 kB gzip · pages 8–60 kB each. Zero warnings. If the DB grows past ~400 wines, consider lazy-loading wine data by category.
-- **localStorage only** — cellar data is browser-local, not synced across devices. Fine for v1 but noted for future backend consideration.
-- **whereToBuy retailer names** — Explorer retailer filtering is case-sensitive string matching, so use one exact name per retailer across all wines (including specialist merchants). The core branded supermarket/specialist set in `retailerBrands.jsx` is: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Majestic`, `Co-op`, `Le Bon Vin`.
-
----
-
-## Pages Reference
-
-| Route | Page | Notes |
-|-------|------|-------|
-| `/` | Home | Featured wines, hero |
-| `/explore` | Explorer | Filter/sort 232 wines |
-| `/explore/:id` | WineDetail | Full wine page, 5 tabs, cellar modal |
-| `/sparkling` | Sparkling | Sparkling wine guide |
-| `/pairing` | Pairing | Food pairing wizard |
-| `/taste-quiz` | TasteProfiler | 4-question profiler → matched wines |
-| `/cellar` | Cellar | Personal tracker (localStorage) + wishlist share |
-| `/learn` | Education | Wine school content |
-| `/shop` | Shop | Buy wines — retailer links |
-| `/places` | Sheffield (Places) | Amanda's venue picks (13 venues), venue wine lists |
-| `/sheffield` | Sheffield (alias) | Same component as `/places` |
-| `/wishlist-share` | WishlistShare | Shareable wishlist — decodes `?wl=` base64url payload |
-| `/critics` | Critics | Tom Gilby verdicts + staff picks |
-
----
-
-## Code Splitting
-
-`App.jsx` imports all pages via `React.lazy()` wrapped in a single `<Suspense fallback={<PageLoader />}>`. Rollup automatically places the shared `wines.js` data in its own chunk.
-
-`vite.config.js` build config:
-```js
-build: {
-  chunkSizeWarningLimit: 800,   // wines chunk is large by design
-  rollupOptions: {
-    output: {
-      manualChunks: {
-        vendor: ['react', 'react-dom', 'react-router-dom'],  // long-lived cache
-      },
-    },
-  },
-},
-```
-
-`PageLoader` fallback: `<div className="min-h-screen bg-ivory pt-16" aria-hidden="true" />` — matches nav height, prevents layout shift.
-
----
-
-## Reference PDFs (project root, not in repo)
-
-- `UK Supermarket Wine Database Creation.pdf` — 2025–2026 audit of ~180 wines across UK supermarkets with prices, awards, vintages. Used to bulk-generate the 72 new supermarket wines.
-- `The Wine Bible.pdf`, `The Wine Encyclopedia.pdf`, `Wine A Tasting Course.pdf`, `The Instant Sommelier.pdf` — reference library for tasting notes, regional info, grape variety descriptions.
+When changing cellar features:
+- check `useCellar.js`, `Cellar.jsx`, `CellarCloudSyncBridge.jsx`, and `server.mjs` together

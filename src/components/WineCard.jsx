@@ -105,15 +105,25 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
         </div>
 
         {/* Wine label */}
-        <div className="rounded-xl px-4 pt-2.5 pb-3 text-center shadow-md" style={{ background: 'rgba(255,255,255,0.95)' }}>
-          <p className="font-body text-[9px] tracking-[0.18em] uppercase text-slate-lt truncate">
-            {wine.region}
-            {wine.vintage ? ` · ${wine.vintage}` : ''}
-          </p>
-          <h3 className="font-display font-semibold text-slate text-[15px] leading-snug mt-1 line-clamp-2">
-            {wine.name}
-          </h3>
-          <p className="font-body text-[10px] text-slate-lt mt-0.5 truncate">{wine.producer}</p>
+        <div className="rounded-xl px-4 pt-2.5 pb-3 text-center shadow-md relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.95)' }}>
+          {wine.labelImage && (
+            <img
+              src={wine.labelImage}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-[0.08]"
+              loading="lazy"
+            />
+          )}
+          <div className="relative">
+            <p className="font-body text-[9px] tracking-[0.18em] uppercase text-slate-lt truncate">
+              {wine.region}
+              {wine.vintage ? ` · ${wine.vintage}` : ''}
+            </p>
+            <h3 className="font-display font-semibold text-slate text-[15px] leading-snug mt-1 line-clamp-2">
+              {wine.name}
+            </h3>
+            <p className="font-body text-[10px] text-slate-lt mt-0.5 truncate">{wine.producer}</p>
+          </div>
         </div>
       </div>
 

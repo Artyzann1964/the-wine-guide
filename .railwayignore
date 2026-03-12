@@ -1,0 +1,19 @@
+.git
+.gitignore
+.DS_Store
+.claude
+.playwright-cli
+node_modules
+dist
+output
+tmp
+*.pdf
+Amanda Wine BW.png
+Decanter Magazine.webp
+Jancis Robinson.jpg
+Mathew Jukes.jpg
+Oz Clarke.jpg
+Tim Arkin.png
+Tom Gilbey.jpg
+eWine_Glass_Guide.webp
+top_wines_dataset_updated3.csv

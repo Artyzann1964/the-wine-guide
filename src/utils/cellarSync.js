@@ -1,6 +1,13 @@
 const CELLAR_SYNC_PREFIX = 'WGCS1_'
 export const CLOUD_SYNC_ID_KEY = 'wine-guide-cloud-sync-id'
 export const CLOUD_SYNC_EVENT = 'wine-guide-cloud-sync-id-updated'
+export const CLOUD_SYNC_AUTH_TOKEN_KEY = 'wine-guide-cloud-sync-auth-token'
+export const CLOUD_SYNC_USER_ID_KEY = 'wine-guide-cloud-sync-user-id'
+export const CLOUD_SYNC_DEVICE_ID_KEY = 'wine-guide-cloud-sync-device-id'
+export const CLOUD_SYNC_PASSPHRASE_KEY = 'wine-guide-cloud-sync-passphrase'
+export const CLOUD_SYNC_OWNER_EMAIL_KEY = 'wine-guide-cloud-sync-owner-email'
+export const CLOUD_SYNC_RECOVERY_KEY = 'wine-guide-cloud-sync-recovery-key'
+export const CLOUD_SYNC_OWNER_TOKEN_KEY = 'wine-guide-cloud-sync-owner-token'
 
 function toBinaryString(bytes) {
   let binary = ''
@@ -33,6 +40,19 @@ export function generateCloudSyncId() {
   const bytes = new Uint8Array(12)
   crypto.getRandomValues(bytes)
   return `wg-${toBase64Url(bytes)}`
+}
+
+export function normalizeCloudSyncPassphrase(value) {
+  const raw = String(value || '').trim()
+  if (raw.length < 6 || raw.length > 128) return ''
+  return raw
+}
+
+export function normalizeCloudSyncOwnerEmail(value) {
+  const raw = String(value || '').trim().toLowerCase()
+  if (!raw) return ''
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)) return ''
+  return raw
 }
 
 export function buildCellarSyncPayload({ bottles = [], wishlist = [], tasted = [] }) {

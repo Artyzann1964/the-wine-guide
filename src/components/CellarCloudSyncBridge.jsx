@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useCellar } from '../hooks/useCellar'
-import { CLOUD_SYNC_EVENT, CLOUD_SYNC_ID_KEY, normalizeCloudSyncId } from '../utils/cellarSync'
+import {
+  CLOUD_SYNC_AUTH_TOKEN_KEY,
+  CLOUD_SYNC_DEVICE_ID_KEY,
+  CLOUD_SYNC_EVENT,
+  CLOUD_SYNC_ID_KEY,
+  CLOUD_SYNC_OWNER_EMAIL_KEY,
+  CLOUD_SYNC_PASSPHRASE_KEY,
+  CLOUD_SYNC_USER_ID_KEY,
+  normalizeCloudSyncId,
+  normalizeCloudSyncOwnerEmail,
+  normalizeCloudSyncPassphrase,
+} from '../utils/cellarSync'
 
 const POLL_INTERVAL_MS = 20000
 
@@ -9,41 +20,98 @@ function readCloudSyncId() {
   return normalizeCloudSyncId(localStorage.getItem(CLOUD_SYNC_ID_KEY))
 }
 
-function normalizeRemoteCellar(value) {
-  const data = value && typeof value === 'object' ? value : {}
+function readStoredAuth() {
+  if (typeof window === 'undefined') {
+    return { authToken: '', userId: '', deviceId: '', passphrase: '', ownerEmail: '' }
+  }
+
   return {
-    bottles: Array.isArray(data.bottles) ? data.bottles : [],
-    wishlist: Array.isArray(data.wishlist) ? data.wishlist : [],
-    tasted: Array.isArray(data.tasted) ? data.tasted : [],
+    authToken: String(localStorage.getItem(CLOUD_SYNC_AUTH_TOKEN_KEY) || '').trim(),
+    userId: String(localStorage.getItem(CLOUD_SYNC_USER_ID_KEY) || '').trim(),
+    deviceId: String(localStorage.getItem(CLOUD_SYNC_DEVICE_ID_KEY) || '').trim(),
+    passphrase: normalizeCloudSyncPassphrase(localStorage.getItem(CLOUD_SYNC_PASSPHRASE_KEY)),
+    ownerEmail: normalizeCloudSyncOwnerEmail(localStorage.getItem(CLOUD_SYNC_OWNER_EMAIL_KEY)),
   }
 }
 
-async function fetchRemoteCellar(syncId) {
-  const response = await fetch(`/api/cellar-sync/${encodeURIComponent(syncId)}`, { cache: 'no-store' })
+function persistStoredAuth({ authToken = '', userId = '', deviceId = '' }) {
+  if (typeof window === 'undefined') return
+
+  if (authToken) localStorage.setItem(CLOUD_SYNC_AUTH_TOKEN_KEY, authToken)
+  else localStorage.removeItem(CLOUD_SYNC_AUTH_TOKEN_KEY)
+
+  if (userId) localStorage.setItem(CLOUD_SYNC_USER_ID_KEY, userId)
+  else localStorage.removeItem(CLOUD_SYNC_USER_ID_KEY)
+
+  if (deviceId) localStorage.setItem(CLOUD_SYNC_DEVICE_ID_KEY, deviceId)
+  else localStorage.removeItem(CLOUD_SYNC_DEVICE_ID_KEY)
+}
+
+function normalizeRemoteItemSet(value) {
+  const data = value && typeof value === 'object' ? value : {}
+  return {
+    items: Array.isArray(data.items) ? data.items : [],
+  }
+}
+
+async function createSyncSession(syncId, deviceId, passphrase, ownerEmail) {
+  const response = await fetch(`/api/cellar-sync-session/${encodeURIComponent(syncId)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...(deviceId ? { deviceId } : {}),
+      ...(passphrase ? { passphrase } : {}),
+      ...(ownerEmail ? { ownerEmail } : {}),
+    }),
+  })
+  if (response.status === 400) {
+    const payload = await response.json().catch(() => ({}))
+    if (payload?.error === 'missing_owner_email' || payload?.error === 'invalid_owner_email') {
+      throw new Error('sync-owner-email-required')
+    }
+    throw new Error('sync-passphrase-required')
+  }
+  if (response.status === 403) throw new Error('sync-passphrase-invalid')
+  if (!response.ok) throw new Error('sync-session-failed')
+  return response.json()
+}
+
+async function fetchRemoteItems(syncId, authToken) {
+  const response = await fetch(`/api/cellar-items/${encodeURIComponent(syncId)}`, {
+    cache: 'no-store',
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+  })
   if (response.status === 404) return null
+  if (response.status === 401) throw new Error('sync-unauthorized')
   if (!response.ok) throw new Error('sync-fetch-failed')
   const payload = await response.json()
   return {
-    revision: Number(payload?.revision) || 0,
-    cellar: normalizeRemoteCellar(payload?.cellar),
+    updatedAt: String(payload?.updatedAt || ''),
+    items: normalizeRemoteItemSet(payload).items,
   }
 }
 
-async function pushRemoteCellar(syncId, cellar, revision) {
-  const response = await fetch(`/api/cellar-sync/${encodeURIComponent(syncId)}`, {
+async function pushRemoteItems(syncId, authToken, items) {
+  const response = await fetch(`/api/cellar-items/${encodeURIComponent(syncId)}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ revision, cellar }),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+    },
+    body: JSON.stringify({ items }),
   })
+  if (response.status === 401) throw new Error('sync-unauthorized')
   if (!response.ok) throw new Error('sync-push-failed')
 }
 
 export default function CellarCloudSyncBridge() {
-  const { cellar, cellarRevision, importCellarData } = useCellar()
+  const { items, cellarRevision, importCellarData } = useCellar()
   const [syncId, setSyncId] = useState(readCloudSyncId)
   const [syncReady, setSyncReady] = useState(false)
+  const sessionPromiseRef = useRef(null)
   const pushInFlightRef = useRef(false)
   const lastPushedRevisionRef = useRef(0)
+  const lastPulledAtRef = useRef('')
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -66,20 +134,65 @@ export default function CellarCloudSyncBridge() {
     }
   }, [])
 
+  const ensureSession = useCallback(async (forceRefresh = false) => {
+    if (!syncId) return null
+
+    const stored = readStoredAuth()
+    if (!stored.passphrase) return null
+
+    if (!forceRefresh) {
+      if (stored.authToken) return stored
+    }
+
+    if (!forceRefresh && sessionPromiseRef.current) return sessionPromiseRef.current
+
+    const bootstrap = createSyncSession(syncId, stored.deviceId, stored.passphrase, stored.ownerEmail)
+      .then(payload => {
+        const nextSession = {
+          authToken: String(payload?.authToken || '').trim(),
+          userId: String(payload?.userId || '').trim(),
+          deviceId: String(payload?.deviceId || '').trim(),
+          passphrase: stored.passphrase,
+          ownerEmail: normalizeCloudSyncOwnerEmail(payload?.ownerEmail || stored.ownerEmail),
+        }
+        persistStoredAuth(nextSession)
+        return nextSession
+      })
+      .finally(() => {
+        sessionPromiseRef.current = null
+      })
+
+    sessionPromiseRef.current = bootstrap
+    return bootstrap
+  }, [syncId])
+
   const pullRemote = useCallback(async () => {
     if (!syncId) return
     try {
-      const remote = await fetchRemoteCellar(syncId)
+      const session = await ensureSession()
+      if (!session?.authToken) return
+      const remote = await fetchRemoteItems(syncId, session.authToken)
       if (!remote) return
-      if (remote.revision <= cellarRevision) return
-      importCellarData(remote.cellar, 'replace')
-    } catch {
-      // Keep local data on transient network/API failures.
+      if (remote.updatedAt && remote.updatedAt === lastPulledAtRef.current) return
+      importCellarData({ items: remote.items }, 'merge')
+      lastPulledAtRef.current = remote.updatedAt || ''
+    } catch (error) {
+      if (error instanceof Error && error.message === 'sync-unauthorized') {
+        persistStoredAuth({})
+        const session = await ensureSession(true).catch(() => null)
+        if (!session?.authToken) return
+        const remote = await fetchRemoteItems(syncId, session.authToken).catch(() => null)
+        if (!remote) return
+        importCellarData({ items: remote.items }, 'merge')
+        lastPulledAtRef.current = remote.updatedAt || ''
+      }
     }
-  }, [syncId, cellarRevision, importCellarData])
+  }, [syncId, ensureSession, importCellarData])
 
   useEffect(() => {
     lastPushedRevisionRef.current = 0
+    lastPulledAtRef.current = ''
+    sessionPromiseRef.current = null
     setSyncReady(false)
     if (!syncId) return undefined
 
@@ -120,7 +233,17 @@ export default function CellarCloudSyncBridge() {
 
     const run = async () => {
       try {
-        await pushRemoteCellar(syncId, cellar, cellarRevision)
+        let session = await ensureSession()
+        if (!session?.authToken) return
+        try {
+          await pushRemoteItems(syncId, session.authToken, items)
+        } catch (error) {
+          if (!(error instanceof Error) || error.message !== 'sync-unauthorized') throw error
+          persistStoredAuth({})
+          session = await ensureSession(true)
+          if (!session?.authToken) return
+          await pushRemoteItems(syncId, session.authToken, items)
+        }
         if (!cancelled) lastPushedRevisionRef.current = cellarRevision
       } catch {
         // Retry on next local change or poll cycle.
@@ -133,8 +256,9 @@ export default function CellarCloudSyncBridge() {
 
     return () => {
       cancelled = true
+      pushInFlightRef.current = false
     }
-  }, [syncId, syncReady, cellar, cellarRevision])
+  }, [syncId, syncReady, items, cellarRevision, ensureSession])
 
   return null
 }

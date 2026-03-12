@@ -1,195 +1,104 @@
-# The Wine Guide — Project Status
+# The Wine Guide - Project Status
 
-**Last updated:** 2026-03-06
-**Build status:** ✅ Clean (zero errors, no chunk size warnings)
-**Deployment:** 🚀 Live on Railway — auto-deploys on every push to `main`
+Last updated: 2026-03-12
+Build status: `npm run build` passes cleanly
+Deployment: live on Railway, auto-deploying from `main`
 
----
+## Current Snapshot
 
-## Current State
+- App architecture: React 18 + Vite SPA behind an Express server (`server.mjs`)
+- Routing: `HashRouter`
+- Wine data: 267 wines
+- Geography coverage: 21 countries, 97 region strings
+- Categories:
+  - Red: 106
+  - White: 93
+  - Sparkling: 39
+  - Rosé: 19
+  - Dessert/Fortified: 10
+- Wine labels: 8 wines have `labelImage` (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem); displayed as subtle overlay on WineCard and standalone on WineDetail
+- Places guide: 14 venues across Sheffield, Stannington, Walton-on-Thames, Stroud, and Morpeth
+- Venue wine lists: 8 sourced venue lists in `src/data/venueWineLists.js`
+- Cellar architecture: `Cellar.jsx` is a ~200-line orchestrator; all sub-components live in `src/components/cellar/`
+- Cellar features: local persistence, wishlist sharing, manual sync code/link import, automatic cloud sync, star ratings on bottles, "would buy again" rating on tasting notes, review table for tasted wines
+- Cellar data model: normalized internal `items` list with derived `bottles`, `wishlist`, and `tasted` views
+- Cellar item fields: `rating` (1-5 quality stars), `wouldBuyAgain` (1-5 repurchase stars) — both nullable, sync-safe
+- Automatic sync transport: item-level sync via `/api/cellar-items/:syncId`
+- Sync authentication: per-device session bootstrap via `/api/cellar-sync-session/:syncId`, gated by a shared sync passphrase
+- Sync ownership: new sync spaces now record an owner email and issue a recovery key for passphrase rotation and session revocation
+- Linked device management: owner sessions can list and revoke device tokens from the Cellar UI
+- Removal sync: bottle and wishlist removals now propagate as tombstones instead of local-only deletes
+- Vivino import: CSV import is available in the Cellar UI; legacy console import script still exists at `public/vivino_import.js`
 
-### Wine Database
-- **232 wines** sourced from UK supermarkets + Le Bon Vin Sheffield
-- **~37 countries/regions** represented
-- Price range: £4.99 (Aldi) → £120 (Giacomo Conterno Barolo)
-- Ratings: 82–98 pts
-- **41 Vivino tasted wines** importable via `/public/vivino_import.js` console script
+## Retailer Coverage
 
-### Retailers Covered
-| Retailer | Wines in Guide | Logo |
-|----------|---------------|------|
-| Tesco | ~18 | ✅ |
-| Sainsbury's | ~10 | ✅ |
-| Waitrose | ~12 | ✅ |
-| Asda | 8 | ✅ |
-| M&S | 9 | ✅ |
-| Aldi | 7 | ✅ |
-| Lidl | 6 | ✅ |
-| Morrisons | 6 | ✅ |
-| Le Bon Vin Sheffield | 8 | ✅ |
-| Majestic | — | ✅ |
-| Co-op | — | ✅ |
+| Retailer | whereToBuy mentions |
+|----------|---------------------|
+| Waitrose | 25 |
+| Sainsbury's | 21 |
+| Tesco | 20 |
+| Lidl | 11 |
+| Morrisons | 10 |
+| Aldi | 9 |
+| Le Bon Vin | 8 |
+| M&S | 5 |
+| Co-op | 4 |
+| Asda | 4 |
+| Majestic | 4 |
 
-### All Pages
-| Route | Page | Status | Notes |
-|-------|------|--------|-------|
-| `/` | Home | ✅ | Featured wines, hero, Amanda bio |
-| `/explore` | Explorer | ✅ | Colour legend, all filters, sort options |
-| `/explore/:id` | Wine Detail | ✅ | 5 tabs, cellar modal, retailer logos in Buy tab |
-| `/sparkling` | Sparkling Guide | ✅ | Full sparkling guide page |
-| `/pairing` | Pairing Wizard | ✅ | Food → wine matcher |
-| `/taste-quiz` | Taste Profiler | ✅ | 4-question quiz → matched wines |
-| `/critics` | Critics | ✅ | Real critic photos, reviews |
-| `/shop` | Know Your Shop | ✅ | Retailer profiles + logos, wines by store |
-| `/cellar` | My Cellar | ✅ | Bottles/wishlist/tasted, drinking windows, cellar value, wishlist share |
-| `/places` | Amanda's Places | ✅ | 13 venue picks (Sheffield, Stannington, Walton-on-Thames, Stroud, Morpeth), venue wine lists |
-| `/wishlist-share` | Wishlist Share | ✅ | Shareable wishlist view from base64url link |
-| `/learn` | Wine School | ✅ | 8 sections incl. Sparkling Wines, Grape Varieties, glass guide image |
+Notes:
+- The shop/branding layer supports `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Le Bon Vin`, `Majestic`, and `Co-op`.
+- The data set also includes unbranded specialist merchants on some fine-wine entries.
 
----
+## Routes
 
-## Recent Session Work (2026-03-06)
+| Route | Page | Current status |
+|-------|------|----------------|
+| `/` | Home | Live |
+| `/explore` | Explorer | Live |
+| `/explore/:id` | Wine Detail | Live |
+| `/sparkling` | Sparkling Guide | Live |
+| `/pairing` | Pairing Wizard | Live |
+| `/taste-quiz` | Taste Profiler | Live |
+| `/critics` | Critics | Live |
+| `/shop` | Know Your Shop | Live |
+| `/cellar` | My Cellar | Live |
+| `/places` | Amanda's Places | Live |
+| `/sheffield` | Amanda's Places alias | Live |
+| `/wishlist-share` | Wishlist Share | Live |
+| `/learn` | Wine School | Live |
 
-### 🏠 Amanda's Places Page (`/places`)
-- 13 venue picks across Sheffield, Stannington, Walton-on-Thames, Stroud, Morpeth
-- Venue wine lists from sourced PDFs/websites (2,300-line data file `venueWineLists.js`)
-- Wine lists sourced for 7 of 13 venues
-- Venue Source Inbox — submit new venue URLs for future wine list sourcing
-- Nav bar updated with "Places" link (desktop + mobile dock)
+## Deployment and Persistence
 
-### 🏘️ Venue Corrections (latest)
-- Split `swan-and-anchor` into two separate Walton-on-Thames pubs: **The Swan** (Young's riverside, swanwalton.com) and **The Anglers** (restaurant pub)
-- Added **The Crown & Glove** (Stannington, crownandglove.com) with 16-wine list scraped from website
-- Added Peacock Inn website URL (peacock-stannington.co.uk)
-- Removed Explorer Queue feature entirely (was not requested, added by mistake in earlier session)
-- Deleted dead `useExplorerQueue.js` hook file
+- Railway runs `npm start`, which starts `server.mjs`
+- The Express server serves `dist/` and exposes `/api/cellar-sync/:syncId`, `/api/cellar-sync-session/:syncId`, `/api/cellar-sync-owner/:syncId/session`, `/api/cellar-sync-owner/:syncId/devices`, `/api/cellar-sync-owner/:syncId/rotate-passphrase`, and `/api/cellar-items/:syncId`
+- If `DATABASE_URL` is present, item sync uses PostgreSQL; otherwise it falls back to the volume/file-backed JSON store
+- Production Railway environment is configured with:
+  - `CELLAR_SYNC_STORE_PATH=/app/data/cellar-sync-store.json`
+  - `RAILWAY_VOLUME_MOUNT_PATH=/app/data`
+- Result: automatic cellar sync is centralized and durable when Railway Postgres is attached, and still volume-backed when running on file storage
 
-### 🎁 Wishlist Share (`/wishlist-share`)
-- Base64url-encoded shareable wishlist links generated from Cellar page
-- Groups wines by price tier (everyday / mid / premium / luxury)
-- Resolves shared wine IDs against the local database for full detail
-- Clean fallback UI for invalid/empty share links
+## Latest Build Output
 
-### 📋 Documentation Sync
-- Fixed wine count: 144 → **232 wines** (STATUS.md was stale after bulk generation sprint)
-- Added missing pages to CLAUDE.md + STATUS.md: Places, WishlistShare, TasteProfiler
-- Removed all Explorer Queue references from docs
+Verified on 2026-03-12:
 
----
-
-## Earlier Session Work (2026-03-05)
-
-### 🥂 Site Logo
-- New `src/components/Logo.jsx` — hand-crafted SVG Champagne flute
-- Proper flute proportions: narrow bowl widest at rim (12px in 40px viewBox), tapers to 6px at stem join, long thin stem, small refined foot
-- Golden champagne fill at ~78%, with 6 independently animated rising bubbles (SVG-native `animateTransform` — no CSS dependency)
-- Three variants: `NavLogo` (nav bar), `HeroLogo` (large stacked, ready for home hero), `LogoMark` (icon-only)
-- Replaces the previous simple line-art glass in `Nav.jsx`
-
-### 🏪 Real Retailer Logos
-- All 11 retailer logos uploaded to `/public` and wired up in `retailerBrands.jsx`
-- `RetailerBadge` — now shows logo image in a clean white pill; graceful fallback to coloured lettermark
-- `RetailerLogo` — new icon-only component for use in tighter spaces
-- **Shop page** — logos in selector card thumbnails (32×32) and large profile header (64×64)
-- **WineDetail Buy tab** — logos in where-to-buy cards
-
-### 📚 Learn / Wine School Enrichment
-- **Glassware section** — `eWine_Glass_Guide.webp` infographic added at top
-- **Sparkling Wines section** (new nav item) — interactive tab comparison: Champagne, Prosecco, Cava, Crémant. Each card has method, grapes, style, price, description, grape detail, what to look for, serving notes, pro tip. Sweetness decoder bar chart (Brut Nature → Doux, 7 levels)
-- **Grape Varieties section** (new nav item) — 3 tabs: 6 white grapes, 8 red grapes, 5 classic blends with visual grape-proportion bars
-
-### 🍷 Vivino Import
-- 41 tasted wines from Vivino CSV import
-- Self-contained console script at `/public/vivino_import.js`
-- Deduplicates on `id`, merges into existing tasted list, reloads page
-- Chrome requires typing `allow pasting` before pasting in DevTools console
-
----
-
-## Earlier Session Work (2026-03-04 to 2026-03-05)
-
-### Database Expansion (72 → 144 → 232 wines)
-- Bulk Python generation script parsing the UK Supermarket Wine Database Creation PDF
-- Added entirely new retailers: Asda (8 wines) and M&S (9 wines)
-- Expanded existing: Tesco, Sainsbury's, Waitrose, Aldi, Lidl, Morrisons, Le Bon Vin
-- REGIONS array updated with 15+ new regions
-
-### UI & Feature Additions
-- **Explorer** — retailer filter, grape filter, sort by Best Value/Price, active filter chips, colour legend by category
-- **WineCard** — label-style header redesign with cardColor gradient
-- **Cellar** — drinking window alerts (🔵/🟢/🔴), estimated cellar value stat
-- **Home** — quick wishlist heart button on cards
-- **Know Your Shop page** (`/shop`) — full retailer profile page built from scratch
-- **Taste Profiler Quiz** (`/taste-quiz`) — 4-question flow returning personalised matches
-- **Critics page** (`/critics`) — real critic photos, reviews
-- **Mobile responsiveness** — nav, Explorer filters, Cellar tabs, Home stats all fixed
-
-### Bug Fixes
-- Cellar page crash — `useCellar.js` missing top-level `bottles`/`wishlist`/`tasted` exports
-- Blank Education/Learn page — hot-reload side effect of the Cellar crash
-
----
-
-## Backlog
-
-### Completed ✅
-- ~~`.gitignore`~~ — in place
-- ~~Railway deploy~~ — live and auto-deploying
-- ~~Wine taste quiz~~ — `/taste-quiz` live
-- ~~Shop by Retailer~~ — `/shop` live
-- ~~Retailer logos~~ — all 11 in place
-
-### Medium Priority
-- [ ] **Cellar: mark as tasted flow** — `markTasted()` exists in hook, needs UI trigger in BottleCard
-- [ ] **Cellar: search within cellar** — search bar on Bottles tab
-- [ ] **Home hero** — wire in `HeroLogo` component for the landing page
-- [ ] **Wine comparison** — side-by-side of 2–3 wines (taste profiles, price, rating)
-- [ ] **Producer pages** — all wines grouped by producer
-
-### Low Priority / Future
-- [ ] Code-split `wines.js` (worthwhile when database exceeds ~300 wines)
-- [ ] Dark mode toggle
-- [ ] Mobile bottom navigation bar
-- [ ] Backend + auth for cross-device cellar sync
-- [ ] Retailer logo links — make Buy tab logos clickable to retailer websites
-
----
-
-## Technical Notes
-
-### Railway Deploy
-- Auto-deploys on every push to `main` via GitHub integration
-- Nixpacks builder: `npm install && npm run build && npm start`
-- No environment variables required — fully static SPA
-- HashRouter = no server routing config needed
-- Build time: ~45s; bundle: ~166 kB gzip (within acceptable range for v1)
-
-### Known Watch-outs
-- `whereToBuy` retailer names must match `RETAILER_LOGOS` keys exactly (case-sensitive)
-- The 8 canonical supermarket names: `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`
-- Logo filenames with spaces were renamed: `aldi logo.webp` → `aldi-logo.webp`, `Co opLogo.jpg.avif` → `coop-logo.avif`
-- Champagne flute SVG bubbles use SVG-native `animateTransform` — no external CSS required, works in all modern browsers
-
-### Bundle Sizes (latest build)
 | Chunk | Size | Gzip |
 |-------|------|------|
-| wines.js (data) | 478 kB | 100 kB |
-| Education.jsx | 97 kB | 29 kB |
-| vendor (React) | 163 kB | 53 kB |
-| All others | ~230 kB | ~70 kB |
-| **Total** | **~968 kB** | **~252 kB** |
+| `wines` | 537.52 kB | 113.20 kB |
+| `Education` | 100.69 kB | 30.46 kB |
+| `Sheffield` | 88.94 kB | 24.56 kB |
+| `Cellar` | 59.22 kB | 13.37 kB |
+| `vendor` | 162.98 kB | 53.24 kB |
 
----
+## Open Review Findings
 
-## Reference Files (project root — not committed)
+1. Sync still lacks full account auth:
+   owner email, recovery key rotation, and linked-device revocation now exist, but there is still no email/login-based sign-in, verified email delivery, or hosted recovery channel.
+2. Wine label images cover 8 iconic wines sourced from Wikimedia Commons. More wines could benefit from labels if suitable CC-licensed images are found.
 
-| File | Purpose |
-|------|---------|
-| `UK Supermarket Wine Database Creation.pdf` | 2025–26 supermarket audit used for bulk wine generation |
-| `The Wine Bible.pdf` | Regional/grape reference |
-| `The Wine Encyclopedia.pdf` | Regional/grape reference |
-| `Wine A Tasting Course.pdf` | Tasting methodology |
-| `The Instant Sommelier.pdf` | Serving/pairing reference |
-| `eWine_Glass_Guide.webp` | Wine glass guide (also in `/public`) |
-| `public/vivino_import.js` | Console script for Vivino tasted wine import |
-| `public/vivino_wines_export.csv` | Source CSV from Vivino export (41 wines) |
+## Suggested Next Improvements
+
+- Add email or magic-link sign-in on top of the current owner-email, passphrase, and recovery-key sync path
+- Add more `labelImage` entries to iconic wines (Bollinger, Veuve Clicquot, Krug, etc.)
+- Add cellar search on the Bottles tab
+- Consider producer pages and wine comparison
