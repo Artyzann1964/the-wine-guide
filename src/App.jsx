@@ -3,6 +3,7 @@ import { useEffect, lazy, Suspense } from 'react'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import CellarCloudSyncBridge from './components/CellarCloudSyncBridge'
+import InstallPrompt from './components/InstallPrompt'
 
 // Lazy-load pages — Vite/Rollup splits each into its own chunk.
 // wines.js is shared, so it lands in its own common chunk automatically.
@@ -37,6 +38,7 @@ function AppLayout() {
   return (
     <>
       <CellarCloudSyncBridge />
+      <InstallPrompt />
       <ScrollToTop />
       <Nav />
       <div className="mobile-page-padding lg:pb-0">
