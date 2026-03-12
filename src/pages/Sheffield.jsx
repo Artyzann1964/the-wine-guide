@@ -476,17 +476,35 @@ export default function Places() {
               <Link to="/shop" className="btn-secondary">Compare Retailers</Link>
             </div>
           </div>
-          <div className="flex gap-3 flex-shrink-0">
-            <img
-              src="/amanda-wine.png"
-              alt="Amanda Holmes"
-              className="w-32 h-40 lg:w-40 lg:h-52 object-cover rounded-2xl shadow-xl ring-2 ring-gold/30"
-            />
-            <img
-              src="/amanda-holmes.png"
-              alt="Amanda Holmes"
-              className="w-32 h-40 lg:w-40 lg:h-52 object-cover rounded-2xl shadow-xl ring-2 ring-white/10 mt-6"
-            />
+          <div className="flex gap-3 flex-shrink-0 items-end">
+            {/* Photo 1 — fades bottom and left edge into hero */}
+            <div className="relative w-32 h-48 lg:w-40 lg:h-60 flex-shrink-0">
+              <img
+                src="/amanda-wine.png"
+                alt="Amanda Holmes"
+                className="w-full h-full object-cover object-top"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 18%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 26%)',
+                  WebkitMaskComposite: 'destination-in',
+                  maskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 18%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 26%)',
+                  maskComposite: 'intersect',
+                }}
+              />
+            </div>
+            {/* Photo 2 — offset lower, fades bottom and right edge into hero */}
+            <div className="relative w-32 h-48 lg:w-40 lg:h-60 flex-shrink-0 -mb-8">
+              <img
+                src="/amanda-holmes.png"
+                alt="Amanda Holmes"
+                className="w-full h-full object-cover object-top"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 18%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 26%)',
+                  WebkitMaskComposite: 'destination-in',
+                  maskImage: 'linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 18%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 26%)',
+                  maskComposite: 'intersect',
+                }}
+              />
+            </div>
           </div>
         </div>
       </section>
