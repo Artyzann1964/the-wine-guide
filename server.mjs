@@ -96,6 +96,124 @@ function createSyncError(code, status) {
   return error
 }
 
+function generateSyncId() {
+  return `wg-${crypto.randomBytes(12).toString('base64url')}`
+}
+
+const VERIFICATION_CODES = new Map()
+
+async function sendEmailCode(to, code) {
+  const apiKey = String(process.env.RESEND_API_KEY || '').trim()
+  if (!apiKey) return
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'The Wine Guide <sync@thewineaguide.com>',
+      to: [to],
+      subject: 'Your Wine Guide verification code',
+      html: `<p style="font-family:sans-serif">Your verification code is:</p><p style="font-family:monospace;font-size:32px;letter-spacing:8px;font-weight:bold">${code}</p><p style="font-family:sans-serif;color:#666">Expires in 10 minutes. If you did not request this, ignore it.</p>`,
+    }),
+    signal: AbortSignal.timeout(8000),
+  })
+}
+
+async function issueSyncSessionViaEmail(syncId, ownerEmail, requestedDeviceId) {
+  const deviceId = normalizeOpaqueId(requestedDeviceId) || generateOpaqueId('dev')
+  const authToken = generateAuthToken()
+  const tokenHash = hashToken(authToken)
+
+  if (database) {
+    await ensureDatabaseSchema()
+    const client = await database.connect()
+    try {
+      await client.query('begin')
+      const existingNamespace = await client.query(
+        `select owner_user_id, owner_email, recovery_key_hash from cellar_sync_namespace where sync_id = $1 for update`,
+        [syncId]
+      )
+      const userId = existingNamespace.rows[0]?.owner_user_id || generateOpaqueId('usr')
+      let namespaceOwnerEmail = existingNamespace.rows[0]?.owner_email || ''
+      let recoveryKey = ''
+      let recoveryKeyHash = existingNamespace.rows[0]?.recovery_key_hash || ''
+
+      if (existingNamespace.rows.length === 0) {
+        const internalPassphrase = crypto.randomBytes(24).toString('base64url')
+        recoveryKey = generateRecoveryKey()
+        recoveryKeyHash = hashToken(recoveryKey)
+        namespaceOwnerEmail = ownerEmail
+        await client.query(
+          `insert into cellar_sync_namespace (sync_id, owner_user_id, owner_secret_hash, owner_email, recovery_key_hash, updated_at) values ($1, $2, $3, $4, $5, now())`,
+          [syncId, userId, hashToken(internalPassphrase), namespaceOwnerEmail, recoveryKeyHash]
+        )
+      } else {
+        if (namespaceOwnerEmail && namespaceOwnerEmail !== ownerEmail) {
+          throw createSyncError('email_mismatch', 403)
+        }
+        if (!namespaceOwnerEmail) {
+          await client.query(`update cellar_sync_namespace set owner_email = $2, updated_at = now() where sync_id = $1`, [syncId, ownerEmail])
+          namespaceOwnerEmail = ownerEmail
+        }
+        if (!recoveryKeyHash) {
+          recoveryKey = generateRecoveryKey()
+          recoveryKeyHash = hashToken(recoveryKey)
+          await client.query(`update cellar_sync_namespace set recovery_key_hash = $2, updated_at = now() where sync_id = $1`, [syncId, recoveryKeyHash])
+        }
+      }
+
+      await client.query(
+        `insert into cellar_sync_session (sync_id, token_hash, user_id, device_id) values ($1, $2, $3, $4)`,
+        [syncId, tokenHash, userId, deviceId]
+      )
+      await client.query('commit')
+      return { syncId, userId, deviceId, authToken, ownerEmail: namespaceOwnerEmail, recoveryKey: recoveryKey || null }
+    } catch (error) {
+      await client.query('rollback')
+      throw error
+    } finally {
+      client.release()
+    }
+  }
+
+  return withStoreWrite(async () => {
+    const store = await readStore()
+    let recoveryKey = ''
+    if (!store.itemSyncNamespaces[syncId]) {
+      const internalPassphrase = crypto.randomBytes(24).toString('base64url')
+      const userId = generateOpaqueId('usr')
+      recoveryKey = generateRecoveryKey()
+      store.itemSyncNamespaces[syncId] = {
+        userId,
+        createdAt: new Date().toISOString(),
+        ownerSecretHash: hashToken(internalPassphrase),
+        ownerEmail,
+        recoveryKeyHash: hashToken(recoveryKey),
+        updatedAt: new Date().toISOString(),
+      }
+    } else {
+      const namespace = store.itemSyncNamespaces[syncId]
+      if (namespace.ownerEmail && namespace.ownerEmail !== ownerEmail) throw createSyncError('email_mismatch', 403)
+      if (!namespace.ownerEmail) namespace.ownerEmail = ownerEmail
+      if (!namespace.recoveryKeyHash) {
+        recoveryKey = generateRecoveryKey()
+        namespace.recoveryKeyHash = hashToken(recoveryKey)
+      }
+      namespace.updatedAt = new Date().toISOString()
+      store.itemSyncNamespaces[syncId] = namespace
+    }
+    const namespace = store.itemSyncNamespaces[syncId]
+    store.itemSyncSessions[tokenHash] = {
+      syncId,
+      userId: namespace.userId,
+      deviceId,
+      createdAt: new Date().toISOString(),
+      lastSeenAt: new Date().toISOString(),
+    }
+    await writeStore(store)
+    return { syncId, userId: namespace.userId, deviceId, authToken, ownerEmail: namespace.ownerEmail, recoveryKey: recoveryKey || null }
+  })
+}
+
 function readBearerToken(headerValue) {
   const raw = String(headerValue || '').trim()
   const match = raw.match(/^Bearer\s+(.+)$/i)
@@ -902,6 +1020,61 @@ async function putItemSync(syncId, incomingItems, ownerUserId = '') {
     }
   })
 }
+
+app.post('/api/auth/send-code', async (req, res) => {
+  const email = normalizeOwnerEmail(req.body?.email)
+  if (!email) return res.status(400).json({ error: 'invalid_email' })
+
+  const now = Date.now()
+  const existing = VERIFICATION_CODES.get(email)
+  if (existing && existing.attempts >= 3 && now < existing.rateResetAt) {
+    return res.status(429).json({ error: 'rate_limited' })
+  }
+
+  const code = String(Math.floor(100000 + Math.random() * 900000))
+  const expiresAt = now + 10 * 60 * 1000
+  const rateResetAt = (existing?.rateResetAt && now < existing.rateResetAt) ? existing.rateResetAt : now + 15 * 60 * 1000
+  const attempts = (existing && now < existing.rateResetAt) ? existing.attempts + 1 : 1
+  VERIFICATION_CODES.set(email, { code, expiresAt, attempts, rateResetAt })
+  setTimeout(() => {
+    const entry = VERIFICATION_CODES.get(email)
+    if (entry?.code === code) VERIFICATION_CODES.delete(email)
+  }, 10 * 60 * 1000)
+
+  try {
+    await sendEmailCode(email, code)
+  } catch (err) {
+    console.error('[auth] Failed to send email code:', err?.message)
+  }
+  if (!process.env.RESEND_API_KEY) {
+    console.log(`[auth-dev] Verification code for ${email}: ${code}`)
+  }
+  return res.json({ ok: true })
+})
+
+app.post('/api/auth/verify-code', async (req, res) => {
+  const email = normalizeOwnerEmail(req.body?.email)
+  const code = String(req.body?.code || '').replace(/\s/g, '')
+  const requestedSyncId = normalizeSyncId(req.body?.syncId || '')
+  const deviceId = normalizeOpaqueId(req.body?.deviceId || '')
+
+  if (!email) return res.status(400).json({ error: 'invalid_email' })
+  if (!/^\d{6}$/.test(code)) return res.status(400).json({ error: 'invalid_code' })
+
+  const entry = VERIFICATION_CODES.get(email)
+  if (!entry || Date.now() > entry.expiresAt) return res.status(400).json({ error: 'code_expired' })
+  if (entry.code !== code) return res.status(403).json({ error: 'wrong_code' })
+  VERIFICATION_CODES.delete(email)
+
+  const syncId = requestedSyncId || generateSyncId()
+  try {
+    const session = await issueSyncSessionViaEmail(syncId, email, deviceId)
+    return res.json(session)
+  } catch (error) {
+    if (error?.status) return res.status(error.status).json({ error: error.code || 'session_failed' })
+    return res.status(500).json({ error: 'session_failed' })
+  }
+})
 
 app.get('/api/cellar-sync/:syncId', async (req, res) => {
   const syncId = normalizeSyncId(req.params.syncId)

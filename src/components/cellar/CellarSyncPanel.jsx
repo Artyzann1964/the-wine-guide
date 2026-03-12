@@ -36,6 +36,11 @@ export default function CellarSyncPanel({ bottles, wishlist, tasted, importCella
   const [linkedDevices, setLinkedDevices] = useState([])
   const [loadingLinkedDevices, setLoadingLinkedDevices] = useState(false)
   const [revokingDeviceId, setRevokingDeviceId] = useState('')
+  const [magicEmail, setMagicEmail] = useState('')
+  const [magicSyncId, setMagicSyncId] = useState('')
+  const [magicCode, setMagicCode] = useState('')
+  const [magicStep, setMagicStep] = useState('email')
+  const [magicLoading, setMagicLoading] = useState(false)
 
   useEffect(() => {
     if (!syncSeed) return
@@ -530,6 +535,97 @@ export default function CellarSyncPanel({ bottles, wishlist, tasted, importCella
     }
   }
 
+  async function sendMagicCode() {
+    const email = normalizeCloudSyncOwnerEmail(magicEmail)
+    if (!email) {
+      setSyncStatus({ tone: 'error', message: 'Enter a valid email address.' })
+      return
+    }
+    setMagicLoading(true)
+    try {
+      const resp = await fetch('/api/auth/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (resp.status === 429) {
+        setSyncStatus({ tone: 'error', message: 'Too many attempts. Wait 15 minutes before requesting another code.' })
+        return
+      }
+      if (!resp.ok) {
+        setSyncStatus({ tone: 'error', message: 'Could not send verification code. Try again in a moment.' })
+        return
+      }
+      setMagicStep('code')
+      setSyncStatus({ tone: 'info', message: `Code sent to ${email}. Check your inbox (and spam folder).` })
+    } catch {
+      setSyncStatus({ tone: 'error', message: 'Could not send verification code. Check your connection.' })
+    } finally {
+      setMagicLoading(false)
+    }
+  }
+
+  async function verifyMagicCode() {
+    const email = normalizeCloudSyncOwnerEmail(magicEmail)
+    const syncId = normalizeCloudSyncId(magicSyncId) || undefined
+    if (!magicCode || !/^\d{6}$/.test(magicCode)) {
+      setSyncStatus({ tone: 'error', message: 'Enter the 6-digit code from your email.' })
+      return
+    }
+    setMagicLoading(true)
+    try {
+      const resp = await fetch('/api/auth/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code: magicCode, ...(syncId ? { syncId } : {}) }),
+      })
+      const data = await resp.json().catch(() => ({}))
+      if (!resp.ok) {
+        if (data?.error === 'wrong_code') {
+          setSyncStatus({ tone: 'error', message: 'That code is incorrect. Check your email and try again.' })
+          return
+        }
+        if (data?.error === 'code_expired') {
+          setSyncStatus({ tone: 'error', message: 'That code has expired. Request a new one.' })
+          setMagicStep('email')
+          setMagicCode('')
+          return
+        }
+        if (data?.error === 'email_mismatch') {
+          setSyncStatus({ tone: 'error', message: 'That email does not match this sync space.' })
+          return
+        }
+        setSyncStatus({ tone: 'error', message: 'Verification failed. Try again.' })
+        return
+      }
+      applyCloudSyncId(data.syncId)
+      if (data.authToken) localStorage.setItem(CLOUD_SYNC_AUTH_TOKEN_KEY, data.authToken)
+      if (data.userId) localStorage.setItem(CLOUD_SYNC_USER_ID_KEY, data.userId)
+      if (data.deviceId) localStorage.setItem(CLOUD_SYNC_DEVICE_ID_KEY, data.deviceId)
+      if (data.ownerEmail) {
+        localStorage.setItem(CLOUD_SYNC_OWNER_EMAIL_KEY, data.ownerEmail)
+        setCloudSyncOwnerEmail(data.ownerEmail)
+      }
+      if (data.recoveryKey) {
+        localStorage.setItem(CLOUD_SYNC_RECOVERY_KEY, data.recoveryKey)
+        setCloudSyncRecoveryKey(data.recoveryKey)
+        setRecoveryKeyInput(data.recoveryKey)
+      }
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event(CLOUD_SYNC_EVENT))
+      setMagicStep('done')
+      setSyncStatus({
+        tone: 'success',
+        message: data.recoveryKey
+          ? 'Sync enabled. Save the recovery key shown below before leaving this screen.'
+          : 'Sync enabled on this device.',
+      })
+    } catch {
+      setSyncStatus({ tone: 'error', message: 'Verification failed. Check your connection and try again.' })
+    } finally {
+      setMagicLoading(false)
+    }
+  }
+
   function importFromCode(mode = 'merge') {
     const parsed = decodeCellarSyncPayload(syncInput.trim())
     if (!parsed) {
@@ -628,9 +724,87 @@ export default function CellarSyncPanel({ bottles, wishlist, tasted, importCella
 
       {showSyncPanel && (
         <div className="mt-4 space-y-4 border-t border-cream pt-4">
+          {!hasCloudSync && (
+            <div className="rounded-xl border border-gold/40 bg-gold/5 p-3 sm:p-4 space-y-3">
+              <p className="font-body text-xs uppercase tracking-widest text-slate-lt">Quick Setup — Email Verification</p>
+              {magicStep === 'done' ? (
+                <div className="flex items-center gap-2 text-emerald-700">
+                  <span className="text-lg">✓</span>
+                  <span className="font-body text-sm font-medium">Sync enabled on this device.</span>
+                </div>
+              ) : magicStep === 'code' ? (
+                <div className="space-y-3">
+                  <p className="font-body text-sm text-slate-lt">
+                    Enter the 6-digit code sent to <strong className="text-slate">{magicEmail}</strong>.
+                  </p>
+                  <label className="block">
+                    <span className="font-body text-xs text-slate-lt block mb-1.5">Verification code</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={magicCode}
+                      onChange={e => setMagicCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      placeholder="123456"
+                      className="w-48 rounded-xl border border-cream bg-ivory px-3 py-2.5 font-mono text-xl text-slate tracking-widest focus:outline-none focus:border-gold"
+                    />
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={verifyMagicCode}
+                      disabled={magicLoading}
+                      className={`btn-primary text-xs ${magicLoading ? 'opacity-65 cursor-wait' : ''}`}
+                    >
+                      {magicLoading ? 'Verifying...' : 'Verify & Enable Sync'}
+                    </button>
+                    <button onClick={() => { setMagicStep('email'); setMagicCode('') }} className="btn-ghost text-xs">
+                      Change Email
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="font-body text-sm text-slate-lt">
+                    Enter your email to create a new sync space, or join an existing one by entering its code too.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="font-body text-xs text-slate-lt block mb-1.5">Email address</span>
+                      <input
+                        type="email"
+                        value={magicEmail}
+                        onChange={e => setMagicEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full rounded-xl border border-cream bg-ivory px-3 py-2.5 font-body text-sm text-slate focus:outline-none focus:border-gold"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="font-body text-xs text-slate-lt block mb-1.5">Sync code (to join existing)</span>
+                      <input
+                        value={magicSyncId}
+                        onChange={e => setMagicSyncId(e.target.value)}
+                        placeholder="wg-... (blank = create new)"
+                        className="w-full rounded-xl border border-cream bg-ivory px-3 py-2.5 font-mono text-xs text-slate focus:outline-none focus:border-gold"
+                      />
+                    </label>
+                  </div>
+                  <button
+                    onClick={sendMagicCode}
+                    disabled={magicLoading}
+                    className={`btn-primary text-xs ${magicLoading ? 'opacity-65 cursor-wait' : ''}`}
+                  >
+                    {magicLoading ? 'Sending...' : 'Send Verification Code'}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="rounded-xl border border-cream bg-white/80 p-3 sm:p-4 space-y-3">
             <div className="flex items-center justify-between gap-3">
-              <p className="font-body text-xs uppercase tracking-widest text-slate-lt">Automatic Cloud Sync</p>
+              <p className="font-body text-xs uppercase tracking-widest text-slate-lt">
+                {hasCloudSync ? 'Automatic Cloud Sync' : 'Passphrase Setup (Advanced)'}
+              </p>
               <span className={`tag border ${hasCloudSync ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-cream border-cream text-slate-lt'}`}>
                 {hasCloudSync ? 'Active' : 'Not linked'}
               </span>
