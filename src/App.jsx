@@ -1,9 +1,10 @@
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import CellarCloudSyncBridge from './components/CellarCloudSyncBridge'
 import InstallPrompt from './components/InstallPrompt'
+import GlobalSearch from './components/GlobalSearch'
 
 // Lazy-load pages — Vite/Rollup splits each into its own chunk.
 // wines.js is shared, so it lands in its own common chunk automatically.
@@ -21,6 +22,7 @@ const TasteProfiler  = lazy(() => import('./pages/TasteProfiler'))
 const WishlistShare  = lazy(() => import('./pages/WishlistShare'))
 const Producers      = lazy(() => import('./pages/Producers'))
 const ProducerDetail = lazy(() => import('./pages/ProducerDetail'))
+const VintageGuide   = lazy(() => import('./pages/VintageGuide'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -35,12 +37,26 @@ function PageLoader() {
 }
 
 function AppLayout() {
+  const [searchOpen, setSearchOpen] = useState(false)
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(v => !v)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   return (
     <>
       <CellarCloudSyncBridge />
       <InstallPrompt />
       <ScrollToTop />
-      <Nav />
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <Nav onSearchOpen={() => setSearchOpen(true)} />
       <div className="mobile-page-padding lg:pb-0">
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -59,6 +75,7 @@ function AppLayout() {
             <Route path="/taste-quiz" element={<TasteProfiler />} />
             <Route path="/producers" element={<Producers />} />
             <Route path="/producers/:slug" element={<ProducerDetail />} />
+            <Route path="/vintages" element={<VintageGuide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

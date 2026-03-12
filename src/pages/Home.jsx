@@ -129,30 +129,16 @@ export default function Home() {
       <section className="hero-mesh relative overflow-hidden pt-24 pb-16 lg:pt-28 lg:pb-20">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/72 via-[#232743]/40 to-transparent" />
-          {/* Amanda ghost — desktop: left sweep, fades right and bottom */}
-          <div className="absolute left-0 top-0 bottom-0 w-[62vw] max-w-[720px] hidden md:block overflow-hidden">
+          {/* Amanda ghost — right side, fades left and bottom */}
+          <div className="absolute right-0 top-0 bottom-0 w-[55vw] max-w-[620px] overflow-hidden">
             <img
-              src="/amanda-holmes.png"
+              src="/amanda-eindhoven.jpg"
               alt=""
-              className="absolute left-[-33%] bottom-[-50%] h-[208%] max-w-none opacity-[0.36] grayscale contrast-105 brightness-95"
+              className="absolute right-0 top-0 h-full w-full object-cover object-top opacity-[0.18] grayscale brightness-90"
               style={{
-                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 58%, rgba(0,0,0,0) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 38%)',
+                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.85) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%)',
                 WebkitMaskComposite: 'destination-in',
-                maskImage: 'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 58%, rgba(0,0,0,0) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 38%)',
-                maskComposite: 'intersect',
-              }}
-            />
-          </div>
-          {/* Amanda ghost — mobile: full-width, fades right and bottom */}
-          <div className="absolute left-0 top-0 bottom-0 w-[100vw] md:hidden overflow-hidden">
-            <img
-              src="/amanda-holmes.png"
-              alt=""
-              className="absolute left-[-18%] bottom-[-48%] h-[198%] max-w-none opacity-[0.28] grayscale contrast-105 brightness-95"
-              style={{
-                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.9) 65%, rgba(0,0,0,0) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 38%)',
-                WebkitMaskComposite: 'destination-in',
-                maskImage: 'linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.9) 65%, rgba(0,0,0,0) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 38%)',
+                maskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.85) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%)',
                 maskComposite: 'intersect',
               }}
             />
@@ -405,18 +391,6 @@ export default function Home() {
 
       <section className="pb-14 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
         <div className="surface-panel p-6 sm:p-8 relative overflow-hidden">
-          {/* Amanda accent — bleeds in from the right edge, fades left into panel */}
-          <div className="absolute right-0 top-0 bottom-0 w-56 hidden lg:block pointer-events-none select-none">
-            <img
-              src="/amanda-wine.png"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover object-top opacity-[0.22]"
-              style={{
-                WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0) 100%)',
-                maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0) 100%)',
-              }}
-            />
-          </div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 relative z-10">
             <div>
               <p className="section-label mb-2">Nights Out</p>

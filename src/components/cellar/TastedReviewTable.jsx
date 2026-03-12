@@ -157,6 +157,38 @@ export default function TastedReviewTable({ tasted }) {
   )
 }
 
+function StructuredTags({ note }) {
+  const tags = [
+    note.colour && { label: 'Colour', value: note.colour },
+    note.body && { label: 'Body', value: note.body },
+    note.acidity && { label: 'Acidity', value: note.acidity },
+    note.tannins && { label: 'Tannins', value: note.tannins },
+    note.finish && { label: 'Finish', value: note.finish },
+  ].filter(Boolean)
+
+  const hasStructured = tags.length > 0 || (note.nose && note.nose.length > 0)
+  if (!hasStructured) return null
+
+  return (
+    <div className="space-y-2">
+      {tags.map(t => (
+        <span key={t.label} className="inline-flex items-center gap-1 mr-2">
+          <span className="font-body text-xs text-slate-lt">{t.label}:</span>
+          <span className="font-body text-xs font-medium text-slate bg-cream px-2 py-0.5 rounded-full">{t.value}</span>
+        </span>
+      ))}
+      {note.nose && note.nose.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-1">
+          <span className="font-body text-xs text-slate-lt self-center mr-1">Nose:</span>
+          {note.nose.map(n => (
+            <span key={n} className="font-body text-xs bg-cream text-slate px-2 py-0.5 rounded-full">{n}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function TableRow({ note, cat, dbWine, isExpanded, onToggle }) {
   const noteText = note.tastingNote || note.notes || ''
   return (
@@ -193,7 +225,8 @@ function TableRow({ note, cat, dbWine, isExpanded, onToggle }) {
       {isExpanded && (
         <tr className="bg-ivory/30">
           <td colSpan={7} className="px-4 py-4">
-            <div className="space-y-2">
+            <div className="space-y-3">
+              <StructuredTags note={note} />
               {noteText && (
                 <p className="font-body text-sm text-slate-lt leading-relaxed italic">"{noteText}"</p>
               )}
@@ -205,7 +238,7 @@ function TableRow({ note, cat, dbWine, isExpanded, onToggle }) {
                   View wine details →
                 </Link>
               )}
-              {!noteText && !note.score && !dbWine && (
+              {!noteText && !note.score && !dbWine && !(note.colour || note.nose?.length || note.body) && (
                 <p className="font-body text-xs text-slate-lt/50">No tasting note recorded.</p>
               )}
             </div>
@@ -253,9 +286,10 @@ function MobileReviewCard({ note, cat, dbWine, isExpanded, onToggle }) {
         </div>
       </button>
       {isExpanded && (
-        <div className="px-4 pb-4 pt-0 border-t border-cream space-y-2">
+        <div className="px-4 pb-4 pt-3 border-t border-cream space-y-3">
+          <StructuredTags note={note} />
           {noteText && (
-            <p className="font-body text-sm text-slate-lt leading-relaxed italic mt-3">"{noteText}"</p>
+            <p className="font-body text-sm text-slate-lt leading-relaxed italic">"{noteText}"</p>
           )}
           {note.score && (
             <p className="font-body text-xs text-slate-lt">Vivino score: {note.score}/5</p>

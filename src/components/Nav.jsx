@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { to: '/pairing', label: 'Pairings' },
   { to: '/taste-quiz', label: 'My Taste' },
   { to: '/critics', label: 'Critics' },
+  { to: '/vintages', label: 'Vintages' },
   { to: '/learn', label: 'Learn' },
   { to: '/cellar', label: 'My Cellar' },
 ]
@@ -33,7 +34,7 @@ function isActivePath(pathname, to) {
   return pathname.startsWith(to)
 }
 
-export default function Nav() {
+export default function Nav({ onSearchOpen }) {
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -69,6 +70,19 @@ export default function Nav() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
           <NavLogo />
 
+          <div className="hidden lg:flex items-center gap-2">
+            <button
+              onClick={onSearchOpen}
+              className="flex items-center gap-2 px-3 py-2 rounded-full border border-white/18 bg-white/10 text-white/70 hover:text-white hover:bg-white/16 transition-all"
+              aria-label="Search wines (⌘K)"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
+                <circle cx="9" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M13 13l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+              <span className="font-body text-xs">Search</span>
+              <kbd className="font-body text-xs text-white/40 border border-white/20 rounded px-1 py-0.5 leading-none">⌘K</kbd>
+            </button>
           <ul className="hidden lg:flex items-center gap-1 rounded-full border border-white/18 bg-white/10 p-1.5 backdrop-blur-xl shadow-[0_8px_26px_rgba(0,0,0,0.2)]">
             {NAV_LINKS.map(({ to, label }) => {
               const active = isActivePath(location.pathname, to)
@@ -86,6 +100,7 @@ export default function Nav() {
               )
             })}
           </ul>
+          </div>
 
           <div className="lg:hidden flex items-center gap-2 min-w-0 flex-1 justify-end">
             <div className="flex items-center gap-1.5 min-w-0">
