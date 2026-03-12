@@ -12,6 +12,8 @@ import TastedReviewTable from '../components/cellar/TastedReviewTable'
 import VivinoImportPanel from '../components/cellar/VivinoImportPanel'
 import EmptyState from '../components/cellar/EmptyState'
 import AddBottleModal from '../components/cellar/AddBottleModal'
+import EditBottleModal from '../components/cellar/EditBottleModal'
+import CellarStatsDashboard from '../components/cellar/CellarStatsDashboard'
 import TastingNoteModal from '../components/cellar/TastingNoteModal'
 
 export default function Cellar() {
@@ -19,6 +21,7 @@ export default function Cellar() {
   const [activeTab, setActiveTab] = useState('bottles')
   const [showAddModal, setShowAddModal] = useState(false)
   const [tastingBottle, setTastingBottle] = useState(null)
+  const [editingBottle, setEditingBottle] = useState(null)
   const [syncSeed, setSyncSeed] = useState('')
   const { bottles, wishlist, tasted, removeBottle, removeFromWishlist, importTastedEntries, importCellarData, markTasted, stats } = useCellar()
   const [vivinoStatus, setVivinoStatus] = useState({ tone: '', message: '' })
@@ -209,6 +212,7 @@ export default function Cellar() {
         {/* Tab: Bottles */}
         {activeTab === 'bottles' && (
           <div>
+            <CellarStatsDashboard bottles={bottles} />
             {bottles.length === 0 ? (
               <EmptyState
                 icon="🍾"
@@ -272,6 +276,7 @@ export default function Cellar() {
                       <BottleCard
                         key={b.id}
                         bottle={b}
+                        onEdit={() => setEditingBottle(b)}
                         onMarkTasted={() => setTastingBottle(b)}
                         onRemove={() => removeBottle(b.id)}
                       />
@@ -396,6 +401,7 @@ export default function Cellar() {
 
       {/* Modals */}
       {showAddModal && <AddBottleModal onClose={() => setShowAddModal(false)} />}
+      {editingBottle && <EditBottleModal bottle={editingBottle} onClose={() => setEditingBottle(null)} />}
       {tastingBottle && (
         <TastingNoteModal
           bottle={tastingBottle}

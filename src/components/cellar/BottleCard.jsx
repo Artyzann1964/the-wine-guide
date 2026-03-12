@@ -3,7 +3,7 @@ import { wines as wineDB } from '../../data/wines'
 import { CATEGORY_COLORS, PURCHASE_CHANNELS, drinkWindowStatus } from './constants'
 import { StarDisplay } from './StarRating'
 
-export default function BottleCard({ bottle, onMarkTasted, onRemove }) {
+export default function BottleCard({ bottle, onMarkTasted, onRemove, onEdit }) {
   const dbWine = wineDB.find(w => w.id === bottle.wineId)
   const cat    = bottle.category || dbWine?.category || 'red'
   const window = drinkWindowStatus(bottle)
@@ -95,6 +95,12 @@ export default function BottleCard({ bottle, onMarkTasted, onRemove }) {
             View Wine
           </Link>
         )}
+        <button
+          onClick={onEdit}
+          className="btn-ghost text-xs flex-1"
+        >
+          Edit
+        </button>
         <button
           onClick={onMarkTasted}
           className="btn-secondary text-xs flex-1"
