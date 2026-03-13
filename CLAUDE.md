@@ -29,7 +29,7 @@ Current dataset facts:
 - 21 countries
 - 97 region strings
 - Categories: 106 red, 93 white, 39 sparkling, 10 dessert, 19 rosé
-- 14 venues in Amanda's Places
+- 16 venues in Amanda's Places (14 Sheffield/Chelmsford + 2 New York)
 - 8 venue wine-list sources in `src/data/venueWineLists.js`
 - 17 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem, Trimbach Clos Sainte Hune, Giacomo Conterno Barolo, Faustino I Gran Reserva, plus 6 others)
 
@@ -75,11 +75,11 @@ src/components/cellar/CellarHero.jsx    Hero section with stats cards
 src/components/cellar/CellarTabs.jsx    Tab bar
 src/components/cellar/BottleCard.jsx    Bottle card with star rating display + Edit button (onEdit prop)
 src/components/cellar/WishlistCard.jsx  Wishlist card
-src/components/cellar/TastedReviewTable.jsx  Review table (desktop + mobile; renders structured tasting tags)
+src/components/cellar/TastedReviewTable.jsx  Review table (desktop + mobile; 'Edit note' button in expanded rows; onEdit prop)
 src/components/cellar/EmptyState.jsx    Empty state component
 src/components/cellar/AddBottleModal.jsx     Add bottle form with optional star rating
 src/components/cellar/EditBottleModal.jsx    Edit existing bottle (pre-populated, calls updateBottle)
-src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted form with structured notes (colour/nose/body/acidity/tannins/finish)
+src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted + edit tasting note (editMode prop pre-populates all fields including structured notes)
 src/components/cellar/CellarStatsDashboard.jsx  Cellar overview: donut chart, summary cards, 6-month timeline
 src/components/cellar/VivinoImportPanel.jsx  Vivino CSV import
 src/components/cellar/WishlistSharePanel.jsx Wishlist share URL generation
@@ -91,7 +91,7 @@ src/components/cellar/CellarSyncPanel.jsx    Cloud sync + manual backup
 src/pages/Home.jsx                      Homepage (single amanda-eindhoven.jpg ghost hero, right-anchored, opacity 0.18)
 src/pages/Explorer.jsx                  Main explorer/filter page
 src/pages/WineDetail.jsx                Detail page + add-to-cellar modal (similarity-based related wines)
-src/pages/Cellar.jsx                    Cellar orchestrator (~155 lines; bottles/wishlist/tasted tabs delegated to sub-components)
+src/pages/Cellar.jsx                    Cellar orchestrator (~205 lines; bottles/wishlist/tasted tabs delegated to sub-components)
 src/pages/Shop.jsx                      Retailer guide and retailer-specific wine views
 src/pages/Sheffield.jsx                 Amanda's Places page
 src/pages/WishlistShare.jsx             Shared wishlist page
@@ -181,6 +181,7 @@ Retailer names matter. Current canonical branded set:
 - `removeBottle`
 - `updateBottle`
 - `markTasted`
+- `updateTastedEntry`
 - `addToWishlist`
 - `removeFromWishlist`
 - `importTastedEntries`
@@ -191,7 +192,10 @@ Retailer names matter. Current canonical branded set:
 Cellar item model (via `normalizeCellarItem` in `useCellar.js`):
 - `rating`: 1-5 star quality rating (nullable, settable from AddBottleModal and TastingNoteModal)
 - `wouldBuyAgain`: 1-5 star "would buy again" rating (nullable, settable from TastingNoteModal)
-- Both are sync-safe: nullable fields propagate through JSON sync payload; old devices ignore unknown fields
+- `tastingNote`: free-text tasting note string (settable/editable from TastingNoteModal)
+- `score`: numeric critic score 0–100 (nullable)
+- Structured tasting fields (all nullable): `colour`, `nose` (string array), `body`, `acidity`, `tannins`, `finish`
+- All fields are sync-safe: nullable fields propagate through JSON sync payload; old devices ignore unknown fields
 
 Cross-device sync flow:
 - Local cellar state is persisted in `localStorage`
@@ -247,10 +251,10 @@ Build config:
 - the wine dataset still lands in its own large shared chunk
 
 Current verified build output from 2026-03-13:
-- `index` (wines dataset): 579.59 kB / 126.69 kB gzip
+- `index` (wines dataset): 580.58 kB / 127.00 kB gzip
 - `Education`: 100.69 kB / 30.46 kB gzip
-- `Sheffield`: 105.57 kB / 29.59 kB gzip
-- `Cellar`: 86.33 kB / 18.44 kB gzip
+- `Sheffield`: 108.91 kB / 30.75 kB gzip
+- `Cellar`: 87.72 kB / 18.80 kB gzip
 - `VintageGuide`: 18.66 kB / 4.46 kB gzip
 - `vendor`: 162.98 kB / 53.24 kB gzip
 - PWA: sw.js + workbox generated, 30 entries precached
@@ -267,7 +271,6 @@ These are active review findings and should be assumed true until fixed:
 1. `src/components/CellarCloudSyncBridge.jsx` and `server.mjs`
    Sync now merges item adds, updates, and removals centrally. Ownership has an owner email, recovery key, passphrase rotation, and linked-device revocation, but there is still no signed-in account model or verified email channel.
 2. Wine label images cover 17 wines. More could be added via Wikimedia Commons CC-licensed images (verify URLs with MD5 hash path before adding).
-3. ~~`Cellar.jsx` is growing (~400+ lines) and could be split further~~ — resolved: Cellar.jsx is now ~155 lines; bottles/wishlist tabs extracted to dedicated sub-components.
 
 ## Session Guidance
 
