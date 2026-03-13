@@ -331,6 +331,7 @@ const _wines = [
   {
     id: 'trimbach-clos-ste-hune',
     name: 'Trimbach Clos Sainte Hune Riesling',
+    labelImage: 'https://upload.wikimedia.org/wikipedia/commons/9/91/2009_Trimbach_Riesling_(8130797570).jpg',
     producer: 'Maison Trimbach',
     vintage: 2016,
     category: 'white',
@@ -580,6 +581,7 @@ const _wines = [
   {
     id: 'barolo-conterno',
     name: 'Giacomo Conterno Cascina Francia Barolo',
+    labelImage: 'https://upload.wikimedia.org/wikipedia/commons/0/0f/Conterno_barolo_cigalo.jpeg',
     producer: 'Giacomo Conterno',
     vintage: 2016,
     category: 'red',
@@ -2423,6 +2425,7 @@ const _wines = [
  {
    id: 'sainsburys-faustino-gran-reserva',
    name: 'Faustino I Gran Reserva',
+   labelImage: 'https://upload.wikimedia.org/wikipedia/commons/7/78/1998_Gran_Riserva_Faustino_I_Rioja_(5946943296).jpg',
    producer: 'Bodegas Faustino',
    vintage: '2015',
    category: 'red',
