@@ -31,7 +31,7 @@ Current dataset facts:
 - Categories: 106 red, 93 white, 39 sparkling, 10 dessert, 19 rosé
 - 14 venues in Amanda's Places
 - 8 venue wine-list sources in `src/data/venueWineLists.js`
-- 14 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem, plus 6 others)
+- 17 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem, Trimbach Clos Sainte Hune, Giacomo Conterno Barolo, Faustino I Gran Reserva, plus 6 others)
 
 ## Commands
 
@@ -83,12 +83,15 @@ src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted form with structured
 src/components/cellar/CellarStatsDashboard.jsx  Cellar overview: donut chart, summary cards, 6-month timeline
 src/components/cellar/VivinoImportPanel.jsx  Vivino CSV import
 src/components/cellar/WishlistSharePanel.jsx Wishlist share URL generation
+src/components/cellar/DrinkWindowAlerts.jsx  Drink window alert banners (over-peak/ready/opening-soon)
+src/components/cellar/CellarBottlesTab.jsx  Bottles tab: search/sort, BottleCard grid, category breakdown
+src/components/cellar/CellarWishlistTab.jsx Wishlist tab: search/sort, WishlistCard grid
 src/components/cellar/CellarSyncPanel.jsx    Cloud sync + manual backup
 
 src/pages/Home.jsx                      Homepage (single amanda-eindhoven.jpg ghost hero, right-anchored, opacity 0.18)
 src/pages/Explorer.jsx                  Main explorer/filter page
 src/pages/WineDetail.jsx                Detail page + add-to-cellar modal (similarity-based related wines)
-src/pages/Cellar.jsx                    Cellar orchestrator (bottles/wishlist/tasted/sync + stats dashboard + edit modal)
+src/pages/Cellar.jsx                    Cellar orchestrator (~155 lines; bottles/wishlist/tasted tabs delegated to sub-components)
 src/pages/Shop.jsx                      Retailer guide and retailer-specific wine views
 src/pages/Sheffield.jsx                 Amanda's Places page
 src/pages/WishlistShare.jsx             Shared wishlist page
@@ -243,11 +246,11 @@ Build config:
 - chunk size warning limit is raised to `800`
 - the wine dataset still lands in its own large shared chunk
 
-Current verified build output from 2026-03-12:
+Current verified build output from 2026-03-13:
 - `index` (wines dataset): 579.59 kB / 126.69 kB gzip
 - `Education`: 100.69 kB / 30.46 kB gzip
 - `Sheffield`: 105.57 kB / 29.59 kB gzip
-- `Cellar`: 86.11 kB / 18.40 kB gzip
+- `Cellar`: 86.33 kB / 18.44 kB gzip
 - `VintageGuide`: 18.66 kB / 4.46 kB gzip
 - `vendor`: 162.98 kB / 53.24 kB gzip
 - PWA: sw.js + workbox generated, 30 entries precached
@@ -263,8 +266,8 @@ These are active review findings and should be assumed true until fixed:
 
 1. `src/components/CellarCloudSyncBridge.jsx` and `server.mjs`
    Sync now merges item adds, updates, and removals centrally. Ownership has an owner email, recovery key, passphrase rotation, and linked-device revocation, but there is still no signed-in account model or verified email channel.
-2. Wine label images cover 14 wines. More could be added via Wikimedia Commons CC-licensed images.
-3. `Cellar.jsx` is growing (~400+ lines) and could be split further as features are added.
+2. Wine label images cover 17 wines. More could be added via Wikimedia Commons CC-licensed images (verify URLs with MD5 hash path before adding).
+3. ~~`Cellar.jsx` is growing (~400+ lines) and could be split further~~ — resolved: Cellar.jsx is now ~155 lines; bottles/wishlist tabs extracted to dedicated sub-components.
 
 ## Session Guidance
 
