@@ -48,7 +48,7 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-export default function TastedReviewTable({ tasted }) {
+export default function TastedReviewTable({ tasted, onEdit }) {
   const [sort, setSort] = useState('date-desc')
   const [filter, setFilter] = useState('all')
   const [expandedId, setExpandedId] = useState(null)
@@ -121,6 +121,7 @@ export default function TastedReviewTable({ tasted }) {
                     dbWine={dbWine}
                     isExpanded={isExpanded}
                     onToggle={() => setExpandedId(isExpanded ? null : note.id)}
+                    onEdit={onEdit}
                   />
                 )
               })}
@@ -146,6 +147,7 @@ export default function TastedReviewTable({ tasted }) {
               dbWine={dbWine}
               isExpanded={isExpanded}
               onToggle={() => setExpandedId(isExpanded ? null : note.id)}
+              onEdit={onEdit}
             />
           )
         })}
@@ -189,7 +191,7 @@ function StructuredTags({ note }) {
   )
 }
 
-function TableRow({ note, cat, dbWine, isExpanded, onToggle }) {
+function TableRow({ note, cat, dbWine, isExpanded, onToggle, onEdit }) {
   const noteText = note.tastingNote || note.notes || ''
   return (
     <>
@@ -233,14 +235,24 @@ function TableRow({ note, cat, dbWine, isExpanded, onToggle }) {
               {note.score && (
                 <p className="font-body text-xs text-slate-lt">Vivino score: {note.score}/5</p>
               )}
-              {dbWine && (
-                <Link to={`/explore/${dbWine.id}`} className="inline-block font-body text-xs text-gold hover:text-gold/80 font-medium">
-                  View wine details →
-                </Link>
-              )}
               {!noteText && !note.score && !dbWine && !(note.colour || note.nose?.length || note.body) && (
                 <p className="font-body text-xs text-slate-lt/50">No tasting note recorded.</p>
               )}
+              <div className="flex items-center gap-3 pt-1">
+                {onEdit && (
+                  <button
+                    onClick={e => { e.stopPropagation(); onEdit(note) }}
+                    className="font-body text-xs text-slate-lt hover:text-slate border border-cream rounded-lg px-3 py-1.5 hover:bg-cream transition-colors"
+                  >
+                    Edit note
+                  </button>
+                )}
+                {dbWine && (
+                  <Link to={`/explore/${dbWine.id}`} className="font-body text-xs text-gold hover:text-gold/80 font-medium">
+                    View wine details →
+                  </Link>
+                )}
+              </div>
             </div>
           </td>
         </tr>
@@ -249,7 +261,7 @@ function TableRow({ note, cat, dbWine, isExpanded, onToggle }) {
   )
 }
 
-function MobileReviewCard({ note, cat, dbWine, isExpanded, onToggle }) {
+function MobileReviewCard({ note, cat, dbWine, isExpanded, onToggle, onEdit }) {
   const noteText = note.tastingNote || note.notes || ''
   return (
     <div className="card overflow-hidden">
@@ -294,11 +306,21 @@ function MobileReviewCard({ note, cat, dbWine, isExpanded, onToggle }) {
           {note.score && (
             <p className="font-body text-xs text-slate-lt">Vivino score: {note.score}/5</p>
           )}
-          {dbWine && (
-            <Link to={`/explore/${dbWine.id}`} className="inline-block font-body text-xs text-gold hover:text-gold/80 font-medium">
-              View wine details →
-            </Link>
-          )}
+          <div className="flex items-center gap-3 pt-0.5">
+            {onEdit && (
+              <button
+                onClick={e => { e.stopPropagation(); onEdit(note) }}
+                className="font-body text-xs text-slate-lt hover:text-slate border border-cream rounded-lg px-3 py-1.5 hover:bg-cream transition-colors"
+              >
+                Edit note
+              </button>
+            )}
+            {dbWine && (
+              <Link to={`/explore/${dbWine.id}`} className="font-body text-xs text-gold hover:text-gold/80 font-medium">
+                View wine details →
+              </Link>
+            )}
+          </div>
         </div>
       )}
     </div>

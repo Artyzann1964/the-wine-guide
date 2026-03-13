@@ -20,6 +20,7 @@ export default function Cellar() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [tastingBottle, setTastingBottle] = useState(null)
   const [editingBottle, setEditingBottle] = useState(null)
+  const [editingTastingNote, setEditingTastingNote] = useState(null)
   const [syncSeed, setSyncSeed] = useState('')
   const [vivinoStatus, setVivinoStatus] = useState({ tone: '', message: '' })
   const [importingVivino, setImportingVivino] = useState(false)
@@ -27,7 +28,7 @@ export default function Cellar() {
   const {
     bottles, wishlist, tasted, stats,
     removeBottle, removeFromWishlist,
-    importTastedEntries, importCellarData, markTasted,
+    importTastedEntries, importCellarData, markTasted, updateTastedEntry,
   } = useCellar()
 
   const cellarValue = bottles.reduce((sum, b) => sum + (parseFloat(b.purchasePrice) || 0) * (b.quantity || 1), 0)
@@ -163,7 +164,7 @@ export default function Cellar() {
                 onCta={() => setActiveTab('bottles')}
               />
             ) : (
-              <TastedReviewTable tasted={tasted} />
+              <TastedReviewTable tasted={tasted} onEdit={setEditingTastingNote} />
             )}
           </div>
         )}
@@ -180,6 +181,28 @@ export default function Cellar() {
             markTasted(tastingBottle.id, note)
             setTastingBottle(null)
             setActiveTab('tasted')
+          }}
+        />
+      )}
+      {editingTastingNote && (
+        <TastingNoteModal
+          bottle={editingTastingNote}
+          editMode
+          onClose={() => setEditingTastingNote(null)}
+          onSave={note => {
+            updateTastedEntry(editingTastingNote.id, {
+              rating: note.rating,
+              wouldBuyAgain: note.wouldBuyAgain,
+              tastingNote: note.note,
+              score: note.score,
+              colour: note.colour,
+              nose: note.nose,
+              body: note.body,
+              acidity: note.acidity,
+              tannins: note.tannins,
+              finish: note.finish,
+            })
+            setEditingTastingNote(null)
           }}
         />
       )}

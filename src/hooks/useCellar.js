@@ -148,6 +148,12 @@ function normalizeCellarItem(entry, fallbackStatus = ITEM_STATUS.bottle) {
     rating: normalizeRating(entry?.rating),
     wouldBuyAgain: normalizeRating(entry?.wouldBuyAgain),
     score: normalizeScore(entry?.score),
+    colour: normalizeNullableText(entry?.colour),
+    nose: Array.isArray(entry?.nose) && entry.nose.length ? entry.nose.filter(Boolean) : null,
+    body: normalizeNullableText(entry?.body),
+    acidity: normalizeNullableText(entry?.acidity),
+    tannins: normalizeNullableText(entry?.tannins),
+    finish: normalizeNullableText(entry?.finish),
     source: normalizeOptionalText(entry?.source),
     signature: normalizeOptionalText(entry?.signature),
     deletedAt: normalizeDeletedAt(entry?.deletedAt),
@@ -344,6 +350,20 @@ export function useCellar() {
     }))
   }, [applyUpdate])
 
+  const updateTastedEntry = useCallback((id, updates) => {
+    applyUpdate(prev => ({
+      items: prev.items.map(item => {
+        if (item.id !== id || item.status !== ITEM_STATUS.tasted) return item
+        return normalizeCellarItem({
+          ...item,
+          ...updates,
+          status: ITEM_STATUS.tasted,
+          updatedAt: new Date().toISOString(),
+        }, ITEM_STATUS.tasted)
+      }),
+    }))
+  }, [applyUpdate])
+
   const markTasted = useCallback((bottleId, tastingNote) => {
     applyUpdate(prev => {
       const target = prev.items.find(item => item.id === bottleId && item.status === ITEM_STATUS.bottle && !item.deletedAt)
@@ -361,6 +381,12 @@ export function useCellar() {
         wouldBuyAgain: tastingNote?.wouldBuyAgain ?? null,
         tastingNote: tastingNote?.note || '',
         score: tastingNote?.score ?? null,
+        colour: tastingNote?.colour ?? null,
+        nose: tastingNote?.nose ?? null,
+        body: tastingNote?.body ?? null,
+        acidity: tastingNote?.acidity ?? null,
+        tannins: tastingNote?.tannins ?? null,
+        finish: tastingNote?.finish ?? null,
       }, ITEM_STATUS.tasted)
 
       return {
@@ -619,6 +645,7 @@ export function useCellar() {
     removeBottle,
     updateBottle,
     markTasted,
+    updateTastedEntry,
     addToWishlist,
     removeFromWishlist,
     importTastedEntries,

@@ -41,21 +41,31 @@ function ChipSelect({ options, selected, onToggle, multi = false }) {
   )
 }
 
-export default function TastingNoteModal({ bottle, onClose, onSave }) {
+function hasStructuredData(bottle) {
+  return !!(
+    bottle?.colour ||
+    (Array.isArray(bottle?.nose) && bottle.nose.length > 0) ||
+    bottle?.body ||
+    bottle?.acidity ||
+    bottle?.tannins ||
+    bottle?.finish
+  )
+}
+
+export default function TastingNoteModal({ bottle, onClose, onSave, editMode = false }) {
   const [form, setForm] = useState({
     rating: bottle?.rating || 0,
-    score: bottle?.score || '',
-    note: '',
-    wouldBuyAgain: 0,
-    // structured fields
-    colour: '',
-    nose: [],
-    body: '',
-    acidity: '',
-    tannins: '',
-    finish: '',
+    score: bottle?.score ?? '',
+    note: editMode ? (bottle?.tastingNote || '') : '',
+    wouldBuyAgain: editMode ? (bottle?.wouldBuyAgain || 0) : 0,
+    colour: editMode ? (bottle?.colour || '') : '',
+    nose: editMode ? (bottle?.nose || []) : [],
+    body: editMode ? (bottle?.body || '') : '',
+    acidity: editMode ? (bottle?.acidity || '') : '',
+    tannins: editMode ? (bottle?.tannins || '') : '',
+    finish: editMode ? (bottle?.finish || '') : '',
   })
-  const [showStructured, setShowStructured] = useState(false)
+  const [showStructured, setShowStructured] = useState(editMode && hasStructuredData(bottle))
 
   function set(key, value) {
     setForm(current => ({ ...current, [key]: value }))
@@ -102,10 +112,14 @@ export default function TastingNoteModal({ bottle, onClose, onSave }) {
       <div className="relative bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg shadow-2xl max-h-[92vh] overflow-y-auto">
         <div className="p-6 border-b border-cream flex items-center justify-between">
           <div>
-            <h2 className="font-display font-semibold text-xl text-slate">Mark as Tasted</h2>
-            <p className="font-body text-xs text-slate-lt mt-1">
-              {bottle.quantity > 1 ? 'This logs one bottle as tasted and leaves the rest in your cellar.' : 'This moves the bottle into Tasting Notes.'}
-            </p>
+            <h2 className="font-display font-semibold text-xl text-slate">
+              {editMode ? 'Edit Tasting Note' : 'Mark as Tasted'}
+            </h2>
+            {!editMode && (
+              <p className="font-body text-xs text-slate-lt mt-1">
+                {bottle.quantity > 1 ? 'This logs one bottle as tasted and leaves the rest in your cellar.' : 'This moves the bottle into Tasting Notes.'}
+              </p>
+            )}
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-cream flex items-center justify-center text-slate-lt hover:bg-gold/20 transition-colors">
             ✕
@@ -225,7 +239,9 @@ export default function TastingNoteModal({ bottle, onClose, onSave }) {
 
           <div className="flex gap-2">
             <button type="button" onClick={onClose} className="btn-ghost flex-1">Cancel</button>
-            <button type="submit" className="btn-primary flex-1">Save Tasting Note</button>
+            <button type="submit" className="btn-primary flex-1">
+              {editMode ? 'Save Changes' : 'Save Tasting Note'}
+            </button>
           </div>
         </form>
       </div>
