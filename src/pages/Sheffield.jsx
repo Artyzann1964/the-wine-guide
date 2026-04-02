@@ -1124,6 +1124,140 @@ const VENUES = [
     stylePrompts: ['All bottles by the glass', 'Eclectic food pairing', 'Pacific and Asian-inflected', 'Discovery-led evening'],
     wineIds: ['benanti-etna-bianco', 'clos-de-la-roilette-fleurie', 'vacheron-sancerre-le-pave', 'gd-vajra-barolo-albe'],
   },
+  // ── South Yorkshire ───────────────────────────────────────────────────────
+  {
+    id: 'old-smythie-wentworth',
+    name: 'Old Smythie Restaurant',
+    town: 'Wentworth',
+    area: 'Main Street · Wentworth Village',
+    type: 'Restaurant',
+    note: 'Destination dining in a remarkable heritage village',
+    vibe: "Set in the village of Wentworth — home to Wentworth Woodhouse, one of the largest privately owned houses in Europe and the centrepiece of a genuinely extraordinary South Yorkshire heritage landscape. The Old Smythie occupies a characterful building in the village itself, delivering the kind of unpretentious but carefully executed cooking that a setting this particular demands. Wentworth village is the kind of place that rewards the detour, and the Old Smythie is the reason to make the journey a meal.",
+    whyAmandaLovesIt: "Wentworth is one of those English villages that feels like a private discovery even when everyone local already knows it. The Woodhouse estate, the estate cottages, the ancient church — the whole village has an intactness that is rare in South Yorkshire. The Old Smythie sits comfortably inside that context, and the cooking makes it a complete destination rather than just a backdrop.",
+    bestFor: ['Destination village dining', 'South Yorkshire occasion lunch', 'Wentworth estate visit combined with dinner'],
+    typicalSpend: 'Mid to premium',
+    reserveTip: 'Book ahead for weekend evenings and Sunday lunch. Worth combining with a walk around the Wentworth estate grounds.',
+    address: 'Main Street, Wentworth, Rotherham S62 7TH',
+    website: 'https://oldsmythie.co.uk',
+    imageFallbackLabel: 'Village restaurant · Wentworth',
+    imageFallbackNote: "Wentworth is one of England's most architecturally significant villages — the Old Smythie sits inside that heritage landscape, making the setting as much the draw as the kitchen.",
+    stylePrompts: ['Classic red with village dinner', 'Old-world occasion bottle', 'English countryside pairing', 'Yorkshire welcome'],
+    wineIds: ['barolo-conterno', 'trimbach-clos-ste-hune', 'vacheron-sancerre-le-pave', 'chateau-margaux-2015'],
+  },
+  {
+    id: 'george-dragon-wentworth',
+    name: 'George & Dragon',
+    town: 'Wentworth',
+    area: 'Main Street · Wentworth Village',
+    type: 'Village pub + restaurant',
+    note: 'Wentworth village institution',
+    vibe: "The village pub of Wentworth — a proper stone-built country pub in the same remarkable heritage village as Wentworth Woodhouse, one of Europe's largest privately owned houses. The George & Dragon has been serving the village and visitors for generations, and its position in one of South Yorkshire's most beautiful estate villages gives it a character that cannot be manufactured. Real ales, seasonal cooking, and the kind of settled atmosphere that belongs to a village pub that has been doing this for a long time.",
+    whyAmandaLovesIt: "Every visit to Wentworth should include a stop at the George & Dragon. Whether before or after a walk around the Woodhouse estate grounds, the pub provides exactly the uncomplicated pleasure that a village of this quality deserves. Honest food, good ales, and a room that has the confidence of genuine age rather than manufactured heritage.",
+    bestFor: ['Village pub lunch after the Wentworth estate walk', 'Relaxed South Yorkshire afternoon', 'Classic British pub food with a proper glass'],
+    typicalSpend: 'Mid-range',
+    reserveTip: 'Walk-in for weekday lunch. Book for Sunday lunch and weekend evenings when the village is at its busiest.',
+    address: 'Main Street, Wentworth, Rotherham S62 7TH',
+    website: 'https://georgeanddragonwentworth.com',
+    imageFallbackLabel: 'Stone village pub · Wentworth',
+    imageFallbackNote: 'A proper stone-built village pub in one of South Yorkshire\'s finest heritage villages — the setting does half the work before you sit down.',
+    stylePrompts: ['Real ale in a stone pub', 'Easy mid-week red', 'Sunday lunch white', 'Village pub occasion'],
+    wineIds: ['clos-de-la-roilette-fleurie', 'tesco-finest-chablis', 'baron-de-ley-rioja-reserva', 'bollinger-special-cuvee'],
+  },
+  {
+    id: 'the-vault-penistone',
+    name: 'The Vault Bistro & Speakeasy',
+    town: 'Penistone',
+    area: 'Market Street · Penistone Town Centre',
+    type: 'Bistro + wine bar',
+    note: 'Penistone\'s standout dining room',
+    vibe: "A bistro and speakeasy-style wine bar in the centre of Penistone — the market town at the western edge of South Yorkshire where the Pennines begin. The Vault occupies a characterful room that has carved out a serious reputation for cooking and wine well above what the postcode might suggest. The speakeasy element gives the evening an intimacy that the more conventional South Yorkshire dining rooms lack, and the wine focus makes it a genuine destination rather than simply the best option locally.",
+    whyAmandaLovesIt: "The Vault is the South Yorkshire venue that surprises people. Penistone is not the first place that comes to mind for a serious wine evening, but the Vault delivers one — a well-chosen list, cooking that earns its following, and the kind of atmospheric room that makes a mid-week dinner feel like a proper occasion. It has built its reputation entirely on merit, which in a market town like Penistone is the most reliable endorsement there is.",
+    bestFor: ['Penistone occasion dinner', 'Speakeasy evening with a curated list', 'South Yorkshire wine evening away from Sheffield city centre'],
+    typicalSpend: 'Mid to premium',
+    reserveTip: 'Book ahead for weekend evenings — the room is not large and the reputation fills it. The speakeasy bar is worth arriving early for.',
+    address: 'Market Street, Penistone, Sheffield S36 6BZ',
+    website: 'https://vaultpenistone.com',
+    imageFallbackLabel: 'Bistro + speakeasy · Penistone',
+    imageFallbackNote: "A characterful bistro and speakeasy wine bar in Penistone market town — the South Yorkshire dining room that earns its reputation on merit alone.",
+    stylePrompts: ['Speakeasy wine evening', 'Curated bistro bottle', 'South Pennine occasion', 'Intimate dining pairing'],
+    wineIds: ['vacheron-sancerre-le-pave', 'clos-de-la-roilette-fleurie', 'barolo-conterno', 'trimbach-clos-ste-hune'],
+  },
+  {
+    id: 'rockingham-arms-wentworth',
+    name: 'The Rockingham Arms',
+    town: 'Wentworth',
+    area: 'Main Street · Wentworth Village',
+    type: 'Historic pub + restaurant',
+    note: 'Listed building · Wentworth estate village',
+    vibe: "The oldest pub in Wentworth village — a listed building at the heart of one of South Yorkshire's most remarkable estate settlements. The Rockingham Arms sits directly opposite the imposing Wentworth estate wall, steps from the ancient Church of the Holy Trinity and a walk from Wentworth Woodhouse itself. The room has the low ceilings and stone flags of genuine age rather than pastiche, and the cooking is seasonal British with enough seriousness to match the surroundings.",
+    whyAmandaLovesIt: "Wentworth has three pubs and a restaurant, which is extraordinary for a village of its size — a direct consequence of the Wentworth Woodhouse estate history and the quality of the village architecture that has attracted a loyal dining following. The Rockingham Arms is the most characterful of the three, with a room that communicates the history of the place without any effort at all. The wine list is unpretentious and the food is honest. Sometimes that is exactly what you need.",
+    bestFor: ['Historic pub atmosphere', 'Post-Wentworth Woodhouse visit', 'Honest seasonal British cooking'],
+    typicalSpend: 'Mid-range',
+    reserveTip: 'Book for Sunday lunch when the village is busiest. Walk-in friendly for weekday evenings.',
+    address: 'Main Street, Wentworth, Rotherham S62 7TH',
+    website: 'https://www.greeneking.co.uk/pubs/south-yorkshire/rockingham-arms',
+    imageFallbackLabel: 'Listed pub · Wentworth village',
+    imageFallbackNote: "The oldest pub in Wentworth, opposite the estate wall — stone flags, low ceilings, and an atmosphere that belongs entirely to the village rather than to any hospitality formula.",
+    stylePrompts: ['Village pub house red', 'Easy British pub white', 'Sunday roast Claret', 'Unpretentious seasonal pairing'],
+    wineIds: ['baron-de-ley-rioja-reserva', 'tesco-finest-chablis', 'bollinger-special-cuvee', 'clos-de-la-roilette-fleurie'],
+  },
+  {
+    id: 'dn1-doncaster',
+    name: 'DN1 Delicatessen & Dining',
+    town: 'Doncaster',
+    area: 'High Fisher Gate · City Centre',
+    type: 'Fine dining restaurant + deli wine bar',
+    note: 'Doncaster fine dining · 2 AA Rosettes',
+    vibe: "A 2 AA Rosette tasting menu restaurant beneath Doncaster city centre, pairing five- and eight-course Modern British menus with a curated list of 130+ wines and freshly shucked oysters at the deli counter. Chef-patron Marcus Ashton-Simpson has built a genuine reputation here — twice semi-finalist at National Chef of the Year — and the wine room is a proper cellar rather than an afterthought. DN1 is the strongest argument that Doncaster can genuinely surprise you.",
+    whyAmandaLovesIt: "This is not what you expect when you arrive in Doncaster city centre. The wine list has over 130 references and the kitchen earns those rosettes rather than coasting on them. The oyster and champagne counter is a brilliant touch — the kind of thing that belongs in a Mayfair wine bar, not a South Yorkshire city centre. That is precisely why DN1 is worth a special journey.",
+    bestFor: ['Tasting menu occasion', 'Fine dining in a surprising location', 'Champagne and oysters at the bar'],
+    typicalSpend: 'Premium (tasting menus £65–£95 per head)',
+    reserveTip: 'Book the 8-course menu if the whole evening is free. Oyster bar counter is available for walk-ins.',
+    address: '3 High Fisher Gate, Doncaster DN1 1QZ',
+    website: 'https://www.dn1online.co.uk',
+    imageFallbackLabel: 'Fine dining room · Doncaster',
+    imageFallbackNote: "DN1 is Doncaster's most serious dining room — 2 AA Rosettes, tasting menus, and a 130-wine list in the city's historic heart.",
+    stylePrompts: ['Aged Burgundy tasting menu', 'Mature Bordeaux with the cellar list', 'Champagne with oysters', 'Grower fizz at the bar'],
+    wineIds: ['bollinger-special-cuvee', 'barolo-conterno', 'vacheron-sancerre-le-pave', 'trimbach-clos-ste-hune'],
+  },
+  {
+    id: 'beatson-house-cawthorne',
+    name: 'Beatson House',
+    town: 'Barnsley',
+    area: 'Cawthorne village · Cannon Hall estate',
+    type: 'Fine dining restaurant',
+    note: 'Countryside destination · Lightfoot Wines connection',
+    vibe: "An 18th-century stone cottage cluster in the estate village of Cawthorne — tucked into the Cannon Hall countryside just outside Barnsley — converted into four distinctive candlelit dining rooms. Modern British cooking led by Lee Haigh, with wine pairings sourced through the Lightfoot Wines sister operation, which means the list is consistently more interesting than the postcode suggests. The setting is quietly exceptional: proper Yorkshire stone, low beams, and the kind of atmosphere that belongs to old buildings rather than to anyone's interior design choices.",
+    whyAmandaLovesIt: "Beatson House is the only genuinely fine restaurant in the Barnsley hinterland that earns the label without compromise. The Lightfoot Wines connection elevates the list well above what you would expect, and the four individual rooms give the building a character that a single dining room could never manufacture. It is the countryside occasion restaurant that this part of South Yorkshire has always deserved.",
+    bestFor: ['Countryside occasion dinner', 'Yorkshire fine dining with proper wine', 'Special booking near Cannon Hall'],
+    typicalSpend: 'Premium (£55–£80 per head with wine)',
+    reserveTip: 'Dinner Wednesday–Saturday from 18:30; Sunday lunch also. Book well ahead at weekends — it fills from across the region.',
+    address: 'Church Street, Cawthorne, Barnsley S75 4HQ',
+    website: 'https://beatsonhouse.co.uk',
+    imageFallbackLabel: 'Country dining rooms · Cawthorne',
+    imageFallbackNote: 'An 18th-century cottage restaurant with four distinctive rooms — the only genuinely fine dining destination in the Barnsley countryside.',
+    stylePrompts: ['Textured white with fine dining', 'Classic old-world red', 'Yorkshire countryside occasion bottle', 'Dessert wine finish'],
+    wineIds: ['trimbach-clos-ste-hune', 'barolo-conterno', 'vacheron-sancerre-le-pave', 'bollinger-special-cuvee'],
+  },
+  {
+    id: 'seasons-wickersley',
+    name: 'Seasons Restaurant',
+    town: 'Rotherham',
+    area: 'Wickersley village · Bawtry Road',
+    type: 'Fine bistro restaurant',
+    note: 'Rotherham destination dining',
+    vibe: "A polished independent bistro in the Rotherham suburb of Wickersley, serving seasonal modern British food with an emphasis on fresh, local produce. The same team runs The Courtyard wine bar next door, which means the wine list punches well above its suburban surroundings — it is curated rather than generic, changed regularly, and backed by genuine enthusiasm for matching food and wine well. The room has been properly invested in, with a warmth and confidence that marks it out from the Rotherham dining norm.",
+    whyAmandaLovesIt: "Seasons makes a strong case for Wickersley as a Rotherham dining destination on its own terms. The Courtyard connection means the wine list is worth choosing from rather than just navigating around, the cooking changes genuinely with the seasons, and the room has the feel of somewhere that takes the whole experience seriously. A brilliant neighbourhood find for anyone in the Rotherham orbit.",
+    bestFor: ['Neighbourhood fine dining', 'Seasonal tasting with excellent wine', 'Rotherham date night destination'],
+    typicalSpend: 'Mid to premium (£40–£65 per head)',
+    reserveTip: 'Book Thursday–Saturday dinner; Sunday lunch also available. Ask about the wine flight when booking.',
+    address: '151 Bawtry Road, Wickersley, Rotherham S66 2BW',
+    website: 'https://www.seasonswickersley.co.uk',
+    imageFallbackLabel: 'Bistro dining room · Wickersley',
+    imageFallbackNote: "Wickersley's most serious restaurant — invested interiors, seasonal British cooking, and wine led by The Courtyard team next door.",
+    stylePrompts: ['Seasonal white with the market menu', 'Lighter red bistro bottle', 'Grower champagne aperitif', 'Classic pairing with the tasting menu'],
+    wineIds: ['vacheron-sancerre-le-pave', 'clos-de-la-roilette-fleurie', 'tesco-finest-chablis', 'baron-de-ley-rioja-reserva'],
+  },
   // ── Munich ────────────────────────────────────────────────────────────────
   {
     id: 'tantris-munich',
@@ -1152,13 +1286,13 @@ const VENUES = [
   {
     id: 'brenner-operngrill-munich',
     name: 'Brenner Operngrill',
-    amandaFavourite: true,
+    richardFavourite: true,
     town: 'Munich',
     area: 'Maximilianstrasse · Maximilianstr. 15',
     type: 'Grill restaurant + bar',
-    note: 'Amanda favourite — Maximilianstrasse classic',
-    vibe: 'Set inside the historic Marstall — the royal stables built in the early 19th century, steps from the Bavarian State Opera and the luxury house row on Maximilianstrasse. The space splits across three zones: an open fireplace grill room, a pasta counter where fresh pasta is made by hand daily, and a lounge bar that is a destination in its own right. Steaks, truffle-dressed ravioli, grilled fish, and a cocktail programme that punches above its weight.',
-    whyAmandaLovesIt: 'Brenner is the Munich choice when the evening wants confidence and warmth rather than hushed formality. High ceilings, stone columns, modern design laid over protected historic architecture — it seats nearly three hundred but never feels impersonal. The pasta counter alone is worth the visit, and the bar stays lively long after dinner.',
+    note: "Richard's favourite — Maximilianstrasse classic",
+    vibe: 'Set inside the historic Marstall — the royal stables built in the early 19th century, steps from the Bavarian State Opera and the luxury house row on Maximilianstrasse. The space splits across three zones: an open fireplace grill room, a pasta counter where fresh pasta is made by hand daily, and a lounge bar that is a destination in its own right. Steaks, truffle-dressed ravioli, grilled fish, and a cocktail programme that punches well above its weight.',
+    whyAmandaLovesIt: "Richard's absolute Munich favourite. Brenner is the choice when the evening wants confidence and warmth rather than hushed formality — high ceilings, stone columns, modern design laid over protected 19th-century architecture that seats nearly three hundred without ever feeling impersonal. The pasta counter alone is worth the visit, and the bar stays genuinely lively long after dinner. A Barolo with the steak in that room is one of his standard-setters.",
     bestFor: ['Munich steak night', 'Pasta and Italian bottle', 'Pre-opera or post-opera dinner'],
     typicalSpend: 'Upper-mid to premium',
     reserveTip: 'Essential for evenings, especially pre-opera or weekend slots. The bar takes walk-ins. Ask to sit in the grill room for the open-fire atmosphere.',
@@ -1306,6 +1440,65 @@ const VENUES = [
     imageNote: 'The terrace with the Dune du Pilat in the background is the whole argument for visiting Pinasse Café — the image must lead with that view.',
     stylePrompts: ['Bordeaux blanc with shellfish', 'Crisp mineral white', 'Aromatic rosé terrace', 'South-West France wine evening'],
     wineIds: ['dom-perignon-2013', 'vacheron-sancerre-le-pave', 'majestic-labeille-de-fieuzal-blanc', 'tesco-finest-chablis'],
+  },
+  {
+    id: 'la-plancha-arcachon',
+    name: 'La Plancha du Bassin',
+    amandaFavourite: true,
+    town: 'Arcachon',
+    area: 'Central beachfront · Boulevard Veyrier-Montagnères',
+    type: 'Seafood restaurant + plancha grill',
+    note: 'Beachfront dining · year-round',
+    vibe: "La Plancha sits directly on Arcachon's main beach with a terrace looking across to Bird Island and the tchanquées cabins. Chef Anthony Furne leads a kitchen built around plancha-cooked fish, whole grilled bass, fresh moules, and seafood platters — classic Bassin cooking at competitive prices. One of the few Arcachon restaurants that stays open through winter, making it the honest year-round option on the beachfront.",
+    whyAmandaLovesIt: "The panoramic basin view at sunset justifies the trip on its own. The cooking is honest and location-led — plancha grills, fresh oysters from the Bassin, whole fish — and it does not dress itself up with pretension that would feel wrong this close to the water. La Plancha is the Arcachon choice when the view and the seafood are the whole point.",
+    bestFor: ['Beachfront dinner with basin views', 'Plancha-grilled fish at sunset', 'Year-round Arcachon option'],
+    typicalSpend: 'Mid-range (€35–€55 per head)',
+    reserveTip: 'Open 7 days, year-round — one of the few Arcachon restaurants that does not close in winter. Walk-in terrace possible outside peak summer.',
+    address: '20 Boulevard Veyrier-Montagnères, 33120 Arcachon',
+    website: 'https://laplanchadubassin.fr',
+    imageFallbackLabel: 'Arcachon beachfront terrace',
+    imageFallbackNote: "Arcachon's central beach restaurant — plancha-grilled fish and fresh oysters with a panoramic view of the Bassin and Bird Island.",
+    stylePrompts: ['Muscadet with shellfish', 'Entre-Deux-Mers', 'Crisp Bordeaux blanc', 'Dry local rosé'],
+    wineIds: ['domaine-pepiere-muscadet-sur-lie', 'tesco-finest-chablis', 'vacheron-sancerre-le-pave'],
+  },
+  {
+    id: 'maison-du-bassin-cap-ferret',
+    name: 'La Maison du Bassin',
+    amandaFavourite: true,
+    town: 'Cap Ferret',
+    area: 'La Vigne district · near the lighthouse',
+    type: 'Boutique hotel + bistro restaurant + cocktail bar',
+    note: 'Maître Restaurateur · hidden behind greenery',
+    vibe: "A lovingly restored forest house near the Cap Ferret lighthouse, converted into a boutique hotel with a Maître Restaurateur bistro — Le Bistrot du Bassin — and a bar pouring aged rums and Armagnacs alongside a thoughtful Bordeaux-led wine list. Chef Franck Le Bourlay's menu runs to fresh oysters from the Bassin, seasonal market fish, and beautifully executed dishes served on a vine-covered terrace or inside a raffia-and-driftwood interior that feels like the real Cap Ferret rather than the popular one.",
+    whyAmandaLovesIt: "La Maison du Bassin is the discovery version of Cap Ferret. Hidden behind greenery near the lighthouse, the eclectic bar and a kitchen with a Maître Restaurateur designation — not casually given — make this the place to anchor a slow evening away from the terrace crowds. The Armagnac bar is one of the best finishing moves in the whole Bassin area.",
+    bestFor: ['Cap Ferret hidden dining', 'Post-lighthouse terrace dinner', 'Bordeaux white with fresh oysters'],
+    typicalSpend: 'Mid to premium (€45–€70 per head)',
+    reserveTip: 'Request the vine-covered terrace in summer when booking. The bar is walk-in and worth arriving early for.',
+    address: '5 Rue des Pionniers, 33950 Lège-Cap-Ferret',
+    website: 'https://www.lamaisondubassincapferret.com',
+    imageFallbackLabel: 'Boutique hotel restaurant · Cap Ferret lighthouse',
+    imageFallbackNote: "A vine-covered boutique hotel restaurant near the Cap Ferret lighthouse — Maître Restaurateur kitchen, Bassin seafood, aged Armagnac bar.",
+    stylePrompts: ['White Bordeaux with oysters', 'Entre-Deux-Mers', 'Crisp mineral white', 'Aged Armagnac finish'],
+    wineIds: ['domaine-pepiere-muscadet-sur-lie', 'majestic-labeille-de-fieuzal-blanc', 'vacheron-sancerre-le-pave'],
+  },
+  {
+    id: 'sail-fish-cap-ferret',
+    name: 'Le Sail Fish',
+    town: 'Cap Ferret',
+    area: 'Rue des Bernaches · Cap Ferret village',
+    type: 'Restaurant + bar + evening venue',
+    note: 'Cap Ferret institution since 1984',
+    vibe: "A family-run Cap Ferret institution since 1984 that has been a fixture for wood-fired grilled meats, travel-influenced cuisine, and long evening sessions that progress from dinner into something much livelier. The 2022 refit gave it an English-garden-meets-Moroccan-riad interior that makes it one of the most visually interesting rooms on the peninsula — exposed timbers, layered textiles, warm lighting that shifts the atmosphere completely as the evening advances.",
+    whyAmandaLovesIt: "Le Sail Fish is the right call when the evening wants momentum. The wood-fire grill gives the food genuine character, the room is beautiful since the 2022 redesign, and the transition from restaurant to bar is seamless — it's one of the few Cap Ferret venues where staying late feels like the point rather than an afterthought. The design is extraordinary for a place that has been doing this since 1984.",
+    bestFor: ['Evening with energy and momentum', 'Wood-fire grill and natural wine', 'Cap Ferret nightlife with substance'],
+    typicalSpend: 'Mid-range (€35–€55 per head)',
+    reserveTip: 'Opens at 8pm — book for dinner, plan to stay for the bar. Peak summer open daily; book well ahead for July and August.',
+    address: 'Rue des Bernaches, 33970 Lège-Cap-Ferret',
+    website: 'http://www.ferretfamily.fr/en/sail-fish/',
+    imageFallbackLabel: 'Cap Ferret evening restaurant + bar',
+    imageFallbackNote: "A Cap Ferret institution since 1984 with a stunning 2022 interior redesign — wood-fire grill, travel cuisine, and the peninsula's best late evening.",
+    stylePrompts: ['Natural wine with wood-fire', 'South-West France red', 'Gascony white', 'Bassin rosé evening'],
+    wineIds: ['tesco-finest-chablis', 'baron-de-ley-rioja-reserva', 'bollinger-special-cuvee'],
   },
   // ── Malaga ────────────────────────────────────────────────────────────────
   {
@@ -1731,7 +1924,7 @@ const STYLE_MODES = [
 const TOWNS = ['all', ...new Set(VENUES.map(v => v.town))]
 
 const TOWN_GROUPS = [
-  { region: 'UK', towns: ['Sheffield', 'Stannington', 'Morpeth', 'Stroud', 'Walton-on-Thames', 'London', 'Chelmsford', 'Leeds', 'Harrogate', 'York', 'Poole', 'Weymouth'] },
+  { region: 'UK', towns: ['Sheffield', 'Stannington', 'Morpeth', 'Stroud', 'Walton-on-Thames', 'London', 'Chelmsford', 'Leeds', 'Harrogate', 'York', 'Poole', 'Weymouth', 'Wentworth', 'Penistone', 'Doncaster', 'Barnsley', 'Rotherham'] },
   { region: 'Europe', towns: ['Valencia', 'Málaga', 'Munich', 'Arcachon', 'Cap Ferret'] },
   { region: 'Asia', towns: ['Singapore'] },
   { region: 'Americas', towns: ['New York', 'Miami', 'Panama City'] },
@@ -1740,6 +1933,7 @@ const TOWN_GROUPS = [
 export default function Places() {
   const [searchParams] = useSearchParams()
   const selectedVenueParam = searchParams.get('venue')
+  const [region, setRegion] = useState('UK')
   const [town, setTown] = useState('all')
   const [venueId, setVenueId] = useState(VENUES[0].id)
   const [momentId, setMomentId] = useState(MOMENTS[0].id)
@@ -1756,10 +1950,22 @@ export default function Places() {
   const detailRef = useRef(null)
   const { sources, addSource, removeSource, markProcessed } = useVenueSourceInbox()
 
-  const visibleVenues = useMemo(
-    () => (town === 'all' ? VENUES : VENUES.filter(v => v.town === town)),
-    [town],
-  )
+  const visibleVenues = useMemo(() => {
+    let filtered = VENUES
+    if (region !== 'all') {
+      const regionTowns = TOWN_GROUPS.find(g => g.region === region)?.towns || []
+      filtered = filtered.filter(v => regionTowns.includes(v.town))
+    }
+    if (town !== 'all') {
+      filtered = filtered.filter(v => v.town === town)
+    }
+    return filtered
+  }, [region, town])
+
+  const currentRegionTowns = useMemo(() => {
+    if (region === 'all') return TOWNS.filter(t => t !== 'all')
+    return TOWN_GROUPS.find(g => g.region === region)?.towns.filter(t => TOWNS.includes(t)) || []
+  }, [region])
 
   const venue = useMemo(
     () => visibleVenues.find(v => v.id === venueId) || visibleVenues[0] || VENUES[0],
@@ -1784,6 +1990,8 @@ export default function Places() {
     const normalizedVenueParam = selectedVenueParam === 'harriet' ? 'harritt-wine-bar' : selectedVenueParam
     const matched = VENUES.find(v => v.id === normalizedVenueParam)
     if (!matched) return
+    const matchedRegion = TOWN_GROUPS.find(g => g.towns.includes(matched.town))?.region || 'all'
+    setRegion(matchedRegion)
     setTown(matched.town)
     setVenueId(matched.id)
   }, [selectedVenueParam])
@@ -1962,39 +2170,55 @@ export default function Places() {
 
       <section className="py-8 max-w-7xl mx-auto px-6 lg:px-10">
         <div className="card p-4">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Filter by town</p>
-              <div className="space-y-1.5">
-                <div className="flex flex-wrap gap-1.5">
-                  <button
-                    onClick={() => setTown('all')}
-                    className={`chip ${town === 'all' ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
-                  >
-                    All towns
-                  </button>
-                </div>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Region</p>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <button
+                  onClick={() => { setRegion('all'); setTown('all') }}
+                  className={`chip ${region === 'all' ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
+                >
+                  All
+                </button>
                 {TOWN_GROUPS.map(group => {
-                  const groupTowns = group.towns.filter(t => TOWNS.includes(t))
-                  if (!groupTowns.length) return null
+                  const count = group.towns.filter(t => TOWNS.includes(t)).length
+                  if (!count) return null
                   return (
-                    <div key={group.region} className="flex flex-wrap items-center gap-1.5">
-                      <span className="font-body text-[10px] uppercase tracking-[0.1em] text-gold-lt/60 w-16 shrink-0">{group.region}</span>
-                      {groupTowns.map(t => (
-                        <button
-                          key={t}
-                          onClick={() => setTown(t)}
-                          className={`chip ${town === t ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
+                    <button
+                      key={group.region}
+                      onClick={() => { setRegion(group.region); setTown('all') }}
+                      className={`chip gap-1.5 ${region === group.region ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
+                    >
+                      {group.region}
+                      <span className={`text-[10px] ${region === group.region ? 'opacity-60' : 'text-gold opacity-70'}`}>{count}</span>
+                    </button>
                   )
                 })}
               </div>
+              {currentRegionTowns.length > 1 && (
+                <>
+                  <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Town</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      onClick={() => setTown('all')}
+                      className={`chip ${town === 'all' ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
+                    >
+                      All
+                    </button>
+                    {currentRegionTowns.map(t => (
+                      <button
+                        key={t}
+                        onClick={() => setTown(t)}
+                        className={`chip ${town === t ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-            <button className="btn-secondary px-4 py-2" onClick={() => setShowSourceModal(true)}>
+            <button className="btn-secondary px-4 py-2 shrink-0" onClick={() => setShowSourceModal(true)}>
               + Add menu source
             </button>
           </div>
@@ -2066,6 +2290,12 @@ export default function Places() {
                 {v.bestFor.map(item => <span key={item} className="chip bg-cream text-slate-lt">{item}</span>)}
                 {v.amandaFavourite && (
                   <span className="chip bg-gold text-white">Amanda favourite</span>
+                )}
+                {v.richardFavourite && (
+                  <span className="chip bg-slate text-white">Richard's pick</span>
+                )}
+                {v.claireFavourite && (
+                  <span className="chip bg-slate/70 text-white">Claire's pick</span>
                 )}
                 <span className={`chip ${sourcedCount ? 'bg-gold/15 text-gold' : 'bg-white border border-cream text-slate-lt'}`}>
                   {sourcedCount
@@ -2145,7 +2375,7 @@ export default function Places() {
 
           <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-8">
             <div>
-              <p className="section-label mb-2">Amanda's read</p>
+              <p className="section-label mb-2">{venue.richardFavourite ? "Richard's pick" : "Amanda's read"}</p>
               <h3 className="font-display text-4xl text-slate mb-4">{venue.name}</h3>
               <p className="font-body text-slate-lt leading-relaxed mb-5">{venue.whyAmandaLovesIt}</p>
               <div className="card p-4 mb-5">

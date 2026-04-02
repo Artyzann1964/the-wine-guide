@@ -29,7 +29,7 @@ Current dataset facts:
 - 22+ countries, 103+ region strings
 - Categories: approx 125 red, 106 white, 55 sparkling, 21 rosé, 11 dessert/fortified
 - 267 wines currently have a source `labelImage`
-- 69 venues in Amanda's Places across 21 towns in 4 region groups (UK / Europe / Asia / Americas)
+- 75 venues in Amanda's Places across 24 towns in 4 region groups (UK / Europe / Asia / Americas)
 - 13 venue wine-list sources in `src/data/venueWineLists.js`
 - `src/utils/wineVisuals.js` resolves retailer-mark visuals to honest equivalent bottle, estate, or region visuals for Explore and Wine Detail
 
@@ -186,10 +186,10 @@ Retailer names matter. Current canonical branded set:
 
 ## Places Guide Notes
 
-The live `VENUES` array in `src/pages/Sheffield.jsx` contains 69 venues across 21 towns in 4 region groups.
+The live `VENUES` array in `src/pages/Sheffield.jsx` contains 75 venues across 24 towns in 4 region groups.
 
 Town filter groups (defined in `TOWN_GROUPS` constant):
-- UK: Sheffield, Stannington, Morpeth, Stroud, Walton-on-Thames, London, Chelmsford, Leeds, Harrogate, York, Poole, Weymouth
+- UK: Sheffield, Stannington, Morpeth, Stroud, Walton-on-Thames, London, Chelmsford, Leeds, Harrogate, York, Poole, Weymouth, Wentworth, Penistone, Doncaster, Barnsley, Rotherham
 - Europe: Valencia, Málaga, Munich, Arcachon, Cap Ferret
 - Asia: Singapore
 - Americas: New York, Miami, Panama City
@@ -198,7 +198,8 @@ Venue counts by town:
 - Sheffield: 9 · Stannington: 3 · Walton-on-Thames: 2 · Stroud: 2 · Morpeth: 2
 - Valencia: 13 · London: 6 · New York: 2 · Chelmsford: 1
 - Leeds: 2 · Harrogate: 1 · York: 1
-- Munich: 4 · Arcachon: 1 · Cap Ferret: 3 · Málaga: 2
+- Wentworth: 3 · Penistone: 1 · Doncaster: 1 · Barnsley: 1 · Rotherham: 1
+- Munich: 4 · Arcachon: 2 · Cap Ferret: 5 · Málaga: 2
 - Singapore: 4 (Long Bar Raffles, CÉ LA VI, Gordon Grill Goodwood Park, temper.)
 - Poole: 1 · Weymouth: 2 · Miami: 2 · Panama City: 2
 

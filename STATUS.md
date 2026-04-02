@@ -1,6 +1,6 @@
 # The Wine Guide - Project Status
 
-Last updated: 2026-04-01 (session 2)
+Last updated: 2026-04-02
 Build status: `npm run build` passes cleanly
 Test status: `npm test` passes cleanly (`102/102`)
 Deployment: Railway live at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
@@ -12,36 +12,19 @@ Latest deployment: `d86df9f5-d230-4ee4-a879-1d9089f8edfc`
 - Routing: `HashRouter`
 - Wine data: 321 wines (+9 in session 2026-04-01 session 2)
 - Geography coverage: 22+ countries, 103+ region strings
-- New wines added (session 2): Domaine de la Pépière Muscadet Clisson, Quinta do Crasto Douro Superior, Álvaro Palacios Les Terrasses Priorat, Campo Viejo Rioja Reserva, Casillero del Diablo Cabernet, Waitrose No.1 Saint-Émilion Grand Cru, Sainsbury's TTD Wachau Riesling, Morrisons Best Limoux Chardonnay, Waitrose Loved & Found Old Vine Mataro
 - Categories: approx 125 red, 106 white, 55 sparkling, 21 rosé, 11 dessert/fortified (estimated)
 - Wine visuals:
   - 267 wines currently carry a source `labelImage`
   - Explore and Wine Detail route those through [src/utils/wineVisuals.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/utils/wineVisuals.js), which suppresses retailer-logo imagery in the main guide and swaps in honest equivalent bottle, estate, or region visuals where needed
-- Places guide: 69 venues (+33 in session 2026-04-01)
-  - Sheffield: 9 (added West 10)
-  - Stannington: 3
-  - Walton-on-Thames: 2
-  - Stroud: 2
-  - Morpeth: 2
-  - Valencia: 13 (added Ricard Camarena)
-  - London: 6 (added Noble Rot, 107 Wine)
-  - New York: 2
-  - Chelmsford: 1
-  - Leeds: 2 (new — Bavette, Latitude)
-  - Harrogate: 1 (new — The Tannin Level)
-  - York: 1 (new — Skosh)
-  - Munich: 4 (new — Tantris, Brenner, Sticks & Stones, GRAPES)
-  - Arcachon: 1 (new — Le Patio)
-  - Cap Ferret: 3 (new — L'Escale, Chez Hortense, Pinasse Café)
-  - Málaga: 2 (new — Los Patios de Beatas, Antigua Casa de Guardia)
-  - Singapore: 4 (new — Long Bar Raffles, CÉ LA VI, Alma at Goodwood Park, temper.)
-  - Poole: 1 (new — Rick Stein Sandbanks)
-  - Weymouth: 2 (new — Catch Old Fish Market, Crab House Café)
-  - Miami: 2 (new — Magie, Barcelona Wine Bar Wynwood)
-  - Panama City: 2 (new — Corcho, Bruma)
-- Venue imagery:
-  - 32 original venues have image-backed cards; new venues have image URLs set — verification pending live test
-  - 4 venues deliberately text-led: `Forastera`, `Taberna La Samorra`, `Flama`, `Rausell`
+- Places guide: 75 venues across 24 towns in 4 region groups
+  - Sheffield: 9 · Stannington: 3 · Walton-on-Thames: 2 · Stroud: 2 · Morpeth: 2
+  - Valencia: 13 · London: 6 · New York: 2 · Chelmsford: 1
+  - Leeds: 2 · Harrogate: 1 · York: 1
+  - Wentworth: 3 · Penistone: 1 · Doncaster: 1 · Barnsley: 1 · Rotherham: 1
+  - Munich: 4 · Arcachon: 2 · Cap Ferret: 5 · Málaga: 2
+  - Singapore: 4 · Poole: 1 · Weymouth: 2 · Miami: 2 · Panama City: 2
+- Venue imagery: many newer venues are deliberately text-led — app gracefully falls back to VenueFallback when images fail to load
+- Text-led venues (deliberate): `forastera-valencia`, `taberna-la-samorra`, `flama-valencia`, `rausell-valencia`, `tannin-level-harrogate`, `le-patio-arcachon`, plus all new South Yorkshire venues and the new Arcachon/Cap Ferret additions
 - Venue wine lists: 13 sourced venue lists in [src/data/venueWineLists.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/data/venueWineLists.js)
 - Cellar architecture: [src/pages/Cellar.jsx](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/pages/Cellar.jsx) is the top-level orchestrator; detailed UI lives in [src/components/cellar/](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/components/cellar/)
 - Global search: Cmd+K / Ctrl+K overlay with quick-start lanes, top-result treatment, and keyboard navigation
@@ -85,6 +68,17 @@ Verified on 2026-03-13:
 | `wineVisuals` | 40.25 kB | 11.70 kB |
 
 PWA output is still generated (`sw.js` + Workbox, 31 precached entries).
+
+## Recent Changes (2026-04-02)
+
+- Places guide expanded from 69 to 75 venues (+6): 3 new South Yorkshire towns (Doncaster, Barnsley, Rotherham) and 2 more Arcachon/Cap Ferret venues added
+  - South Yorkshire: DN1 Delicatessen & Dining (Doncaster · 2 AA Rosettes · 130-wine list), Beatson House (Barnsley/Cawthorne · 18th-century cottage fine dining · Lightfoot Wines connection), Seasons Restaurant (Rotherham/Wickersley · seasonal bistro · Courtyard wine list)
+  - Arcachon: La Plancha du Bassin (beachfront plancha grill · year-round · basin views)
+  - Cap Ferret: La Maison du Bassin (boutique hotel bistro near lighthouse · Maître Restaurateur), Le Sail Fish (institution since 1984 · stunning 2022 redesign)
+- Town filter TOWN_GROUPS updated: UK group now covers 17 towns (Doncaster, Barnsley, Rotherham added)
+- Brenner Operngrill Munich: corrected attribution to `richardFavourite` — it is Richard's favourite, not Amanda's
+- All new South Yorkshire and Arcachon/Cap Ferret venues are text-led with proper `imageFallbackLabel` and `imageFallbackNote`
+- Build: Sheffield chunk grew to 263.66 kB · index 793.03 kB (both under warning limit)
 
 ## Recent Changes (2026-04-01 session 2)
 
