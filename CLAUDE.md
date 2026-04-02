@@ -207,6 +207,8 @@ Current Places image policy:
 - use actual venue photography where possible
 - do not use retailer logos, bottle labels, or vineyard stand-ins for venue cards
 - if no honest venue image is available, keep the venue text-led rather than using weak food, menu, or slogan graphics
+- never use guessed WordPress paths or TripAdvisor `dynamic-media-cdn` IDs — all tested TripAdvisor guessed IDs returned 404
+- always verify image URLs return binary image content before committing (not 404/403/HTML)
 
 Current intentional text-led venues:
 - `forastera-valencia`
@@ -215,6 +217,20 @@ Current intentional text-led venues:
 - `rausell-valencia`
 - `tannin-level-harrogate` (official site down)
 - `le-patio-arcachon` (official domain dead)
+- `l-escale-cap-ferret` (official domain dead)
+- `chez-hortense-cap-ferret` (official domain dead)
+- `temper-singapore` (Wix site — images load dynamically, JS blocked by Chrome extension)
+- `rick-stein-sandbanks` (rickstein.com blocks all server-side fetches with 403)
+- `corcho-panama-city` (official domain ECONNREFUSED)
+- `la-plancha-arcachon` (JS-loaded images)
+- `sail-fish-cap-ferret` (SSL error)
+- `beatson-house-cawthorne` (Wix site)
+- `seasons-wickersley` (Wix site)
+
+Notable CDN patterns confirmed working:
+- Accor hotels: `https://m.ahstatic.com/is/image/accorhotels/[id]?qlt=82&wid=1200`
+- Catch at Old Fish Market uses `/upl_images/` paths, not WordPress
+- Rick Stein blocks WebFetch with 403 site-wide; Chrome extension JS also blocked
 
 Note on Singapore: **Alma at Goodwood Park was permanently closed** and has been replaced with **Gordon Grill** (`gordon-grill-goodwood-park`) at the same 22 Scotts Road address. Gordon Grill has been operating since 1963 in the same heritage building. Alma (`alma-goodwood-park-singapore`) no longer exists in the VENUES array.
 
@@ -291,7 +307,7 @@ Railway notes:
 - `railway.toml` starts the app with `npm start`
 - `nixpacks.toml` installs with `npm ci` and builds with `npm run build`
 - the Express server serves the built SPA and the sync API together
-- latest successful Railway deployment: `d86df9f5-d230-4ee4-a879-1d9089f8edfc`
+- latest pushed commit: `b95ff15` (2026-04-02 — venue image fixes)
 
 ## Current Known Issues
 
