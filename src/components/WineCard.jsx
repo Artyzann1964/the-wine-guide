@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCellar } from '../hooks/useCellar'
 import { generateOurTake } from '../utils/ourTake'
+import { getWineVisual, getWineVisualTreatment } from '../utils/wineVisuals'
+import { getWineVintageLabel } from '../utils/wineDisplay'
 
 const CATEGORY_CONFIG = {
   sparkling: { dot: '#D4AF37', label: 'Sparkling', bg: 'bg-amber-50',   border: 'border-amber-200' },
@@ -44,6 +46,12 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
   const inCellar   = isInCellar(wine.id)
   const onWishlist = isInWishlist(wine.id)
   const bgStyle    = resolveBackground(wine)
+  const wineVisual = getWineVisual(wine)
+  const visualTreatment = getWineVisualTreatment(wine)
+  const leadPairing = wine.pairings?.[0]
+  const pairingLabel = typeof leadPairing === 'string' ? leadPairing : leadPairing?.dish
+  const originLabel = [wine.subregion, wine.region, wine.country].filter(Boolean).join(' · ')
+  const vintageLabel = getWineVintageLabel(wine)
 
   const handleWishlist = (e) => {
     e.preventDefault()
@@ -68,7 +76,7 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
             {wine.name}
           </p>
           <p className="font-body text-xs text-slate-lt mt-0.5 truncate">
-            {wine.producer} · {wine.vintage}
+            {[wine.producer, vintageLabel].filter(Boolean).join(' · ')}
           </p>
         </div>
         <span className="font-body text-xs font-medium text-gold">{wine.rating}</span>
@@ -106,19 +114,25 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
 
         {/* Wine label */}
         <div className="rounded-xl px-4 pt-2.5 pb-3 text-center shadow-md relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.95)' }}>
-          {wine.labelImage && (
+          {wineVisual && (
             <img
-              src={wine.labelImage}
+              src={wineVisual.src}
               alt=""
               className="absolute inset-0 w-full h-full object-cover opacity-[0.08]"
               loading="lazy"
             />
           )}
           <div className="relative">
-            <p className="font-body text-[9px] tracking-[0.18em] uppercase text-slate-lt truncate">
-              {wine.region}
-              {wine.vintage ? ` · ${wine.vintage}` : ''}
-            </p>
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-body text-[9px] tracking-[0.18em] uppercase text-slate-lt truncate text-left">
+                {[wine.country, wine.region, vintageLabel].filter(Boolean).join(' · ')}
+              </p>
+              {wineVisual && (
+                <span className="rounded-full bg-slate/5 px-2 py-0.5 font-body text-[8px] uppercase tracking-[0.18em] text-slate-lt/80 border border-slate/10 whitespace-nowrap">
+                  {visualTreatment.shortBadge}
+                </span>
+              )}
+            </div>
             <h3 className="font-display font-semibold text-slate text-[15px] leading-snug mt-1 line-clamp-2">
               {wine.name}
             </h3>
@@ -129,6 +143,11 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
 
       {/* Card body */}
       <div className="p-5 flex-1 flex flex-col">
+        <div className="rounded-2xl bg-[#fbf7ee] border border-cream/80 px-3.5 py-3 mb-3">
+          <p className="font-body text-[9px] tracking-[0.16em] uppercase text-slate-lt/70">Origin</p>
+          <p className="font-body text-xs text-slate mt-1 leading-relaxed line-clamp-2">{originLabel}</p>
+        </div>
+
         {/* Grapes */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           {wine.grapes.slice(0, 2).map(g => (
@@ -149,6 +168,18 @@ export default function WineCard({ wine, compact = false, showPrice = false }) {
             ))}
           </div>
         )}
+
+        <div className="mb-4 rounded-2xl border border-cream/80 bg-white px-3.5 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-body text-[9px] tracking-[0.16em] uppercase text-slate-lt/70">Guide cue</p>
+            {wineVisual && (
+              <span className="font-body text-[9px] uppercase tracking-[0.16em] text-gold">{visualTreatment.shortBadge}</span>
+            )}
+          </div>
+          <p className="font-body text-xs text-slate mt-1 leading-relaxed line-clamp-2">
+            {pairingLabel ? `Start with ${pairingLabel}.` : 'A strong candidate for a closer look in the guide.'} {visualTreatment.summary}
+          </p>
+        </div>
 
         {/* Our Take */}
         <p className="font-body text-xs text-slate-lt italic leading-relaxed line-clamp-2 mb-4 flex-1">

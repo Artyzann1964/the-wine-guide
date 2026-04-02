@@ -117,6 +117,7 @@ export default function Home() {
   const activeMode = DISCOVERY_MODES.find(item => item.id === mode) || DISCOVERY_MODES[0]
   const activeFlight = DISCOVERY_FLIGHTS.find(item => item.id === flight) || DISCOVERY_FLIGHTS[0]
   const featured = activeFlight.wineIds.map(id => wines.find(w => w.id === id)).filter(Boolean)
+  const leadFeatured = featured[0] || null
 
   const handlePromptSubmit = (e) => {
     e.preventDefault()
@@ -129,16 +130,17 @@ export default function Home() {
       <section className="hero-mesh relative overflow-hidden pt-24 pb-16 lg:pt-28 lg:pb-20">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/72 via-[#232743]/40 to-transparent" />
-          {/* Amanda ghost — right side, fades left and bottom */}
-          <div className="absolute right-0 top-0 bottom-0 w-[55vw] max-w-[620px] overflow-hidden">
+          {/* Amanda ghost — left side, fades toward the centre and bottom */}
+          <div className="absolute left-0 top-0 bottom-0 w-[50vw] max-w-[620px] overflow-hidden">
             <img
               src="/amanda-eindhoven.jpg"
               alt=""
-              className="absolute right-0 top-0 h-full w-full object-cover object-top opacity-[0.18] grayscale brightness-90"
+              className="absolute left-0 top-0 h-full w-full object-cover opacity-[0.24] grayscale brightness-95"
               style={{
-                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.85) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%)',
+                objectPosition: '12% 10%',
+                WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.86) 34%, rgba(0,0,0,0.42) 64%, rgba(0,0,0,0) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%)',
                 WebkitMaskComposite: 'destination-in',
-                maskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.85) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%)',
+                maskImage: 'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.86) 34%, rgba(0,0,0,0.42) 64%, rgba(0,0,0,0) 100%), linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%)',
                 maskComposite: 'intersect',
               }}
             />
@@ -253,12 +255,19 @@ export default function Home() {
 
       <section className="py-10">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="section-label mb-1">Quick Launch</p>
-              <h2 className="font-display text-4xl text-slate">Tap and go</h2>
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="section-label mb-1">Quick Launch</p>
+                <h2 className="font-display text-4xl text-slate">Tap and go</h2>
+              </div>
+              <Link to={activeMode.ctaTo} className="hidden md:inline btn-ghost">Open active mode →</Link>
             </div>
-            <Link to={activeMode.ctaTo} className="hidden md:inline btn-ghost">Open active mode →</Link>
+            <div className="surface-panel p-4 sm:p-5">
+              <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-2">Current mode</p>
+              <p className="font-display text-2xl text-slate">{activeMode.label}</p>
+              <p className="font-body text-sm text-slate-lt mt-2">{activeMode.description}</p>
+            </div>
           </div>
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 stagger">
             {QUICK_ROUTES.map(item => (
@@ -277,12 +286,21 @@ export default function Home() {
       <section className="py-4">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
           <div className="surface-panel p-5 lg:p-6">
-            <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
-              <div>
-                <p className="section-label mb-1">Amanda's Top 3</p>
-                <h2 className="font-display text-4xl text-slate">Her favourite Sheffield picks</h2>
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] mb-4">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="section-label mb-1">Amanda's Top 3</p>
+                  <h2 className="font-display text-4xl text-slate">Her favourite Sheffield picks</h2>
+                </div>
+                <Link to="/places" className="btn-ghost">Open full Places guide →</Link>
               </div>
-              <Link to="/places" className="btn-ghost">Open full Places guide →</Link>
+              <div className="rounded-2xl border border-cream bg-white/70 p-4">
+                <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-2">Places cue</p>
+                <p className="font-display text-2xl text-slate">Food-first evenings</p>
+                <p className="font-body text-sm text-slate-lt mt-2">
+                  Amanda&apos;s shortlist leans toward venues where the bottle list and the kitchen are equally worth the trip.
+                </p>
+              </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-3 stagger">
@@ -301,7 +319,18 @@ export default function Home() {
 
       <section className="py-5 border-y border-cream/80 bg-white/55">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-          <p className="font-body text-[11px] tracking-[0.22em] uppercase text-slate-lt/70 text-center mb-3">Shop From</p>
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
+            <div>
+              <p className="font-body text-[11px] tracking-[0.22em] uppercase text-slate-lt/70 text-center lg:text-left mb-3 lg:mb-1">Shop From</p>
+              <p className="font-body text-sm text-slate-lt text-center lg:text-left">
+                Jump straight into the retailer shelves you actually browse, without rebuilding filters each time.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-cream bg-white/80 px-4 py-3">
+              <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-1">Retail snapshot</p>
+              <p className="font-display text-2xl text-slate">{RETAILERS.length} entry points</p>
+            </div>
+          </div>
           <div className="flex gap-2 overflow-x-auto thin-scroll pb-1">
             {RETAILERS.map(r => (
               <Link
@@ -317,12 +346,24 @@ export default function Home() {
       </section>
 
       <section className="py-16 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-        <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
-          <div>
-            <p className="section-label mb-1">Curated Flights</p>
-            <h2 className="font-display text-4xl text-slate">Start with the right shortlist</h2>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px] mb-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="section-label mb-1">Curated Flights</p>
+              <h2 className="font-display text-4xl text-slate">Start with the right shortlist</h2>
+            </div>
+            <Link to={activeFlight.link} className="btn-ghost">View this flight →</Link>
           </div>
-          <Link to={activeFlight.link} className="btn-ghost">View this flight →</Link>
+          <div className="surface-panel p-4 sm:p-5">
+            <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-2">Flight read</p>
+            <p className="font-display text-2xl text-slate">{activeFlight.label}</p>
+            <p className="font-body text-sm text-slate-lt mt-2">{activeFlight.description}</p>
+            {leadFeatured && (
+              <p className="font-body text-sm text-gold mt-3">
+                Start with {leadFeatured.name} →
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-5">
@@ -351,22 +392,31 @@ export default function Home() {
 
       <section className="py-14 bg-white/52 border-y border-cream/80">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-          <div className="text-center mb-8">
-            <p className="section-label mb-1">Flow</p>
-            <h2 className="font-display text-4xl text-slate">Tonight in three steps</h2>
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px] mb-8">
+            <div className="text-center lg:text-left">
+              <p className="section-label mb-1">Flow</p>
+              <h2 className="font-display text-4xl text-slate">Tonight in three steps</h2>
+            </div>
+            <div className="surface-panel p-4 sm:p-5">
+              <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-2">Guide rhythm</p>
+              <p className="font-display text-2xl text-slate">Dish → bottle → memory</p>
+              <p className="font-body text-sm text-slate-lt mt-2">
+                The quickest route through the guide is to start with what you are eating, compare a few credible options, then save the winner.
+              </p>
+            </div>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
-            <Link to="/pairing" className="card p-5">
+            <Link to="/pairing" className="card interactive-lift p-5 hover:-translate-y-0.5">
               <p className="font-body text-xs tracking-[0.16em] uppercase text-gold mb-2">Step 1</p>
               <p className="font-display text-2xl text-slate">Tell us the dish</p>
               <p className="font-body text-sm text-slate-lt mt-2">Cuisine, protein, heat, richness.</p>
             </Link>
-            <Link to="/explore?sort=value" className="card p-5">
+            <Link to="/explore?sort=value" className="card interactive-lift p-5 hover:-translate-y-0.5">
               <p className="font-body text-xs tracking-[0.16em] uppercase text-gold mb-2">Step 2</p>
               <p className="font-display text-2xl text-slate">Compare options</p>
               <p className="font-body text-sm text-slate-lt mt-2">Score, style profile, price confidence.</p>
             </Link>
-            <Link to="/cellar" className="card p-5">
+            <Link to="/cellar" className="card interactive-lift p-5 hover:-translate-y-0.5">
               <p className="font-body text-xs tracking-[0.16em] uppercase text-gold mb-2">Step 3</p>
               <p className="font-display text-2xl text-slate">Save your pick</p>
               <p className="font-body text-sm text-slate-lt mt-2">Build your cellar memory over time.</p>
@@ -376,14 +426,29 @@ export default function Home() {
       </section>
 
       <section className="py-16 max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
-        <div className="text-center mb-8">
-          <p className="section-label mb-1">By Provenance</p>
-          <h2 className="font-display text-4xl text-slate">Explore by country</h2>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] mb-8">
+          <div className="text-center lg:text-left">
+            <p className="section-label mb-1">By Provenance</p>
+            <h2 className="font-display text-4xl text-slate">Explore by country</h2>
+          </div>
+          <div className="surface-panel p-4 sm:p-5">
+            <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-2">Atlas snapshot</p>
+            <p className="font-display text-2xl text-slate">{REGIONS.length} quick entries</p>
+            <p className="font-body text-sm text-slate-lt mt-2">
+              Jump straight into benchmark countries when you want a faster route than filtering from scratch.
+            </p>
+          </div>
         </div>
-        <div className="flex flex-wrap justify-center gap-2.5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {REGIONS.map(region => (
-            <Link key={region.label} to={region.to} className="chip bg-white text-slate border border-cream hover:border-gold/60">
-              {region.label}
+            <Link
+              key={region.label}
+              to={region.to}
+              className="card interactive-lift p-4 hover:-translate-y-0.5"
+            >
+              <p className="section-label mb-1">Country</p>
+              <p className="font-display text-2xl text-slate leading-tight">{region.label}</p>
+              <p className="font-body text-sm text-slate-lt mt-2">Open regional classics, key grapes, and standout bottles.</p>
             </Link>
           ))}
         </div>

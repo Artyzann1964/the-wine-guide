@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { wines } from '../data/wines'
+import { getWineVintageLabel } from '../utils/wineDisplay'
 
 // ── Tom Gilbey's Pass / Class / Arse system ────────────────────────────────────
 const GILBY_TIERS = [
@@ -257,6 +258,7 @@ function CriticDetail({ critic }) {
   const topPicks = critic.topPickIds
     ?.map(id => wines.find(w => w.id === id))
     .filter(Boolean) ?? []
+  const specialtyAreas = critic.specialty.split(' · ')
 
   return (
     <div className="animate-fade-in">
@@ -274,6 +276,20 @@ function CriticDetail({ critic }) {
           </div>
         </div>
         <p className="font-body text-sm text-white/80 leading-relaxed max-w-2xl mb-5">{critic.bio}</p>
+        <div className="grid sm:grid-cols-3 gap-3 mb-5 max-w-3xl">
+          <div className="rounded-2xl bg-white/10 border border-white/15 px-4 py-3">
+            <p className="font-body text-[9px] uppercase tracking-[0.16em] text-white/50">Best known for</p>
+            <p className="font-body text-sm text-white mt-1 leading-snug">{specialtyAreas[0]}</p>
+          </div>
+          <div className="rounded-2xl bg-white/10 border border-white/15 px-4 py-3">
+            <p className="font-body text-[9px] uppercase tracking-[0.16em] text-white/50">Style</p>
+            <p className="font-body text-sm text-white mt-1 leading-snug">{critic.gilby ? 'Straight verdicts' : 'Context and guidance'}</p>
+          </div>
+          <div className="rounded-2xl bg-white/10 border border-white/15 px-4 py-3">
+            <p className="font-body text-[9px] uppercase tracking-[0.16em] text-white/50">Top picks in guide</p>
+            <p className="font-body text-sm text-white mt-1 leading-snug">{topPicks.length}</p>
+          </div>
+        </div>
         <p className="font-display text-lg italic text-white/90">{critic.quote}</p>
       </div>
 
@@ -339,40 +355,54 @@ function CriticDetail({ critic }) {
 
         {/* Top picks */}
         <div>
-          <h3 className="font-display text-2xl text-slate mb-4">Wines They Champion</h3>
-          {topPicks.length > 0 ? (
-            <div className="space-y-3">
-              {topPicks.map(wine => (
-                <Link
-                  key={wine.id}
-                  to={`/explore/${wine.id}`}
-                  className="card p-4 flex items-center gap-4 group hover:-translate-y-0.5 transition-all"
-                >
-                  <div
-                    className="w-10 h-10 rounded-xl flex-shrink-0"
-                    style={{ background: wine.cardGradient || '#2C2C3E' }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-display font-semibold text-slate leading-tight truncate">{wine.name}</p>
-                    <p className="font-body text-xs text-slate-lt mt-0.5">{wine.producer} · {wine.region}</p>
-                  </div>
-                  <span className="font-body text-xs font-semibold text-gold flex-shrink-0">{wine.rating}</span>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="card p-6 text-center">
-              <p className="font-body text-sm text-slate-lt">
-                Explore the{' '}
-                <Link to="/explore" className="text-gold hover:underline">full wine guide</Link>
-                {' '}to find wines matching this critic's style.
+          <div className="surface-panel p-5">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
+              <div>
+                <p className="section-label mb-1">Champion Bottles</p>
+                <h3 className="font-display text-2xl text-slate">Wines They Champion</h3>
+              </div>
+              <p className="font-body text-sm text-slate-lt max-w-xl">
+                A small shortlist from the guide that fits this critic’s known palate, regions, or retail strengths.
               </p>
             </div>
-          )}
-          <div className="mt-4 p-4 rounded-xl bg-cream/60 border border-cream">
-            <p className="font-body text-xs text-slate-lt leading-relaxed">
-              <strong className="text-slate">Note:</strong> Wine picks shown are from our database and reflect this critic's known style preferences. For their full, current reviews visit the links above.
-            </p>
+            {topPicks.length > 0 ? (
+              <div className="space-y-3">
+                {topPicks.map(wine => (
+                  <Link
+                    key={wine.id}
+                    to={`/explore/${wine.id}`}
+                    className="rounded-[1.5rem] border border-cream bg-gradient-to-br from-white to-[#f5efe4] p-4 flex items-center gap-4 group hover:-translate-y-0.5 transition-all"
+                  >
+                    <div
+                      className="w-12 h-12 rounded-2xl flex-shrink-0"
+                      style={{ background: wine.cardGradient || '#2C2C3E' }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display font-semibold text-slate leading-tight truncate">{wine.name}</p>
+                      <p className="font-body text-xs text-slate-lt mt-0.5">{wine.producer} · {wine.region}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        <span className="tag bg-white border border-cream text-slate text-[10px]">{getWineVintageLabel(wine)}</span>
+                        <span className="tag bg-cream text-slate text-[10px]">{wine.category}</span>
+                      </div>
+                    </div>
+                    <span className="font-body text-xs font-semibold text-gold flex-shrink-0">{wine.rating}/100</span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="card p-6 text-center">
+                <p className="font-body text-sm text-slate-lt">
+                  Explore the{' '}
+                  <Link to="/explore" className="text-gold hover:underline">full wine guide</Link>
+                  {' '}to find wines matching this critic's style.
+                </p>
+              </div>
+            )}
+            <div className="mt-4 p-4 rounded-xl bg-cream/60 border border-cream">
+              <p className="font-body text-xs text-slate-lt leading-relaxed">
+                <strong className="text-slate">Note:</strong> Wine picks shown are from our database and reflect this critic's known style preferences. For their full, current reviews visit the links above.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -385,6 +415,7 @@ export default function Critics() {
   const [selectedId, setSelectedId] = useState('tom-gilbey')
   const selected = CRITICS.find(c => c.id === selectedId) || CRITICS[0]
   const detailRef = useRef(null)
+  const criticCoverage = CRITICS.reduce((count, critic) => count + (critic.topPickIds?.length || 0), 0)
 
   function selectCritic(nextId, shouldScroll = false) {
     setSelectedId(nextId)
@@ -400,14 +431,49 @@ export default function Critics() {
       {/* Hero */}
       <section className="hero-mesh text-white pt-24 lg:pt-28 pb-16 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="font-body text-xs tracking-[0.2em] uppercase text-gold mb-3">Critics & Commentators</p>
-          <h1 className="font-display text-5xl lg:text-6xl font-light leading-tight mb-4">
-            Whose opinion <br />
-            <em className="text-gold not-italic">actually matters?</em>
-          </h1>
-          <p className="font-body text-white/60 max-w-2xl leading-relaxed">
-            From Tom Gilbey's supermarket shelf verdicts (Pass, Class, or Arse) to Jancis Robinson's authoritative 20-point scale — meet the people who shape what the UK drinks.
-          </p>
+          <div className="grid xl:grid-cols-[1.12fr_0.88fr] gap-6 items-start">
+            <div>
+              <p className="font-body text-xs tracking-[0.2em] uppercase text-gold mb-3">Critics & Commentators</p>
+              <h1 className="font-display text-5xl lg:text-6xl font-light leading-tight mb-4">
+                Whose opinion <br />
+                <em className="text-gold not-italic">actually matters?</em>
+              </h1>
+              <p className="font-body text-white/60 max-w-2xl leading-relaxed">
+                From Tom Gilbey's supermarket shelf verdicts to Jancis Robinson's authoritative 20-point scale, meet the people who shape what the UK drinks and how we talk about wine.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {CRITICS.length} critics in guide
+                </span>
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {criticCoverage} curated top picks
+                </span>
+                <span className="tag bg-gold/20 border border-gold/30 text-gold-lt text-[10px]">
+                  Now viewing {selected.name}
+                </span>
+              </div>
+            </div>
+
+            <div className="surface-panel p-4 lg:p-5">
+              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Critic Snapshot</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Featured', value: selected.name.split(' ')[0] },
+                  { label: 'Focus', value: selected.specialty.split(' · ')[0] },
+                  { label: 'Scoring', value: selected.gilby ? 'Pass/Class/Arse' : 'Guide-led' },
+                  { label: 'Top picks', value: selected.topPickIds?.length || 0 },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-2xl lg:text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="font-body text-xs text-slate-lt mt-3">
+                Use the critic rail to switch voice quickly, then treat the bottle shortlist as an entry point rather than a ranking table.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -443,7 +509,7 @@ export default function Critics() {
 
         <div className="grid lg:grid-cols-[320px_1fr] gap-8">
           {/* Critic selector */}
-          <div className="space-y-3">
+          <div className="space-y-3 lg:sticky lg:top-24 lg:self-start">
             <p className="section-label mb-4">The Critics</p>
             {CRITICS.map(critic => (
               <CriticCard

@@ -1,3 +1,5 @@
+import { useMemo, useState, Fragment } from 'react'
+
 // Vintage Quality Guide — region × year quality grid
 // Quality scores: 5 = exceptional, 4 = excellent, 3 = good, 2 = average, 1 = poor, 0 = not assessed
 // Sources: Robert Parker Wine Advocate, Jancis Robinson, Wine Spectator, Decanter
@@ -482,8 +484,6 @@ function ScoreCell({ region, year, score, note, isActive, onHover, onLeave }) {
   )
 }
 
-import { useState, Fragment } from 'react'
-
 export default function VintageGuide() {
   const [activeCell, setActiveCell] = useState(null)
   const [activeCountry, setActiveCountry] = useState('All')
@@ -505,84 +505,150 @@ export default function VintageGuide() {
     return acc
   }, {})
 
+  const exceptionalCount = useMemo(() => (
+    filteredRegions.reduce((count, region) => {
+      const regionData = VINTAGE_DATA[region.name] || {}
+      return count + YEARS.filter(year => regionData[year]?.score === 5).length
+    }, 0)
+  ), [filteredRegions])
+
+  const bestCurrentYear = useMemo(() => {
+    const yearCounts = YEARS.map(year => ({
+      year,
+      count: filteredRegions.reduce((count, region) => {
+        const score = VINTAGE_DATA[region.name]?.[year]?.score || 0
+        return count + (score >= 4 ? 1 : 0)
+      }, 0),
+    }))
+    return yearCounts.sort((a, b) => b.count - a.count)[0]
+  }, [filteredRegions])
+
   return (
     <div className="min-h-screen bg-ivory pt-20 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
-        {/* Header */}
-        <div className="mb-8">
-          <p className="font-body text-xs font-semibold uppercase tracking-widest text-gold mb-2">Reference</p>
-          <h1 className="font-display font-bold text-3xl sm:text-4xl text-slate mb-3">Vintage Guide</h1>
-          <p className="font-body text-sm text-slate-lt max-w-2xl">
-            Quality ratings for major wine regions from 2010 to 2024. Scores reflect the overall vintage character
-            across top producers — individual wines vary. Always worth reading reviews for specific estates.
-          </p>
-        </div>
+        <section className="rounded-[2.2rem] border border-cream bg-gradient-to-br from-[#fcfaf4] via-white to-[#f2eadb] px-6 py-8 lg:px-8 lg:py-10 mb-8">
+          <div className="grid xl:grid-cols-[1.12fr_0.88fr] gap-6 items-start">
+            <div>
+              <p className="font-body text-xs font-semibold uppercase tracking-widest text-gold mb-2">Reference</p>
+              <h1 className="font-display font-bold text-4xl lg:text-5xl text-slate mb-3 leading-[1.04]">Vintage Guide</h1>
+              <p className="font-body text-sm text-slate-lt max-w-2xl leading-relaxed">
+                Quality ratings for major wine regions from 2010 to 2024. Scores reflect the overall vintage character
+                across top producers, not every individual bottle, so use them as a smart starting point rather than a final verdict.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="tag bg-white border border-cream text-slate text-[10px]">
+                  {filteredRegions.length} regions in view
+                </span>
+                <span className="tag bg-white border border-cream text-slate text-[10px]">
+                  {YEARS.length} vintages tracked
+                </span>
+                <span className="tag bg-gold/10 border border-gold/25 text-gold text-[10px]">
+                  {exceptionalCount} exceptional cells
+                </span>
+                {bestCurrentYear?.count > 0 && (
+                  <span className="tag bg-white border border-cream text-slate text-[10px]">
+                    Strongest overall year: {bestCurrentYear.year}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="surface-panel p-4 lg:p-5">
+              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Read The Grid</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Focus', value: activeCountry === 'All' ? 'Global' : activeCountry },
+                  { label: 'Style', value: activeCategory },
+                  { label: 'Top band', value: '4-5 points' },
+                  { label: 'Use case', value: 'Buy or cellar' },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-2xl lg:text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="font-body text-xs text-slate-lt mt-3">
+                Hover a cell for the vintage note, filter by country or style, then use the callouts below the table for quick cellar guidance.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Legend + tooltip area */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          {[5, 4, 3, 2, 1].map(s => {
-            const cfg = SCORE_CONFIG[s]
-            return (
-              <div key={s} className="flex items-center gap-1.5">
-                <div className={`w-5 h-5 rounded ${cfg.bg} flex items-center justify-center`}>
-                  <span className={`font-body text-xs font-bold ${cfg.text}`}>{s}</span>
+        <div className="surface-panel p-4 sm:p-5 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              {[5, 4, 3, 2, 1].map(s => {
+                const cfg = SCORE_CONFIG[s]
+                return (
+                  <div key={s} className="flex items-center gap-1.5">
+                    <div className={`w-5 h-5 rounded ${cfg.bg} flex items-center justify-center`}>
+                      <span className={`font-body text-xs font-bold ${cfg.text}`}>{s}</span>
+                    </div>
+                    <span className="font-body text-xs text-slate-lt">{cfg.label}</span>
+                  </div>
+                )
+              })}
+              <div className="flex items-center gap-1.5">
+                <div className="w-5 h-5 rounded bg-cream flex items-center justify-center">
+                  <span className="font-body text-xs text-slate-lt">–</span>
                 </div>
-                <span className="font-body text-xs text-slate-lt">{cfg.label}</span>
+                <span className="font-body text-xs text-slate-lt">Not assessed</span>
               </div>
-            )
-          })}
-          <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded bg-cream flex items-center justify-center">
-              <span className="font-body text-xs text-slate-lt">–</span>
             </div>
-            <span className="font-body text-xs text-slate-lt">Not assessed</span>
-          </div>
-        </div>
 
-        {/* Active cell tooltip */}
-        <div className="h-9 mb-4">
-          {activeCell && (
-            <div className={`inline-flex items-center gap-2 rounded-xl px-3 py-1.5 border ${SCORE_CONFIG[activeCell.score]?.bg} ${SCORE_CONFIG[activeCell.score]?.text} shadow-sm`}>
-              <span className="font-body text-sm font-semibold">{activeCell.region} {activeCell.year}</span>
-              <span className="font-body text-sm opacity-90">—</span>
-              <span className="font-body text-sm">{activeCell.note || activeCell.cfg?.label}</span>
+            <div className="min-h-[2.25rem]">
+              {activeCell ? (
+                <div className={`inline-flex items-center gap-2 rounded-xl px-3 py-1.5 border ${SCORE_CONFIG[activeCell.score]?.bg} ${SCORE_CONFIG[activeCell.score]?.text} shadow-sm`}>
+                  <span className="font-body text-sm font-semibold">{activeCell.region} {activeCell.year}</span>
+                  <span className="font-body text-sm opacity-90">—</span>
+                  <span className="font-body text-sm">{activeCell.note || activeCell.cfg?.label}</span>
+                </div>
+              ) : (
+                <p className="font-body text-xs text-slate-lt">
+                  Move over the grid to see the note for a specific region and year.
+                </p>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Filter row */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          <div className="flex gap-1.5 flex-wrap">
-            {countries.map(c => (
-              <button
-                key={c}
-                onClick={() => setActiveCountry(c)}
-                className={`font-body text-xs px-3 py-1.5 rounded-full border transition-all ${
-                  activeCountry === c
-                    ? 'bg-slate text-white border-slate'
-                    : 'bg-white text-slate border-cream hover:border-slate/30'
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-          <div className="w-px bg-cream self-stretch mx-1 hidden sm:block" />
-          <div className="flex gap-1.5 flex-wrap">
-            {categories.map(c => (
-              <button
-                key={c}
-                onClick={() => setActiveCategory(c)}
-                className={`font-body text-xs px-3 py-1.5 rounded-full border transition-all ${
-                  activeCategory === c
-                    ? 'bg-gold text-white border-gold'
-                    : 'bg-white text-slate border-cream hover:border-gold/40'
-                }`}
-              >
-                {c}
-              </button>
-            ))}
+        <div className="surface-panel p-4 sm:p-5 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+            <div className="flex gap-1.5 flex-wrap">
+              {countries.map(c => (
+                <button
+                  key={c}
+                  onClick={() => setActiveCountry(c)}
+                  className={`font-body text-xs px-3 py-1.5 rounded-full border transition-all ${
+                    activeCountry === c
+                      ? 'bg-slate text-white border-slate'
+                      : 'bg-white text-slate border-cream hover:border-slate/30'
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <div className="w-px bg-cream self-stretch mx-1 hidden lg:block" />
+            <div className="flex gap-1.5 flex-wrap">
+              {categories.map(c => (
+                <button
+                  key={c}
+                  onClick={() => setActiveCategory(c)}
+                  className={`font-body text-xs px-3 py-1.5 rounded-full border transition-all ${
+                    activeCategory === c
+                      ? 'bg-gold text-white border-gold'
+                      : 'bg-white text-slate border-cream hover:border-gold/40'
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

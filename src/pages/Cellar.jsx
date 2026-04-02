@@ -109,6 +109,45 @@ export default function Cellar() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
+        <div className="surface-panel overflow-hidden mb-8">
+          <div className="grid lg:grid-cols-[1.2fr_0.95fr] gap-6 items-center p-5 sm:p-6">
+            <div>
+              <p className="section-label mb-2">Amanda's Cellar Notes</p>
+              <h2 className="font-display text-3xl sm:text-4xl text-slate leading-tight">
+                Keep this page calm, bright, and useful.
+              </h2>
+              <p className="font-body text-slate-lt mt-3 max-w-2xl leading-relaxed">
+                Track what is ready to drink, save the bottles worth repeating, and keep gift ideas visible without turning the cellar into admin.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-5">
+                {['Drink what is peaking', 'Note what you loved', 'Keep the wishlist giftable'].map((item) => (
+                  <span key={item} className="chip bg-white border border-cream text-slate-lt">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] border border-gold/15 bg-gradient-to-br from-white via-[#fbf6ee] to-[#f3eadc] p-4 sm:p-5 shadow-card">
+              <div className="grid grid-cols-[112px_1fr] sm:grid-cols-[136px_1fr] gap-4 items-center">
+                <div className="relative h-40 sm:h-44 overflow-hidden rounded-[1.5rem] bg-white">
+                  <img
+                    src="/amanda-wine.png"
+                    alt="Amanda Holmes"
+                    className="h-full w-full object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <p className="font-body text-[10px] uppercase tracking-[0.24em] text-gold mb-2">House style</p>
+                  <p className="font-display text-2xl text-slate leading-tight">A lighter page for the practical side of collecting.</p>
+                  <p className="font-body text-sm text-slate-lt mt-3 leading-relaxed">
+                    Use the cellar for memory as much as stock control: what to open now, what to buy again, and what deserves a place on the next good table.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Tabs */}
         <div className="flex gap-1 bg-cream rounded-2xl p-1 mb-8 w-full sm:w-auto sm:inline-flex">

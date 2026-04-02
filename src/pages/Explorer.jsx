@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useSearchParams } from 'react-router-dom'
 import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
 import { RetailerLogo } from '../utils/retailerBrands'
+import { getWineVisual, getWineVisualTreatment } from '../utils/wineVisuals'
 
 const CATEGORIES = [
   { id: 'all', label: 'All Wines' },
@@ -104,6 +106,25 @@ function normaliseRegionFamily(region) {
   if (key.includes('south australia')) return 'South Australia'
   if (key.includes('hampshire') || key.includes('southern england') || key.includes('south east england') || key.includes('english')) return 'England (Sparkling)'
   return raw
+}
+
+function highlightShelfCopy(categoryId) {
+  if (categoryId === 'sparkling') return 'Bottles and estates worth pulling forward for aperitif duty, celebrations, and gift-table impact.'
+  if (categoryId === 'white') return 'A quick visual shelf of the whites in view that feel most distinctive right now.'
+  if (categoryId === 'red') return 'The reds in view with the strongest visual identity, from benchmark labels to estate-led classics.'
+  if (categoryId === 'rosé') return 'Rosés with the cleanest visual pull for warm-weather drinking, gifting, and easy shortlisting.'
+  if (categoryId === 'dessert') return 'Sweet and fortified bottles with enough visual presence to feel special before the cork is even pulled.'
+  return 'A curated visual shelf of the bottles in view, mixing iconic labels with winery and vineyard cues.'
+}
+
+function getShelfPairingCue(wine) {
+  const firstPairing = wine.pairings?.[0]
+  if (!firstPairing) return null
+  return typeof firstPairing === 'string' ? firstPairing : firstPairing.dish
+}
+
+function getVisualOriginLabel(wine) {
+  return wine.subregion || wine.region || wine.country
 }
 
 export default function Explorer() {
@@ -237,6 +258,22 @@ export default function Explorer() {
   const hasFilters = categoryFilter !== 'all' || regionFilter !== 'all' || countryFilter !== 'all' ||
     priceFilter !== 'all' || retailerFilter !== 'all' || grapeFilter !== 'all' || !!search.trim()
 
+  const labelHighlights = useMemo(() => {
+    return filtered
+      .map(wine => ({
+        wine,
+        visual: getWineVisual(wine),
+        treatment: getWineVisualTreatment(wine),
+      }))
+      .filter(item => item.visual)
+      .sort((a, b) => b.wine.rating - a.wine.rating)
+      .slice(0, 5)
+  }, [filtered])
+
+  const visualCoverage = labelHighlights.length > 0
+    ? filtered.filter(w => getWineVisual(w)).length
+    : 0
+
   const activeFilterCount = [
     categoryFilter !== 'all',
     regionFilter !== 'all',
@@ -257,6 +294,46 @@ export default function Explorer() {
   ].filter(Boolean)
 
   const countriesCount = useMemo(() => new Set(wines.map(w => w.country)).size, [])
+  const leadHighlight = labelHighlights[0] || null
+  const visualCountries = useMemo(
+    () => new Set(labelHighlights.map(item => item.wine.country)).size,
+    [labelHighlights]
+  )
+  const leadPairingCue = leadHighlight ? getShelfPairingCue(leadHighlight.wine) : null
+  const filteredCountryCount = useMemo(
+    () => new Set(filtered.map(wine => wine.country)).size,
+    [filtered]
+  )
+  const featuredRegions = useMemo(() => {
+    const seen = new Set()
+    const ordered = []
+    filtered.forEach(wine => {
+      const label = normaliseRegionFamily(wine.region)
+      if (!label || seen.has(label)) return
+      seen.add(label)
+      ordered.push(label)
+    })
+    return ordered.slice(0, 3)
+  }, [filtered])
+  const resultsSnapshot = [
+    {
+      label: 'Category read',
+      value: CATEGORIES.find(cat => cat.id === categoryFilter)?.label || 'All Wines',
+    },
+    {
+      label: 'Countries in view',
+      value: String(filteredCountryCount),
+    },
+    {
+      label: 'Lead region',
+      value: featuredRegions[0] || 'Mixed selection',
+    },
+    {
+      label: 'Start with',
+      value: leadPairingCue || 'A visual standout',
+    },
+  ]
+
   return (
     <main className="min-h-screen">
       <section className="hero-mesh relative overflow-hidden pt-24 lg:pt-28 pb-8 border-b border-white/10">
@@ -322,10 +399,10 @@ export default function Explorer() {
               <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Collection Snapshot</p>
               <div className="grid grid-cols-2 gap-3 stagger">
                 {[
-                  { label: 'Bottles', value: wines.length },
+                  { label: 'In guide', value: wines.length },
                   { label: 'Countries', value: countriesCount },
-                  { label: 'Filtered', value: filtered.length },
-                  { label: 'Active filters', value: activeFilterCount },
+                  { label: 'In view', value: filtered.length },
+                  { label: 'With visuals', value: visualCoverage },
                 ].map(stat => (
                   <div key={stat.label} className="card interactive-lift p-3 text-center">
                     <p className="font-display text-3xl text-gold leading-none">{stat.value}</p>
@@ -336,6 +413,22 @@ export default function Explorer() {
               <p className="font-body text-xs text-slate-lt mt-3">
                 {categorySummary(categoryFilter)}
               </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {activeFilterCount > 0 ? (
+                  <span className="tag bg-gold/10 border border-gold/25 text-gold text-[10px]">
+                    {activeFilterCount} active filter{activeFilterCount !== 1 ? 's' : ''}
+                  </span>
+                ) : (
+                  <span className="tag bg-white border border-cream text-slate text-[10px]">
+                    Start with region, then budget
+                  </span>
+                )}
+                {featuredRegions[0] && (
+                  <span className="tag bg-white border border-cream text-slate text-[10px]">
+                    Leading region: {featuredRegions[0]}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -562,6 +655,163 @@ export default function Explorer() {
               </div>
             )}
 
+            {filtered.length > 0 && (
+              <div className="surface-panel p-4 sm:p-5 mb-5">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
+                  <div>
+                    <p className="section-label mb-1">Browse Context</p>
+                    <h2 className="font-display text-2xl text-slate">Read this part of the list quickly</h2>
+                  </div>
+                  <p className="font-body text-sm text-slate-lt max-w-2xl">
+                    Use these cues as a shortcut before opening bottles one by one. They reflect the current filtered set, not the whole guide.
+                  </p>
+                </div>
+                <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                  {resultsSnapshot.map(item => (
+                    <div key={item.label} className="rounded-[1.4rem] border border-cream bg-[#fbf7ee] px-4 py-4">
+                      <p className="font-body text-[10px] uppercase tracking-[0.16em] text-slate-lt/70">{item.label}</p>
+                      <p className="font-body text-sm text-slate mt-2 leading-snug">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+                {featuredRegions.length > 1 && (
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <span className="font-body text-[10px] uppercase tracking-[0.16em] text-slate-lt/70">Regions in play</span>
+                    {featuredRegions.map(region => (
+                      <button
+                        key={region}
+                        onClick={() => setFilter('region', regionFilter === region ? 'all' : region)}
+                        className={`tag cursor-pointer transition-colors ${
+                          regionFilter === region
+                            ? 'bg-gold text-white border border-gold'
+                            : 'bg-white border border-cream text-slate hover:border-gold/40'
+                        }`}
+                      >
+                        {region}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {labelHighlights.length > 0 && (
+              <div className="surface-panel p-4 sm:p-5 mb-5 overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+                  <div>
+                    <p className="section-label mb-1">Visual Shelf</p>
+                    <h2 className="font-display text-3xl text-slate">Standout bottles in view</h2>
+                  </div>
+                  <p className="font-body text-sm text-slate-lt max-w-xl">
+                    {highlightShelfCopy(categoryFilter)}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className="tag bg-gold/10 border border-gold/25 text-gold text-[10px]">
+                    {visualCoverage} visual picks in this filtered set
+                  </span>
+                  <span className="tag bg-white border border-cream text-slate text-[10px]">
+                    {visualCountries} countries represented
+                  </span>
+                  {leadPairingCue && (
+                    <span className="tag bg-white border border-cream text-slate text-[10px]">
+                      Start with {leadPairingCue}
+                    </span>
+                  )}
+                  <span className="font-body text-xs text-slate-lt">
+                    The shelf below pulls forward the strongest five by score and identity.
+                  </span>
+                </div>
+                <div className="grid xl:grid-cols-[1.15fr_0.85fr] gap-4">
+                  <Link
+                    to={`/explore/${leadHighlight.wine.id}`}
+                    className="rounded-[1.75rem] border border-cream bg-gradient-to-br from-[#fcfaf4] via-white to-[#f2eadb] p-4 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
+                  >
+                    <div className="grid md:grid-cols-[0.95fr_1.05fr] gap-4 items-stretch">
+                      <div className="rounded-[1.4rem] bg-[radial-gradient(circle_at_top,#ffffff,rgba(250,244,233,0.92))] border border-cream/70 min-h-[15rem] flex items-center justify-center overflow-hidden relative">
+                        <div className="absolute inset-x-5 top-4 flex items-center justify-between z-10">
+                          <span className="tag bg-slate text-white text-[10px]">{leadHighlight.treatment.badge}</span>
+                          <span className="tag bg-white/90 border border-cream text-slate text-[10px]">
+                            {leadHighlight.wine.rating}/100
+                          </span>
+                        </div>
+                        <img
+                          src={leadHighlight.visual.src}
+                          alt={leadHighlight.visual.alt}
+                          className="h-full w-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between">
+                        <div>
+                          <p className="font-body text-[10px] uppercase tracking-[0.18em] text-gold mb-2">
+                            Featured visual
+                          </p>
+                          <h3 className="font-display text-3xl text-slate leading-tight">
+                            {leadHighlight.wine.name}
+                          </h3>
+                          <p className="font-body text-sm text-slate-lt mt-2">
+                            {leadHighlight.wine.producer} · {leadHighlight.wine.region}, {leadHighlight.wine.country}
+                          </p>
+                          <p className="font-body text-sm text-slate-lt leading-relaxed mt-4">
+                            {leadHighlight.treatment.summary}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 mt-4">
+                          {[
+                            { label: 'Origin', value: getVisualOriginLabel(leadHighlight.wine) },
+                            { label: 'Price', value: leadHighlight.wine.price },
+                            { label: 'Best with', value: leadPairingCue || 'Food-first' },
+                          ].map((item) => (
+                            <div key={item.label} className="rounded-2xl bg-white/80 border border-cream px-3 py-2">
+                              <p className="font-body text-[9px] uppercase tracking-[0.16em] text-slate-lt/75">{item.label}</p>
+                              <p className="font-body text-xs text-slate mt-1 leading-snug">{item.value}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {labelHighlights.slice(1).map(({ wine, visual, treatment }) => (
+                      <Link
+                        key={wine.id}
+                        to={`/explore/${wine.id}`}
+                        className="rounded-[1.5rem] border border-cream bg-gradient-to-br from-white to-[#f5efe4] p-3 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
+                      >
+                        <div className="rounded-[1.2rem] bg-[radial-gradient(circle_at_top,#ffffff,rgba(248,240,227,0.88))] border border-cream/70 h-40 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={visual.src}
+                            alt={visual.alt}
+                            className="h-full w-full object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="mt-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="font-body text-[10px] uppercase tracking-[0.18em] text-gold">
+                              {getVisualOriginLabel(wine)}
+                            </p>
+                            <span className="font-body text-[10px] text-slate-lt">{wine.rating}/100</span>
+                          </div>
+                          <h3 className="font-display text-xl text-slate leading-tight mt-1">{wine.name}</h3>
+                          <p className="font-body text-xs text-slate-lt mt-1">{wine.producer}</p>
+                          <div className="flex flex-wrap gap-1.5 mt-3">
+                            <span className="tag bg-white border border-cream text-slate text-[10px]">{treatment.shortBadge}</span>
+                            <span className="tag bg-cream text-slate text-[10px]">{wine.price}</span>
+                          </div>
+                          <p className="font-body text-xs text-slate-lt leading-relaxed mt-2 line-clamp-2">
+                            {treatment.summary}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-wrap md:flex-nowrap items-center gap-x-5 gap-y-2 mb-5 px-4 py-3 bg-white rounded-xl border border-cream overflow-x-auto thin-scroll">
               <span className="font-body text-[10px] uppercase tracking-widest text-slate-lt/70 font-medium">Card colours</span>
               {CATEGORY_LEGEND.map(({ id, label, start, end }) => (
@@ -587,9 +837,26 @@ export default function Explorer() {
             </div>
 
             {filtered.length === 0 ? (
-              <div className="text-center py-20">
-                <p className="font-display text-2xl text-slate-lt mb-3">No wines found</p>
-                <p className="font-body text-sm text-slate-lt">Try adjusting your filters.</p>
+              <div className="rounded-[2rem] border border-cream bg-gradient-to-br from-white to-[#f5efe4] px-6 py-14 text-center">
+                <p className="section-label mb-2">No exact matches</p>
+                <p className="font-display text-3xl text-slate mb-3">Nothing fits this filter mix yet</p>
+                <p className="font-body text-sm text-slate-lt max-w-xl mx-auto leading-relaxed">
+                  Try removing one or two filters, switching region first, or broadening the price band to bring more of the guide back into view.
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  <button
+                    onClick={() => { setSearchParams({}); setSearch('') }}
+                    className="btn-primary"
+                  >
+                    Clear all filters
+                  </button>
+                  <button
+                    onClick={() => setFilter('category', 'all')}
+                    className="btn-secondary"
+                  >
+                    Show all categories
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 stagger">

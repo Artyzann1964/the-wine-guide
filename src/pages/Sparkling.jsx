@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
+import { getWineVintageLabel } from '../utils/wineDisplay'
 
 // ─── Amanda's Picks ───────────────────────────────────────────────────────────
 // Mix of wines in our database (linked) and curated recommendations (not yet added)
@@ -364,6 +365,32 @@ export default function Sparkling() {
     const typeId = activeType.toLowerCase().replace('é', 'e')
     return sub === typeId || sub === typeId + '-sparkling' || sub === typeId.replace('english', 'english-sparkling')
   })
+  const sparklingCountries = new Set(sparklingWines.map(w => w.country).filter(Boolean)).size
+  const sparklingTypesInGuide = TYPES.filter(type => {
+    const typeId = type.id.toLowerCase().replace('é', 'e')
+    return sparklingWines.some(w => {
+      const sub = (w.subcategory || '').toLowerCase().replace('é', 'e')
+      return sub === typeId || sub === `${typeId}-sparkling` || sub === typeId.replace('english', 'english-sparkling')
+    })
+  }).length
+  const amandaLinkedCount = picksWithData.filter(({ wineData }) => wineData).length
+  const topRatedSparkling = sparklingWines.reduce((best, wine) => {
+    if (!best) return wine
+    return (wine.rating || 0) > (best.rating || 0) ? wine : best
+  }, null)
+  const topRatedTypeWine = winesOfType.reduce((best, wine) => {
+    if (!best) return wine
+    return (wine.rating || 0) > (best.rating || 0) ? wine : best
+  }, null)
+  const methodSnapshot = processView === 'traditional'
+    ? {
+        headline: 'Bottle-aged precision',
+        summary: 'Champagne, Crémant, Cava, and English sparkling earn their texture from time on the lees.',
+      }
+    : {
+        headline: 'Freshness first',
+        summary: 'Tank-made fizz keeps fruit, florals, and easy-drinking energy front and centre.',
+      }
 
   return (
     <main className="min-h-screen bg-ivory">
@@ -388,7 +415,8 @@ export default function Sparkling() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="max-w-3xl">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.25fr)_380px] lg:items-start">
+            <div>
             <p className="font-body text-xs font-semibold tracking-[0.2em] uppercase text-gold/70 mb-4">
               🥂 Amanda's Fizz Edit
             </p>
@@ -400,10 +428,8 @@ export default function Sparkling() {
               From the Tuesday-night Prosecco to the once-a-year Dom Pérignon — a guide to the whole
               beautiful spectrum of sparkling wine. With particular attention paid to the Spritz.
             </p>
-          </div>
-
-          {/* Journey cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12">
+              {/* Journey cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12">
             {[
               { emoji: '✨', label: 'Prosecco', sub: 'The Daily Driver', color: 'border-yellow-400/40' },
               { emoji: '🫧', label: 'Crémant', sub: 'The Smart Move', color: 'border-purple-400/40' },
@@ -416,6 +442,51 @@ export default function Sparkling() {
                 <p className="font-body text-white/50 text-xs mt-0.5">{c.sub}</p>
               </div>
             ))}
+              </div>
+            </div>
+            <div className="surface-panel border-white/10 bg-white/10 p-5 text-white lg:p-6">
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <p className="section-label mb-1 text-gold/70">Sparkling Snapshot</p>
+                  <h2 className="font-display text-2xl font-semibold text-white">Start here</h2>
+                </div>
+                <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 font-body text-xs text-gold">
+                  Amanda-approved
+                </span>
+              </div>
+              <div className="mb-5 grid grid-cols-2 gap-3">
+                {[
+                  ['In guide', sparklingWines.length],
+                  ['Styles', sparklingTypesInGuide],
+                  ['Countries', sparklingCountries],
+                  ['Linked picks', amandaLinkedCount],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="font-body text-[11px] uppercase tracking-[0.18em] text-white/45">{label}</p>
+                    <p className="mt-2 font-display text-2xl text-white">{value}</p>
+                  </div>
+                ))}
+              </div>
+              {topRatedSparkling && (
+                <div className="mb-4 rounded-2xl border border-white/10 bg-slate/40 p-4">
+                  <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-gold/70">Highest-rated bottle</p>
+                  <p className="font-display text-xl leading-tight text-white">{topRatedSparkling.name}</p>
+                  <p className="mt-1 font-body text-sm text-white/60">
+                    {topRatedSparkling.producer} · {topRatedSparkling.rating}/100
+                  </p>
+                  <Link
+                    to={`/explore/${topRatedSparkling.id}`}
+                    className="mt-3 inline-flex font-body text-sm text-gold hover:underline"
+                  >
+                    Open in the guide →
+                  </Link>
+                </div>
+              )}
+              <p className="font-body text-sm leading-relaxed text-white/65">
+                Use this page like a confident shortcut: learn the main styles, steal Amanda&apos;s shortlist,
+                then jump straight into the bottles worth opening.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -426,35 +497,52 @@ export default function Sparkling() {
 
           {/* Amanda portrait + quote */}
           <div className="rounded-2xl bg-navy overflow-hidden mb-12">
-            <div className="flex flex-col sm:flex-row items-stretch">
-              {/* Photo */}
-              <div className="sm:w-56 flex-shrink-0">
-                <img
-                  src="/amanda-holmes.png"
-                  alt="Amanda Holmes"
-                  className="w-full h-full object-cover object-top sm:min-h-[240px]"
-                  style={{ filter: 'grayscale(100%) contrast(1.05) brightness(0.95)' }}
-                />
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_260px] items-stretch">
+              <div className="flex flex-col sm:flex-row items-stretch">
+                <div className="sm:w-56 flex-shrink-0">
+                  <img
+                    src="/amanda-holmes.png"
+                    alt="Amanda Holmes"
+                    className="w-full h-full object-cover object-top sm:min-h-[240px]"
+                    style={{ filter: 'grayscale(100%) contrast(1.05) brightness(0.95)' }}
+                  />
+                </div>
+                <div className="flex-1 p-8 flex flex-col justify-center">
+                  <p className="section-label mb-2" style={{ color: 'rgba(201,151,58,0.7)' }}>Amanda&apos;s Fizz</p>
+                  <h2 className="font-display text-3xl lg:text-4xl font-light text-white mb-4 leading-tight">
+                    Amanda Holmes
+                  </h2>
+                  <p className="font-display text-xl lg:text-2xl italic text-white/85 mb-5 leading-snug">
+                    "Life is too short for bad Champagne — and too wonderful not to find the good stuff."
+                  </p>
+                  <p className="font-body text-sm text-white/55 leading-relaxed max-w-lg">
+                    Creator of The Wine Guide and confirmed fizz obsessive. These are the eight bottles
+                    Amanda keeps coming back to — from the Tuesday-night Lidl Crémant to the once-a-year Dom Pérignon.
+                  </p>
+                </div>
               </div>
-              {/* Text */}
-              <div className="flex-1 p-8 flex flex-col justify-center">
-                <p className="section-label mb-2" style={{ color: 'rgba(201,151,58,0.7)' }}>Amanda's Fizz</p>
-                <h2 className="font-display text-3xl lg:text-4xl font-light text-white mb-4 leading-tight">
-                  Amanda Holmes
-                </h2>
-                <p className="font-display text-xl lg:text-2xl italic text-white/85 mb-5 leading-snug">
-                  "Life is too short for bad Champagne — and too wonderful not to find the good stuff."
-                </p>
-                <p className="font-body text-sm text-white/55 leading-relaxed max-w-lg">
-                  Creator of The Wine Guide and confirmed fizz obsessive. These are the eight bottles
-                  Amanda keeps coming back to — from the Tuesday-night Lidl Crémant to the once-a-year Dom Pérignon.
-                </p>
+              <div className="border-t border-white/10 bg-white/5 p-6 lg:border-l lg:border-t-0">
+                <p className="mb-4 font-body text-[11px] uppercase tracking-[0.18em] text-gold/70">Fizz Read</p>
+                <div className="space-y-4">
+                  <div>
+                    <p className="mb-1 font-body text-xs uppercase tracking-[0.16em] text-white/45">Weeknight win</p>
+                    <p className="font-display text-lg text-white">Crémant over cheap Champagne</p>
+                  </div>
+                  <div>
+                    <p className="mb-1 font-body text-xs uppercase tracking-[0.16em] text-white/45">Party move</p>
+                    <p className="font-display text-lg text-white">Dry Prosecco for a proper Spritz</p>
+                  </div>
+                  <div>
+                    <p className="mb-1 font-body text-xs uppercase tracking-[0.16em] text-white/45">Celebrate with</p>
+                    <p className="font-display text-lg text-white">Bollinger or Dom Pérignon</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Grid header */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] mb-10">
             <div>
               <p className="section-label mb-2">Curated by preference</p>
               <h2 className="font-display font-bold text-4xl text-slate">Amanda's Eight</h2>
@@ -463,9 +551,12 @@ export default function Sparkling() {
                 that cover every occasion, every mood, every excuse.
               </p>
             </div>
-            <div className="bg-gold/8 border border-gold/20 rounded-2xl px-5 py-3 shrink-0">
-              <p className="font-body text-xs text-slate-lt">Wines in bold are</p>
-              <p className="font-body text-sm text-gold font-medium">linked in our guide ↗</p>
+            <div className="rounded-2xl border border-gold/20 bg-gold/8 px-5 py-4">
+              <p className="font-body text-xs uppercase tracking-[0.18em] text-slate-lt">Guide note</p>
+              <p className="mt-1 font-body text-sm font-medium text-gold">Wines in bold are linked in our guide ↗</p>
+              <p className="mt-3 font-body text-sm text-slate-lt">
+                Amanda&apos;s shortlist mixes database bottles with a few off-menu recommendations worth hunting down.
+              </p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -547,12 +638,31 @@ export default function Sparkling() {
       {/* ── TYPE REFERENCE ───────────────────────────────────────────────────── */}
       <section className="py-20 bg-slate">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="text-center mb-10">
-            <p className="section-label text-gold/70 mb-2">The full picture</p>
-            <h2 className="font-display font-bold text-4xl text-white mb-4">Know Your Bubbles</h2>
-            <p className="font-body text-white/60 max-w-xl mx-auto">
-              Every style explained — production method, key producers, what to pair it with.
-            </p>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start mb-10">
+            <div className="text-center lg:text-left">
+              <p className="section-label text-gold/70 mb-2">The full picture</p>
+              <h2 className="font-display font-bold text-4xl text-white mb-4">Know Your Bubbles</h2>
+              <p className="font-body text-white/60 max-w-xl mx-auto lg:mx-0 lg:max-w-2xl">
+                Every style explained — production method, key producers, what to pair it with, and
+                which bottle in the guide is the strongest place to begin.
+              </p>
+            </div>
+            <div className="surface-panel border-white/10 bg-white/8 p-5">
+              <p className="mb-3 font-body text-[11px] uppercase tracking-[0.18em] text-gold/70">Current style</p>
+              <h3 className="mb-2 font-display text-2xl text-white">{currentType?.emoji} {currentType?.label}</h3>
+              <p className="mb-4 font-body text-sm text-white/60">{currentType?.region}</p>
+              {topRatedTypeWine ? (
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-white/45">Best-rated in guide</p>
+                  <p className="font-display text-lg leading-tight text-white">{topRatedTypeWine.name}</p>
+                  <p className="mt-1 font-body text-sm text-white/60">
+                    {topRatedTypeWine.producer} · {topRatedTypeWine.rating}/100
+                  </p>
+                </div>
+              ) : (
+                <p className="font-body text-sm text-white/50">More bottles for this style are still being added.</p>
+              )}
+            </div>
           </div>
 
           {/* Type pills */}
@@ -650,7 +760,7 @@ export default function Sparkling() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-body text-sm font-medium text-white truncate">{wine.name}</p>
-                            <p className="font-body text-xs text-white/50">{wine.producer} · {wine.vintage}</p>
+                            <p className="font-body text-xs text-white/50">{[wine.producer, getWineVintageLabel(wine)].filter(Boolean).join(' · ')}</p>
                           </div>
                           <span className="font-body text-sm font-bold text-gold shrink-0">{wine.rating}</span>
                         </Link>
@@ -673,6 +783,31 @@ export default function Sparkling() {
             <p className="section-label mb-2">Reading the label</p>
             <h2 className="font-display font-bold text-3xl text-slate">What does Brut actually mean?</h2>
             <p className="font-body text-slate-lt mt-2">Residual sugar levels, decoded.</p>
+          </div>
+          <div className="surface-panel mb-6 p-5 sm:p-6">
+            <div className="grid gap-4 md:grid-cols-3 md:items-start">
+              <div>
+                <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">Default answer</p>
+                <p className="font-display text-2xl text-slate">Choose Brut</p>
+                <p className="mt-2 font-body text-sm text-slate-lt">
+                  If you are unsure, Brut is the safe and broadly useful choice for both drinking and pairing.
+                </p>
+              </div>
+              <div>
+                <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">For Spritzes</p>
+                <p className="font-display text-xl text-slate">Brut Prosecco</p>
+                <p className="mt-2 font-body text-sm text-slate-lt">
+                  Dry enough to stay fresh when Aperol, elderflower, or limoncello enters the glass.
+                </p>
+              </div>
+              <div>
+                <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">Dessert territory</p>
+                <p className="font-display text-xl text-slate">Demi-Sec and sweeter</p>
+                <p className="mt-2 font-body text-sm text-slate-lt">
+                  Keep these for fruit-led puddings or soft cakes rather than aperitif duty.
+                </p>
+              </div>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full font-body text-sm">
@@ -715,6 +850,22 @@ export default function Sparkling() {
               The method used to make a sparkling wine defines its character. Two approaches — one meticulous, one efficient.
             </p>
           </div>
+          <div className="grid gap-4 mb-8 md:grid-cols-2">
+            <div className={`rounded-2xl border p-5 ${processView === 'traditional' ? 'border-gold/30 bg-gold/5' : 'border-cream bg-white/60'}`}>
+              <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">Traditional method</p>
+              <p className="font-display text-2xl text-slate">Texture, brioche, patience</p>
+              <p className="mt-2 font-body text-sm text-slate-lt">
+                Bottle fermentation plus lees ageing gives the layered, toasty, serious feel of Champagne and its peers.
+              </p>
+            </div>
+            <div className={`rounded-2xl border p-5 ${processView === 'tank' ? 'border-gold/30 bg-gold/5' : 'border-cream bg-white/60'}`}>
+              <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">Tank method</p>
+              <p className="font-display text-2xl text-slate">Fruit, lift, immediacy</p>
+              <p className="mt-2 font-body text-sm text-slate-lt">
+                Pressurised tank fermentation protects freshness, making the style brighter, lighter, and more spritz-friendly.
+              </p>
+            </div>
+          </div>
           <div className="flex justify-center gap-2 mb-12">
             {[
               { id: 'traditional', label: '🥂 Traditional Method' },
@@ -730,6 +881,13 @@ export default function Sparkling() {
                 {label}
               </button>
             ))}
+          </div>
+          <div className="surface-panel mb-6 p-5 sm:p-6">
+            <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">Current read</p>
+            <p className="font-display text-2xl text-slate">{methodSnapshot.headline}</p>
+            <p className="mt-2 max-w-2xl font-body text-sm text-slate-lt">
+              {methodSnapshot.summary}
+            </p>
           </div>
           <div className="space-y-4">
             {(processView === 'traditional' ? TRADITIONAL_STEPS : TANK_STEPS).map(s => (
@@ -752,14 +910,23 @@ export default function Sparkling() {
 
       {/* ── ALL SPARKLING WINES ───────────────────────────────────────────────── */}
       <section className="py-16 pb-24 max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <p className="section-label mb-2">Every bottle</p>
-            <h2 className="font-display font-bold text-4xl text-slate">Sparkling Wines in the Guide</h2>
+        <div className="grid gap-5 mb-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="section-label mb-2">Every bottle</p>
+              <h2 className="font-display font-bold text-4xl text-slate">Sparkling Wines in the Guide</h2>
+            </div>
+            <Link to="/explore?category=sparkling" className="shrink-0 font-body text-sm text-gold hover:underline">
+              Filter in Explorer →
+            </Link>
           </div>
-          <Link to="/explore?category=sparkling" className="font-body text-sm text-gold hover:underline">
-            Filter in Explorer →
-          </Link>
+          <div className="surface-panel p-4 sm:p-5">
+            <p className="mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-slate/45">Collection snapshot</p>
+            <p className="font-display text-2xl text-slate">{sparklingWines.length} bottles</p>
+            <p className="mt-2 font-body text-sm text-slate-lt">
+              From easy aperitivo fizz to serious cellar-worthy Champagne, all in one browseable shelf.
+            </p>
+          </div>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {sparklingWines.map(wine => (

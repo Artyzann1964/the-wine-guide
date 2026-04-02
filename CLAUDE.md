@@ -4,7 +4,7 @@ Project memory for future coding sessions. Keep this aligned with the live codeb
 
 ## Overview
 
-The Wine Guide is a React 18 + Vite wine reference app with a personal cellar tracker.
+The Wine Guide is a React 18 + Vite wine reference app with a personal cellar tracker, curated venue guide, pairing tools, and editorial bottle pages.
 
 Current architecture:
 - Frontend: React 18, React Router 6, Tailwind CSS 3
@@ -15,8 +15,8 @@ Current architecture:
   - local `localStorage` for cellar state on each device
   - normalized internal cellar `items` model in the frontend
   - optional cross-device sync via `/api/cellar-items/:syncId`
-  - sync sessions are bootstrapped via `/api/cellar-sync-session/:syncId`
-  - new device sessions require the shared sync code plus a shared sync passphrase
+  - sync sessions bootstrapped via `/api/cellar-sync-session/:syncId`
+  - new device sessions require the shared sync code plus the shared sync passphrase
   - new sync spaces record an owner email and return a recovery key
   - owner-management sessions are bootstrapped via `/api/cellar-sync-owner/:syncId/session`
   - passphrase rotation and session revocation are handled by `/api/cellar-sync-owner/:syncId/rotate-passphrase`
@@ -25,32 +25,35 @@ Current architecture:
   - removals are propagated as tombstones via `deletedAt`
 
 Current dataset facts:
-- 267 wines
-- 21 countries
-- 97 region strings
-- Categories: 106 red, 93 white, 39 sparkling, 10 dessert, 19 rosé
-- 16 venues in Amanda's Places (14 Sheffield/Chelmsford + 2 New York)
-- 8 venue wine-list sources in `src/data/venueWineLists.js`
-- 17 wines have `labelImage` fields (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem, Trimbach Clos Sainte Hune, Giacomo Conterno Barolo, Faustino I Gran Reserva, plus 6 others)
+- 321 wines
+- 22+ countries, 103+ region strings
+- Categories: approx 125 red, 106 white, 55 sparkling, 21 rosé, 11 dessert/fortified
+- 267 wines currently have a source `labelImage`
+- 69 venues in Amanda's Places across 21 towns in 4 region groups (UK / Europe / Asia / Americas)
+- 13 venue wine-list sources in `src/data/venueWineLists.js`
+- `src/utils/wineVisuals.js` resolves retailer-mark visuals to honest equivalent bottle, estate, or region visuals for Explore and Wine Detail
 
 ## Commands
 
 ```bash
-npm run dev       # Vite dev server on :5173
-npm run build     # production build -> dist/
-npm run preview   # Vite preview on :3000 (or $PORT)
-npm start         # Express server, serves dist/ and the sync APIs
+npm run dev         # Vite dev server
+npm run build       # production build -> dist/
+npm run preview     # Vite preview
+npm start           # Express server, serves dist/ and the sync APIs
+npm test            # Vitest invariants
+npm run test:watch  # Vitest watch mode
 ```
 
 Notes:
 - `npm start` is not Vite preview. It runs `node server.mjs`.
 - `npm run build` is currently clean.
+- `npm test` is currently clean (`102/102`).
 
 ## Important Files
 
 ```text
 server.mjs                              Express server + cellar sync API + static dist serving
-src/App.jsx                             Route table + lazy page loading
+src/App.jsx                             Route table + lazy page loading + shell states
 src/main.jsx                            React entry point
 src/index.css                           Tailwind entry + app utility classes
 
@@ -58,40 +61,44 @@ src/data/wines.js                       Main wine dataset + schema normalizer
 src/data/pairings.js                    Pairing wizard data
 src/data/venueWineLists.js              Venue wine-list data keyed by venue id
 
+src/__tests__/wines.invariants.test.js          Data invariants + normalization tests for wines.js
+src/__tests__/venueWineLists.invariants.test.js Venue-list schema + cross-reference tests
+
 src/hooks/useCellar.js                  Cellar state, persistence, import helpers
 src/hooks/useVenueSourceInbox.js        Venue source inbox local storage hook
 
 src/components/CellarCloudSyncBridge.jsx  Background push/pull sync bridge
-src/components/GlobalSearch.jsx         Cmd+K full-screen search overlay (pre-built index, keyboard nav)
-src/components/Nav.jsx                  Navigation (search button wired to GlobalSearch)
+src/components/GlobalSearch.jsx         Cmd+K full-screen search overlay
+src/components/Nav.jsx                  Main navigation
 src/components/Footer.jsx               Footer
+src/components/InstallPrompt.jsx        PWA install prompt
 src/components/Logo.jsx                 Brand marks and Amanda visuals
 src/components/TasteProfile.jsx         Radar chart
-src/components/WineCard.jsx             Standard wine card (shows labelImage as subtle overlay)
+src/components/WineCard.jsx             Standard wine card
 
 src/components/cellar/constants.js      TABS, CATEGORY_COLORS, PURCHASE_CHANNELS, RETAILER_OPTIONS, drinkWindowStatus()
-src/components/cellar/StarRating.jsx    StarIcon, StarDisplay, StarInput (shared star components)
+src/components/cellar/StarRating.jsx    Shared star components
 src/components/cellar/CellarHero.jsx    Hero section with stats cards
 src/components/cellar/CellarTabs.jsx    Tab bar
-src/components/cellar/BottleCard.jsx    Bottle card with star rating display + Edit button (onEdit prop)
+src/components/cellar/BottleCard.jsx    Bottle card
 src/components/cellar/WishlistCard.jsx  Wishlist card
-src/components/cellar/TastedReviewTable.jsx  Review table (desktop + mobile; 'Edit note' button in expanded rows; onEdit prop)
+src/components/cellar/TastedReviewTable.jsx  Review table
 src/components/cellar/EmptyState.jsx    Empty state component
-src/components/cellar/AddBottleModal.jsx     Add bottle form with optional star rating
-src/components/cellar/EditBottleModal.jsx    Edit existing bottle (pre-populated, calls updateBottle)
-src/components/cellar/TastingNoteModal.jsx   Mark-as-tasted + edit tasting note (editMode prop pre-populates all fields including structured notes)
-src/components/cellar/CellarStatsDashboard.jsx  Cellar overview: donut chart, summary cards, 6-month timeline
+src/components/cellar/AddBottleModal.jsx     Add bottle form
+src/components/cellar/EditBottleModal.jsx    Edit existing bottle
+src/components/cellar/TastingNoteModal.jsx   Tasting-note modal
+src/components/cellar/CellarStatsDashboard.jsx  Cellar overview dashboard
 src/components/cellar/VivinoImportPanel.jsx  Vivino CSV import
 src/components/cellar/WishlistSharePanel.jsx Wishlist share URL generation
-src/components/cellar/DrinkWindowAlerts.jsx  Drink window alert banners (over-peak/ready/opening-soon)
-src/components/cellar/CellarBottlesTab.jsx  Bottles tab: search/sort, BottleCard grid, category breakdown
-src/components/cellar/CellarWishlistTab.jsx Wishlist tab: search/sort, WishlistCard grid
+src/components/cellar/DrinkWindowAlerts.jsx  Drink-window banners
+src/components/cellar/CellarBottlesTab.jsx   Bottles tab
+src/components/cellar/CellarWishlistTab.jsx  Wishlist tab
 src/components/cellar/CellarSyncPanel.jsx    Cloud sync + manual backup
 
-src/pages/Home.jsx                      Homepage (single amanda-eindhoven.jpg ghost hero, right-anchored, opacity 0.18)
+src/pages/Home.jsx                      Homepage
 src/pages/Explorer.jsx                  Main explorer/filter page
-src/pages/WineDetail.jsx                Detail page + add-to-cellar modal (similarity-based related wines)
-src/pages/Cellar.jsx                    Cellar orchestrator (~205 lines; bottles/wishlist/tasted tabs delegated to sub-components)
+src/pages/WineDetail.jsx                Detail page with editorial story layout
+src/pages/Cellar.jsx                    Cellar orchestrator
 src/pages/Shop.jsx                      Retailer guide and retailer-specific wine views
 src/pages/Sheffield.jsx                 Amanda's Places page
 src/pages/WishlistShare.jsx             Shared wishlist page
@@ -100,21 +107,27 @@ src/pages/Sparkling.jsx                 Sparkling guide
 src/pages/Pairing.jsx                   Pairing wizard
 src/pages/Critics.jsx                   Critics page
 src/pages/TasteProfiler.jsx             Taste quiz
-src/pages/VintageGuide.jsx              Vintage quality grid — 19 regions × 2010-2024, colour-coded scores, country+category filters
-src/pages/Producers.jsx                 Producer index with search + producer cards
-src/pages/ProducerDetail.jsx            Producer detail — wines grid + aggregate taste profile radar
+src/pages/VintageGuide.jsx              Vintage quality grid
+src/pages/Producers.jsx                 Producer index
+src/pages/ProducerDetail.jsx            Producer detail
 
 src/utils/cellarSync.js                 Cloud sync id/payload helpers
 src/utils/wishlistShare.js              Wishlist share encoding/decoding helpers
 src/utils/vivinoImport.js               CSV parser and Vivino -> tasted entry mapper
 src/utils/retailerBrands.jsx            Retailer logo/badge config
 src/utils/ourTake.js                    Generated "Our Take" copy
-src/utils/wineRecommendations.js        Similarity engine: getRecommendations() + getCellarRecommendations()
+src/utils/wineRecommendations.js        Similarity engine
+src/utils/wineVisuals.js                Visual resolver for Explore / Wine Detail / cards
+src/utils/wineDisplay.js                NV / edition / display helper text
+
+public/venue-images/fallow-room.jpg         Local official room image for Fallow
+public/venue-images/scotts-mayfair-room.png Local official room image for Scott's Mayfair
+public/venue-images/joro-room-wide.jpg      Local official room image for Jöro
 ```
 
 ## Routing
 
-Routes currently registered in `App.jsx`:
+Routes currently registered in `src/App.jsx`:
 
 - `/`
 - `/explore`
@@ -129,9 +142,9 @@ Routes currently registered in `App.jsx`:
 - `/sheffield`
 - `/critics`
 - `/taste-quiz`
-- `/vintages`
 - `/producers`
 - `/producers/:slug`
+- `/vintages`
 
 Because the app uses `HashRouter`, deployed links resolve as `/#/route`.
 
@@ -149,10 +162,14 @@ The normalizer currently standardizes:
 - `vintageGuide`
 - `whereToBuy`
 - `decant`
+- `region`
+- `subcategory`
+- `vintage`
 
-The normalizer uses spread (`{ ...w, ... }`) so additional fields like `labelImage` pass through without changes.
-
-Do not add new wines using the old bulk-generation schema. Write new entries in the normalized shape.
+Important practical note:
+- raw source entries in `_wines` still contain a mix of older hand-written and bulk-generated styles
+- the exported `wines` array is the clean source of truth used by the app and tests
+- when adding new wines, prefer writing the normalized shape directly rather than depending on cleanup logic
 
 Retailer names matter. Current canonical branded set:
 - `Tesco`
@@ -166,6 +183,39 @@ Retailer names matter. Current canonical branded set:
 - `Le Bon Vin`
 - `Majestic`
 - `Co-op`
+
+## Places Guide Notes
+
+The live `VENUES` array in `src/pages/Sheffield.jsx` contains 69 venues across 21 towns in 4 region groups.
+
+Town filter groups (defined in `TOWN_GROUPS` constant):
+- UK: Sheffield, Stannington, Morpeth, Stroud, Walton-on-Thames, London, Chelmsford, Leeds, Harrogate, York, Poole, Weymouth
+- Europe: Valencia, Málaga, Munich, Arcachon, Cap Ferret
+- Asia: Singapore
+- Americas: New York, Miami, Panama City
+
+Venue counts by town:
+- Sheffield: 9 · Stannington: 3 · Walton-on-Thames: 2 · Stroud: 2 · Morpeth: 2
+- Valencia: 13 · London: 6 · New York: 2 · Chelmsford: 1
+- Leeds: 2 · Harrogate: 1 · York: 1
+- Munich: 4 · Arcachon: 1 · Cap Ferret: 3 · Málaga: 2
+- Singapore: 4 (Long Bar Raffles, CÉ LA VI, Gordon Grill Goodwood Park, temper.)
+- Poole: 1 · Weymouth: 2 · Miami: 2 · Panama City: 2
+
+Current Places image policy:
+- use actual venue photography where possible
+- do not use retailer logos, bottle labels, or vineyard stand-ins for venue cards
+- if no honest venue image is available, keep the venue text-led rather than using weak food, menu, or slogan graphics
+
+Current intentional text-led venues:
+- `forastera-valencia`
+- `taberna-la-samorra`
+- `flama-valencia`
+- `rausell-valencia`
+- `tannin-level-harrogate` (official site down)
+- `le-patio-arcachon` (official domain dead)
+
+Note on Singapore: **Alma at Goodwood Park was permanently closed** and has been replaced with **Gordon Grill** (`gordon-grill-goodwood-park`) at the same 22 Scotts Road address. Gordon Grill has been operating since 1963 in the same heritage building. Alma (`alma-goodwood-park-singapore`) no longer exists in the VENUES array.
 
 ## Cellar and Sync
 
@@ -190,58 +240,34 @@ Retailer names matter. Current canonical branded set:
 - `isInWishlist`
 
 Cellar item model (via `normalizeCellarItem` in `useCellar.js`):
-- `rating`: 1-5 star quality rating (nullable, settable from AddBottleModal and TastingNoteModal)
-- `wouldBuyAgain`: 1-5 star "would buy again" rating (nullable, settable from TastingNoteModal)
-- `tastingNote`: free-text tasting note string (settable/editable from TastingNoteModal)
-- `score`: numeric critic score 0–100 (nullable)
-- Structured tasting fields (all nullable): `colour`, `nose` (string array), `body`, `acidity`, `tannins`, `finish`
-- All fields are sync-safe: nullable fields propagate through JSON sync payload; old devices ignore unknown fields
+- `rating`: 1-5 star quality rating
+- `wouldBuyAgain`: 1-5 repurchase rating
+- `tastingNote`: free-text tasting note string
+- `score`: numeric critic score 0-100
+- Structured tasting fields: `colour`, `nose`, `body`, `acidity`, `tannins`, `finish`
 
 Cross-device sync flow:
 - Local cellar state is persisted in `localStorage`
 - The hook stores a single normalized `items` list and derives legacy bucket views from it
 - `CellarCloudSyncBridge.jsx` watches local revisions
-- The bridge first mints or refreshes a device session through `/api/cellar-sync-session/:syncId`
+- The bridge mints or refreshes a device session through `/api/cellar-sync-session/:syncId`
 - Session bootstrap requires the shared sync passphrase stored by the Cellar settings UI
 - New sync spaces also store an owner email and issue a recovery key back to the UI
 - `Cellar.jsx` can mint a separate owner-management session through `/api/cellar-sync-owner/:syncId/session`
 - Owner-management sessions can fetch `/api/cellar-sync-owner/:syncId/devices` and revoke stale device tokens
-- `Cellar.jsx` can rotate the passphrase with either the current passphrase or the recovery key, and the server revokes existing sessions when that happens
+- `Cellar.jsx` can rotate the passphrase with either the current passphrase or the recovery key
 - The bridge talks to `/api/cellar-items/:syncId`
 - Item sync requests require a bearer token returned by the session bootstrap endpoint
 - `server.mjs` supports PostgreSQL-backed item sync when `DATABASE_URL` is available
 - legacy `/api/cellar-sync/:syncId` remains for the manual snapshot sync path
 
+Important working rule:
+- sync has been intentionally left alone during the current UI/data polish phase because it was already working
+- do not casually refactor sync/auth code while doing guide or Places work
+
 Production Railway variables currently in use:
 - `CELLAR_SYNC_STORE_PATH=/app/data/cellar-sync-store.json`
 - `RAILWAY_VOLUME_MOUNT_PATH=/app/data`
-
-This means production sync can run in two modes:
-- Postgres-backed centralized item sync when Railway Postgres is attached
-- volume-backed file persistence when only the Railway volume is configured
-
-## Wishlist Share
-
-Wishlist sharing is handled by `src/utils/wishlistShare.js`.
-
-Flow:
-- build payload from wishlist entries
-- encode to base64url
-- generate `#/wishlist-share?wl=...`
-- decode on `WishlistShare.jsx`
-
-The shared page resolves wishlist entries back against the local wine dataset when possible.
-
-## Vivino Import
-
-Current preferred flow:
-- Cellar page button loads `public/vivino_wines_export.csv`
-- `parseVivinoCsv()` reads rows
-- `vivinoRowsToTastedEntries()` converts them to tasted entries
-- `importTastedEntries()` merges with duplicate protection
-
-Legacy support still present:
-- `public/vivino_import.js` can still be pasted into the browser console
 
 ## Build and Deployment
 
@@ -251,46 +277,28 @@ Build config:
 - the wine dataset still lands in its own large shared chunk
 
 Current verified build output from 2026-03-13:
-- `index` (wines dataset): 580.58 kB / 127.00 kB gzip
-- `Education`: 100.69 kB / 30.46 kB gzip
-- `Sheffield`: 108.91 kB / 30.75 kB gzip
-- `Cellar`: 87.72 kB / 18.80 kB gzip
-- `VintageGuide`: 18.66 kB / 4.46 kB gzip
+- `index`: 731.30 kB / 175.68 kB gzip
 - `vendor`: 162.98 kB / 53.24 kB gzip
-- PWA: sw.js + workbox generated, 30 entries precached
+- `Sheffield`: 180.89 kB / 49.57 kB gzip
+- `Education`: 102.48 kB / 30.77 kB gzip
+- `Cellar`: 89.57 kB / 19.38 kB gzip
+- `WineDetail`: 45.15 kB / 10.52 kB gzip
+- `wineVisuals`: 40.25 kB / 11.70 kB gzip
+- PWA output: `sw.js` + Workbox, 31 precached entries
 
 Railway notes:
 - `railway.toml` starts the app with `npm start`
 - `nixpacks.toml` installs with `npm ci` and builds with `npm run build`
 - the Express server serves the built SPA and the sync API together
+- latest successful Railway deployment: `d86df9f5-d230-4ee4-a879-1d9089f8edfc`
 
 ## Current Known Issues
 
-These are active review findings and should be assumed true until fixed:
+1. Sync still has no full signed-in account model.
+   The owner-email / passphrase / recovery-key flow exists, but there is still no complete hosted login or verified recovery channel.
 
-1. `src/components/CellarCloudSyncBridge.jsx` and `server.mjs`
-   Sync now merges item adds, updates, and removals centrally. Ownership has an owner email, recovery key, passphrase rotation, and linked-device revocation, but there is still no signed-in account model or verified email channel.
-2. Wine label images cover 17 wines. More could be added via Wikimedia Commons CC-licensed images (verify URLs with MD5 hash path before adding).
+2. The shared wine-data bundle is still the main performance hotspot.
+   It builds successfully, but any future performance work should start there.
 
-## Session Guidance
-
-When updating docs or status notes:
-- prefer exact current counts over rough estimates
-- verify data counts from `src/data/wines.js`
-- verify route tables from `src/App.jsx`
-- verify deployment claims from `server.mjs`, `railway.toml`, `nixpacks.toml`, and Railway variables
-
-When changing retailer-related code:
-- keep canonical retailer names aligned between `wines.js`, `retailerBrands.jsx`, `Explorer.jsx`, and `Shop.jsx`
-
-When changing cellar features:
-- check `useCellar.js`, `Cellar.jsx`, `CellarCloudSyncBridge.jsx`, and `server.mjs` together
-
-When changing the GlobalSearch overlay:
-- The search index is pre-built at module load time in `GlobalSearch.jsx`
-- Scoring: name-start(100) > producer-start(80) > name-includes(60) > producer-includes(50) > full-text(30) > multi-token(20)
-- Triggered by Cmd+K (Mac) / Ctrl+K (Windows) or the search icon in Nav
-
-When adding new pages/routes:
-- Add lazy import + Route in `src/App.jsx`
-- Add Nav link in `src/components/Nav.jsx` (mobile menu list + desktop if appropriate)
+3. A small number of Places venues still have no honest official room image.
+   The current fallback treatment is deliberate and acceptable, but those four Valencia venues are the main remaining sourcing gap.

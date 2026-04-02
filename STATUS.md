@@ -1,59 +1,58 @@
 # The Wine Guide - Project Status
 
-Last updated: 2026-03-12
+Last updated: 2026-04-01 (session 2)
 Build status: `npm run build` passes cleanly
-Deployment: live on Railway, auto-deploying from `main`
+Test status: `npm test` passes cleanly (`102/102`)
+Deployment: Railway live at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
+Latest deployment: `d86df9f5-d230-4ee4-a879-1d9089f8edfc`
 
 ## Current Snapshot
 
 - App architecture: React 18 + Vite SPA behind an Express server (`server.mjs`)
 - Routing: `HashRouter`
-- Wine data: 267 wines
-- Geography coverage: 21 countries, 97 region strings
-- Categories:
-  - Red: 106
-  - White: 93
-  - Sparkling: 39
-  - Rosé: 19
-  - Dessert/Fortified: 10
-- Wine labels: 8 wines have `labelImage` (Dom Pérignon, Bollinger, Château Margaux, Penfolds Grange, Opus One, Vega Sicilia Único, Château Rayas, Château d'Yquem); displayed as subtle overlay on WineCard and standalone on WineDetail
-- Places guide: 14 venues across Sheffield, Stannington, Walton-on-Thames, Stroud, and Morpeth
-- Venue wine lists: 8 sourced venue lists in `src/data/venueWineLists.js`
-- Cellar architecture: `Cellar.jsx` is a ~200-line orchestrator; all sub-components live in `src/components/cellar/`
-- Cellar features: local persistence, wishlist sharing, manual sync code/link import, automatic cloud sync, star ratings on bottles, "would buy again" rating on tasting notes, review table for tasted wines
-- Cellar data model: normalized internal `items` list with derived `bottles`, `wishlist`, and `tasted` views
-- Cellar item fields: `rating` (1-5 quality stars), `wouldBuyAgain` (1-5 repurchase stars) — both nullable, sync-safe
-- Automatic sync transport: item-level sync via `/api/cellar-items/:syncId`
-- Sync authentication: per-device session bootstrap via `/api/cellar-sync-session/:syncId`, gated by a shared sync passphrase
-- Sync ownership: new sync spaces now record an owner email and issue a recovery key for passphrase rotation and session revocation
-- Linked device management: owner sessions can list and revoke device tokens from the Cellar UI
-- Removal sync: bottle and wishlist removals now propagate as tombstones instead of local-only deletes
-- Vivino import: CSV import is available in the Cellar UI; legacy console import script still exists at `public/vivino_import.js`
-
-## Retailer Coverage
-
-| Retailer | whereToBuy mentions |
-|----------|---------------------|
-| Waitrose | 25 |
-| Sainsbury's | 21 |
-| Tesco | 20 |
-| Lidl | 11 |
-| Morrisons | 10 |
-| Aldi | 9 |
-| Le Bon Vin | 8 |
-| M&S | 5 |
-| Co-op | 4 |
-| Asda | 4 |
-| Majestic | 4 |
-
-Notes:
-- The shop/branding layer supports `Tesco`, `Sainsbury's`, `Waitrose`, `Asda`, `M&S`, `Aldi`, `Lidl`, `Morrisons`, `Le Bon Vin`, `Majestic`, and `Co-op`.
-- The data set also includes unbranded specialist merchants on some fine-wine entries.
+- Wine data: 321 wines (+9 in session 2026-04-01 session 2)
+- Geography coverage: 22+ countries, 103+ region strings
+- New wines added (session 2): Domaine de la Pépière Muscadet Clisson, Quinta do Crasto Douro Superior, Álvaro Palacios Les Terrasses Priorat, Campo Viejo Rioja Reserva, Casillero del Diablo Cabernet, Waitrose No.1 Saint-Émilion Grand Cru, Sainsbury's TTD Wachau Riesling, Morrisons Best Limoux Chardonnay, Waitrose Loved & Found Old Vine Mataro
+- Categories: approx 125 red, 106 white, 55 sparkling, 21 rosé, 11 dessert/fortified (estimated)
+- Wine visuals:
+  - 267 wines currently carry a source `labelImage`
+  - Explore and Wine Detail route those through [src/utils/wineVisuals.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/utils/wineVisuals.js), which suppresses retailer-logo imagery in the main guide and swaps in honest equivalent bottle, estate, or region visuals where needed
+- Places guide: 69 venues (+33 in session 2026-04-01)
+  - Sheffield: 9 (added West 10)
+  - Stannington: 3
+  - Walton-on-Thames: 2
+  - Stroud: 2
+  - Morpeth: 2
+  - Valencia: 13 (added Ricard Camarena)
+  - London: 6 (added Noble Rot, 107 Wine)
+  - New York: 2
+  - Chelmsford: 1
+  - Leeds: 2 (new — Bavette, Latitude)
+  - Harrogate: 1 (new — The Tannin Level)
+  - York: 1 (new — Skosh)
+  - Munich: 4 (new — Tantris, Brenner, Sticks & Stones, GRAPES)
+  - Arcachon: 1 (new — Le Patio)
+  - Cap Ferret: 3 (new — L'Escale, Chez Hortense, Pinasse Café)
+  - Málaga: 2 (new — Los Patios de Beatas, Antigua Casa de Guardia)
+  - Singapore: 4 (new — Long Bar Raffles, CÉ LA VI, Alma at Goodwood Park, temper.)
+  - Poole: 1 (new — Rick Stein Sandbanks)
+  - Weymouth: 2 (new — Catch Old Fish Market, Crab House Café)
+  - Miami: 2 (new — Magie, Barcelona Wine Bar Wynwood)
+  - Panama City: 2 (new — Corcho, Bruma)
+- Venue imagery:
+  - 32 original venues have image-backed cards; new venues have image URLs set — verification pending live test
+  - 4 venues deliberately text-led: `Forastera`, `Taberna La Samorra`, `Flama`, `Rausell`
+- Venue wine lists: 13 sourced venue lists in [src/data/venueWineLists.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/data/venueWineLists.js)
+- Cellar architecture: [src/pages/Cellar.jsx](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/pages/Cellar.jsx) is the top-level orchestrator; detailed UI lives in [src/components/cellar/](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/components/cellar/)
+- Global search: Cmd+K / Ctrl+K overlay with quick-start lanes, top-result treatment, and keyboard navigation
+- Producer pages: live producer index and producer detail flow
+- Vintage Guide: live 19-region quality grid with filters and summary cues
+- Tests: data invariants cover both [src/data/wines.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/data/wines.js) and [src/data/venueWineLists.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/data/venueWineLists.js)
 
 ## Routes
 
-| Route | Page | Current status |
-|-------|------|----------------|
+| Route | Page | Status |
+|-------|------|--------|
 | `/` | Home | Live |
 | `/explore` | Explorer | Live |
 | `/explore/:id` | Wine Detail | Live |
@@ -67,38 +66,89 @@ Notes:
 | `/sheffield` | Amanda's Places alias | Live |
 | `/wishlist-share` | Wishlist Share | Live |
 | `/learn` | Wine School | Live |
+| `/vintages` | Vintage Guide | Live |
+| `/producers` | Producer Index | Live |
+| `/producers/:slug` | Producer Detail | Live |
+
+## Latest Build Output
+
+Verified on 2026-03-13:
+
+| Chunk | Size | Gzip |
+|-------|------|------|
+| `index` | 731.30 kB | 175.68 kB |
+| `vendor` | 162.98 kB | 53.24 kB |
+| `Sheffield` | 180.89 kB | 49.57 kB |
+| `Education` | 102.48 kB | 30.77 kB |
+| `Cellar` | 89.57 kB | 19.38 kB |
+| `WineDetail` | 45.15 kB | 10.52 kB |
+| `wineVisuals` | 40.25 kB | 11.70 kB |
+
+PWA output is still generated (`sw.js` + Workbox, 31 precached entries).
+
+## Recent Changes (2026-04-01 session 2)
+
+- Wine count pushed to 321: 9 new wines added — Muscadet Clisson (first Muscadet in dataset), Douro Superior, Priorat Les Terrasses, Campo Viejo Reserva, Casillero del Diablo, Waitrose No.1 Saint-Émilion Grand Cru 2022, Sainsbury's TTD Wachau Riesling (first Austrian Riesling in dataset), Morrisons Best Limoux Chardonnay, Waitrose Loved & Found Old Vine Mataro
+- Muscadet added for the first time — Domaine de la Pépière Clisson, the benchmark producer for shellfish pairing
+- Austrian Riesling (Wachau) added for the first time via the Sainsbury's TTD range
+- Álvaro Palacios Les Terrasses added — entry point to serious Priorat, 93 pts across vintages
+- Goodwood Park Singapore: **Alma at Goodwood Park** replaced with **Gordon Grill** (Alma permanently closed; Gordon Grill has been in the same building since 1963, tableside carving trolley, Michelin listed)
+- Town filter overhauled: 21 towns now displayed in four regional groups (UK / Europe / Asia / Americas) with inline region labels rather than a flat overflow pill row
+- 2 venues converted to honest text-led treatment: The Tannin Level Harrogate (site down), Le Patio Arcachon (domain dead)
+
+## Recent Changes (2026-04-01)
+
+- Wine count pushed to 312: 10 new wines added covering Gigondas, Sancerre, Georgian Saperavi, Grüner Veltliner, Carménère (first in dataset), Pedro Ximénez sherry, Puglia Primitivo, South African Chenin Blanc, Provence rosé (Mirabeau), and Coonawarra Cabernet
+- Carménère is now covered for the first time in the dataset (the "lost Bordeaux grape" rediscovered in Chile)
+- Morrisons coverage expanded with a Georgian Saperavi entry (previously only 2 Morrisons wines in dataset)
+- Tom Gilbey picks featured: Waitrose Organic Primitivo, Ken Forrester Chenin Blanc, Mirabeau Pure Rosé
+- Places guide expanded from 36 to 69 venues (+33): 9 new cities/regions added including Munich, Singapore, Arcachon/Cap Ferret, Málaga, Leeds/Harrogate/York, Poole/Weymouth, Miami, Panama City
+
+## Previous Session Changes (2026-03-13)
+
+- Wine count was pushed to 302 with a broader balance across sparkling, white, rosé, and red
+- Non-vintage and numbered-edition bottle display is now handled cleanly via [src/utils/wineDisplay.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/utils/wineDisplay.js)
+- Wine Detail, Explorer, Home, search, shell pages, and supporting guide pages have been heavily polished for a more editorial feel
+- Places now use venue-led imagery rather than retailer or bottle stand-ins
+- Places card layout was repaired after a broken image-card treatment:
+  - blue under-image banner removed
+  - image labels returned to the image itself
+  - cards realigned as full-height columns
+  - local official image assets added for `Jöro`, `Fallow`, and `Scott's Mayfair`
+  - text-led fallback copy added for the four remaining no-photo Valencia venues
+- Venue wine-list coverage has expanded to 13 sourced lists
+- [src/data/wines.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/data/wines.js) now normalizes legacy source issues at export time, including:
+  - string vintages -> numeric or `null`
+  - non-breaking hyphens in `region` / `subcategory` -> ASCII hyphens
+  - non-numeric `vintageGuide` years -> filtered from the exported guide data
 
 ## Deployment and Persistence
 
 - Railway runs `npm start`, which starts `server.mjs`
-- The Express server serves `dist/` and exposes `/api/cellar-sync/:syncId`, `/api/cellar-sync-session/:syncId`, `/api/cellar-sync-owner/:syncId/session`, `/api/cellar-sync-owner/:syncId/devices`, `/api/cellar-sync-owner/:syncId/rotate-passphrase`, and `/api/cellar-items/:syncId`
+- The Express server serves `dist/` and exposes the cellar sync APIs
 - If `DATABASE_URL` is present, item sync uses PostgreSQL; otherwise it falls back to the volume/file-backed JSON store
 - Production Railway environment is configured with:
   - `CELLAR_SYNC_STORE_PATH=/app/data/cellar-sync-store.json`
   - `RAILWAY_VOLUME_MOUNT_PATH=/app/data`
-- Result: automatic cellar sync is centralized and durable when Railway Postgres is attached, and still volume-backed when running on file storage
 
-## Latest Build Output
+Result:
+- automatic cellar sync is centralized and durable when Railway Postgres is attached
+- file-backed persistence still works when only the Railway volume is configured
 
-Verified on 2026-03-12:
+## Current Risks
 
-| Chunk | Size | Gzip |
-|-------|------|------|
-| `wines` | 537.52 kB | 113.20 kB |
-| `Education` | 100.69 kB | 30.46 kB |
-| `Sheffield` | 88.94 kB | 24.56 kB |
-| `Cellar` | 59.22 kB | 13.37 kB |
-| `vendor` | 162.98 kB | 53.24 kB |
+1. Sync is intentionally untouched in the current polish phase.
+   It has been left alone on purpose because it was working. Any sync work should be treated as a separate, cautious project.
 
-## Open Review Findings
+2. The shared wine dataset is still large.
+   The app remains performant enough to build and ship, but the shared `index` chunk is still the main weight hotspot.
 
-1. Sync still lacks full account auth:
-   owner email, recovery key rotation, and linked-device revocation now exist, but there is still no email/login-based sign-in, verified email delivery, or hosted recovery channel.
-2. Wine label images cover 8 iconic wines sourced from Wikimedia Commons. More wines could benefit from labels if suitable CC-licensed images are found.
+3. Some Places venues still lack honest official room photography.
+   `Forastera`, `Taberna La Samorra`, `Flama`, and `Rausell` are intentionally text-led because the currently exposed official assets are food, slogan, menu, or promo graphics rather than real venue shots.
 
 ## Suggested Next Improvements
 
-- Add email or magic-link sign-in on top of the current owner-email, passphrase, and recovery-key sync path
-- Add more `labelImage` entries to iconic wines (Bollinger, Veuve Clicquot, Krug, etc.)
-- Add cellar search on the Bottles tab
-- Consider producer pages and wine comparison
+- Keep enriching [src/data/wines.js](/Volumes/WD%208TB/AI%20Projects/The%20Wine%20Guide/src/data/wines.js) with deeper house, vineyard, and historical storytelling now that the Wine Detail layout can carry it
+- Continue Places sourcing with real menus and official venue photography only
+- Add more curated bottle or estate imagery for wines that still have no source image at all
+- Consider a future performance pass on the shared wine-data chunk if load weight becomes user-visible

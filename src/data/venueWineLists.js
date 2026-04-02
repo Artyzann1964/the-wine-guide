@@ -2,6 +2,86 @@
 // Keep IDs aligned with src/pages/Sheffield.jsx venue IDs.
 
 export const venueWineLists = {
+  "hawksmoor-air-street": {
+    "source": "Hawksmoor Air Street wine list PDF from official site",
+    "sourceUrl": "https://thehawksmoor.com/wp-content/uploads/2025/12/AS-WINE-291225-BJ.pdf",
+    "checkedOn": "2026-03-13",
+    "priceNote": "By-the-glass prices and bottle prices taken from the Air Street wine PDF. Wines and vintages may vary at venue.",
+    "items": [
+      { "name": "Prosecco Superiore Spumante Asolo DOCG, Ca’ Morlin NV", "price": 59, "category": "sparkling", "country": "Italy", "region": "Veneto", "page": 2, "note": "Also £11 by the glass (125ml)" },
+      { "name": "Classic Cuvée Brut, Culver, Langham Wine Estate NV", "price": 96, "category": "sparkling", "country": "England", "region": "Dorset", "page": 2, "note": "Also £16 by the glass (125ml)" },
+      { "name": "Rosé Brut, Rathfinny Wine Estate 2019", "price": 99, "category": "sparkling-rosé", "country": "England", "region": "Sussex", "page": 2, "note": "Also £17 by the glass (125ml)" },
+      { "name": "Champagne Brut Réserve, Charles Heidsieck NV", "price": 120, "category": "sparkling", "country": "France", "region": "Champagne", "page": 2, "note": "Also £20 by the glass (125ml)" },
+
+      { "name": "Luberon Rosé, Famille Perrin 2024", "price": 49, "category": "rosé", "country": "France", "region": "Southern Rhône", "page": 2, "note": "Also £9 / £12 by the glass (125ml / 175ml)" },
+      { "name": "Coteaux d’Aix-en-Provence Rosé, Château Beaulieu 2024", "price": 69, "category": "rosé", "country": "France", "region": "Provence", "page": 2, "note": "Also £12 / £17 by the glass (125ml / 175ml)" },
+
+      { "name": "Vinho Verde, Loureiro / Alvarinho, Quinta de Azevedo 2024", "price": 46, "category": "white", "country": "Portugal", "region": "Minho", "page": 2, "note": "Also £8 / £11 by the glass (125ml / 175ml)" },
+      { "name": "Riesling Feinherb, Generations, Axel Pauly 2024", "price": 55, "category": "white", "country": "Germany", "region": "Mosel", "page": 2, "note": "Also £9 / £13 by the glass (125ml / 175ml)" },
+      { "name": "Sauvignon Blanc, Framingham 2024", "price": 64, "category": "white", "country": "New Zealand", "region": "Marlborough", "page": 2, "note": "Also £11 / £15 by the glass (125ml / 175ml)" },
+      { "name": "Bourgogne Chardonnay, Les Ursulines, Jean-Claude Boisset 2024", "price": 69, "category": "white", "country": "France", "region": "Burgundy", "page": 2, "note": "Also £12 / £16 by the glass (125ml / 175ml)" },
+      { "name": "Soave Classico, Calvarino, Pieropan 2023", "price": 84, "category": "white", "country": "Italy", "region": "Veneto", "page": 2, "note": "Also £14 / £20 by the glass (125ml / 175ml)" },
+      { "name": "Valdeorras Godello, Louro Do Bolo, Rafael Palacios 2023", "price": 94, "category": "white", "country": "Spain", "region": "Galicia", "page": 2, "note": "Also £16 / £22 by the glass (125ml / 175ml)" },
+      { "name": "Chardonnay, Russian River Valley, De Loach 2022", "price": 99, "category": "white", "country": "United States", "region": "California", "page": 2, "note": "Also £17 / £23 by the glass (125ml / 175ml)" },
+
+      { "name": "Vinho Tinto, Hawksmoor x La Rosa, Quinta de la Rosa 2023", "price": 49, "category": "red", "country": "Portugal", "region": "Douro", "page": 3, "note": "Also £9 / £13 by the glass (125ml / 175ml)" },
+      { "name": "Ribera del Duero, Hawksmoor x Telmo Rodriguez 2024", "price": 66, "category": "red", "country": "Spain", "region": "Ribeira", "page": 3, "note": "Also £11 / £16 by the glass (125ml / 175ml)" },
+      { "name": "Malbec, Hawksmoor Blend, Pulenta Estate 2023", "price": 69, "category": "red", "country": "Argentina", "region": "Mendoza", "page": 3, "note": "Also £14 / £17 by the glass (125ml / 175ml)" },
+      { "name": "Cabernet Sauvignon, Hawksmoor x Hartenberg 2024", "price": 72, "category": "red", "country": "South Africa", "region": "Stellenbosch", "page": 3, "note": "Also £12 / £17 by the glass (125ml / 175ml)" },
+      { "name": "Bourgogne Pinot Noir, Vieilles Vignes, Philippe le Hardi 2023", "price": 79, "category": "red", "country": "France", "region": "Burgundy", "page": 3, "note": "Also £14 / £19 by the glass (125ml / 175ml)" },
+      { "name": "Rioja Gran Reserva, Coto de Imaz 2018", "price": 86, "category": "red", "country": "Spain", "region": "Rioja Alavesa", "page": 3, "note": "Also £15 / £21 by the glass (125ml / 175ml)" },
+      { "name": "Cabernet Sauvignon, Lodi, No Fine Print 2023", "price": 92, "category": "red", "country": "United States", "region": "California", "page": 3, "note": "Also £15 / £21 by the glass (125ml / 175ml)" },
+      { "name": "Chianti Classico, Fontodi 2022", "price": 98, "category": "red", "country": "Italy", "region": "Tuscany", "page": 3, "note": "Also £18 / £24 by the glass (125ml / 175ml)" },
+      { "name": "Pinot Noir, Danbury Ridge 2023", "price": 120, "category": "red", "country": "England", "region": "Essex", "page": 3, "note": "Also £20 / £28 by the glass (125ml / 175ml)" },
+      { "name": "Saint-Julien, M de Moulin Riche, Château Moulin Riche 2017", "price": 120, "category": "red", "country": "France", "region": "Bordeaux", "page": 3, "note": "Also £20 / £28 by the glass (125ml / 175ml)" },
+      { "name": "Barolo La Morra, Corino Giovanni di Corino Giuliano 2021", "price": 145, "category": "red", "country": "Italy", "region": "Piedmont", "page": 3, "note": "Also £25 / £34 by the glass (125ml / 175ml)" },
+      { "name": "Amarone della Valpolicella Classico, Sant’Urbano, Speri 2020", "price": 145, "category": "red", "country": "Italy", "region": "Veneto", "page": 3, "note": "Also £25 / £34 by the glass (125ml / 175ml)" },
+      { "name": "Rioja Gran Reserva, Imperial, C.V.N.E. 2015", "price": 146, "category": "red", "country": "Spain", "region": "Rioja", "page": 3, "note": "Also £24 / £35 by the glass (125ml / 175ml)" },
+      { "name": "Chateauneuf du Pape, Signature, Domaine La Barroche 2022", "price": 150, "category": "red", "country": "France", "region": "Rhone", "page": 3, "note": "Also £25 / £35 by the glass (125ml / 175ml)" }
+    ]
+  },
+  "domo-vino": {
+    "source": "DOMO Vino wine list PDF shared by user",
+    "sourceUrl": "https://ef2b59f3-dcd1-4417-ace0-48a9254fd1d2.filesusr.com/ugd/6c60c6_c4b8c25fac464a1dbeb7816f4a4ff8e6.pdf",
+    "checkedOn": "2026-03-13",
+    "priceNote": "Bottle prices from the DOMO Vino PDF. Many wines are also offered by the glass on the menu.",
+    "items": [
+      { "name": "Aragosta, Vermentino di Sardegna DOC, Cantina Santa Maria La Palma", "price": 27.5, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "Isola del Sole Bianco, Isola dei Nuraghi IGT, Argiolas", "price": 31.25, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "S'elegas, Nuragus di Cagliari DOC, Argiolas", "price": 35, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "Akénta Cuvée 71, Vermentino di Sardegna DOC, Cantina Santa Maria La Palma", "price": 35, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "Costamolino, Vermentino di Sardegna DOC, Argiolas", "price": 38.5, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "Is Argiolas, Vermentino di Sardegna DOC, Argiolas", "price": 42.5, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "Iselis, Nasco di Cagliari DOC, Argiolas", "price": 45.5, "category": "white", "country": "Italy", "region": "Sardinia", "page": 4 },
+      { "name": "Kebrilla, Organic Grillo DOC, Fina", "price": 28, "category": "white", "country": "Italy", "region": "Sicily", "page": 5 },
+      { "name": "Pecorino Terre di Chieti IGP, Colle Cavalieri, Cantina Tollo", "price": 32.5, "category": "white", "country": "Italy", "region": "Abruzzo", "page": 5 },
+      { "name": "Gavi DOCG, Dezzani", "price": 38, "category": "white", "country": "Italy", "region": "Piedmont", "page": 5 },
+      { "name": "Lugana DOC, San Benedetto, Zenato", "price": 39.5, "category": "white", "country": "Italy", "region": "Veneto", "page": 5 },
+
+      { "name": "Isola del Sole Rosso, Isola dei Nuraghi IGT, Argiolas", "price": 31.25, "category": "red", "country": "Italy", "region": "Sardinia", "page": 6 },
+      { "name": "Perdera, Monica di Sardegna DOC, Argiolas", "price": 35, "category": "red", "country": "Italy", "region": "Sardinia", "page": 6 },
+      { "name": "Cardanera, Carignano del Sulcis, Argiolas", "price": 39.5, "category": "red", "country": "Italy", "region": "Sardinia", "page": 6 },
+      { "name": "Costera, Cannonau di Sardegna, Argiolas", "price": 40, "category": "red", "country": "Italy", "region": "Sardinia", "page": 6 },
+      { "name": "Turriga, Isola dei Nuraghi IGT 2019, Argiolas", "price": 130, "category": "red", "country": "Italy", "region": "Sardinia", "page": 6 },
+      { "name": "Montepulciano Rubi DOP, Colle Secco, Cantina Tollo", "price": 31.5, "category": "red", "country": "Italy", "region": "Abruzzo", "page": 7 },
+      { "name": "Borgone, Organic IGT, Camigliano", "price": 35, "category": "red", "country": "Italy", "region": "Tuscany", "page": 7 },
+      { "name": "Appassimento DOC, Dezzani", "price": 34, "category": "red", "country": "Italy", "region": "Piedmont", "page": 7 },
+      { "name": "Aglianico del Vulture DOC, D'Angelo", "price": 36, "category": "red", "country": "Italy", "region": "Basilicata", "page": 7 },
+      { "name": "Barbera d'Alba DOC, Paolina, Ca' del Baio", "price": 39, "category": "red", "country": "Italy", "region": "Piedmont", "page": 7 },
+      { "name": "Salice Salentino DOC, Riserva 50 Vendemmia, Leone de Castris", "price": 42, "category": "red", "country": "Italy", "region": "Puglia", "page": 7 },
+      { "name": "Valpolicella Ripasso DOC Superiore Ripassa, Zenato", "price": 57.5, "category": "red", "country": "Italy", "region": "Veneto", "page": 8 },
+      { "name": "A.D. 1212, Umbria Rosso IGT 2020, Decugnano dei Barbi", "price": 59, "category": "red", "country": "Italy", "region": "Umbria", "page": 8 },
+      { "name": "Amarone Classico della Valpolicella DOCG 2019, Zenato", "price": 90, "category": "red", "country": "Italy", "region": "Veneto", "page": 8 },
+      { "name": "Barolo DOCG Monfalletto 2020, Cordero di Montezemolo", "price": 115, "category": "red", "country": "Italy", "region": "Piedmont", "page": 8 },
+
+      { "name": "Aragosta Alghero DOC Rosato, Cantina Santa Maria La Palma", "price": 27.5, "category": "rosé", "country": "Italy", "region": "Sardinia", "page": 9 },
+      { "name": "Serra Lori IGT, Isola dei Nuraghi, Argiolas", "price": 33.5, "category": "rosé", "country": "Italy", "region": "Sardinia", "page": 9 },
+
+      { "name": "Akénta Sparkling Extra Dry, Vermentino di Sardegna, Cantina Santa Maria La Palma", "price": 35, "category": "sparkling", "country": "Italy", "region": "Sardinia", "page": 9 },
+      { "name": "Prosecco Treviso DOC Extra Dry, Colli del Soligo", "price": 29.5, "category": "sparkling", "country": "Italy", "region": "Veneto", "page": 9 },
+      { "name": "Prosecco Rosé Treviso DOC, Colli del Soligo", "price": 32, "category": "sparkling-rosé", "country": "Italy", "region": "Veneto", "page": 9 }
+    ]
+  },
   "gill-and-co": {
     "source": "Gill & Co Wine List February 2026 (PDF uploaded to public folder)",
     "sourceUrl": "/Gills & Co Wine List February 2026.pdf",
@@ -1342,7 +1422,8 @@ export const venueWineLists = {
       {
         "name": "Cinsault Jean Didier Rose",
         "price": 19.5,
-        "category": "rosé"
+        "category": "rosé",
+        "country": "France"
       },
       {
         "name": "Zeno 0%",
@@ -1373,6 +1454,7 @@ export const venueWineLists = {
         "name": "Whispering Angel",
         "price": 50.0,
         "category": "rosé",
+        "country": "France",
         "stars": 4.1,
         "reviewSource": "Vivino community",
         "review": "Consistently praised for dry Provence style, strawberry-citrus fruit and easy food pairing."
@@ -1380,7 +1462,8 @@ export const venueWineLists = {
       {
         "name": "Rioja Vega Rioja Blanco",
         "price": 28.5,
-        "category": "white"
+        "category": "white",
+        "country": "Spain"
       },
       {
         "name": "Pure Rose",
@@ -1395,17 +1478,22 @@ export const venueWineLists = {
       {
         "name": "Da Luca Brut",
         "price": 6.0,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "Italy"
       },
       {
         "name": "Laurent Perrier Rose",
         "price": 82.0,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "France",
+        "country": "France"
       },
       {
         "name": "Dom Perignon",
         "price": 199.0,
         "category": "sparkling",
+        "country": "France",
+        "country": "France",
         "stars": 4.5,
         "reviewSource": "Vivino community",
         "review": "Prestige Champagne profile with fine mousse, brioche complexity and long mineral finish.",
@@ -1414,292 +1502,350 @@ export const venueWineLists = {
       {
         "name": "Veuve Clicquot NV",
         "price": 62.0,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "France"
       },
       {
         "name": "Da Luca Rose",
         "price": 31.5,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "Italy"
       },
       {
         "name": "Martini - Extra Dry",
         "price": 3.5,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Italy"
       },
       {
         "name": "Martini - Rosso",
         "price": 3.5,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Italy"
       },
       {
         "name": "Martini - Bianco",
         "price": 3.5,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Italy"
       },
       {
         "name": "Martini Fiero",
         "price": 4.5,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Italy"
       },
       {
         "name": "Lautarul Pinot Noir",
         "price": 4.6,
-        "category": "red"
+        "category": "red",
+        "country": "Romania"
       },
       {
         "name": "Santa Rosa Malbec",
         "price": 4.3,
-        "category": "red"
+        "category": "red",
+        "country": "Argentina"
       },
       {
         "name": "Pitchfork Shiraz",
         "price": 4.6,
-        "category": "red"
+        "category": "red",
+        "country": "Australia"
       },
       {
         "name": "Jean Didier Grenache-Carignan",
         "price": 4.7,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "Bodegas Muerza Rioja Tempranillo",
         "price": 4.7,
-        "category": "red"
+        "category": "red",
+        "country": "Spain"
       },
       {
         "name": "Le Charme Merlot",
         "price": 27.0,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "De Visu 223 Grenache",
         "price": 27.0,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "Coquille de Terre Carignan",
         "price": 28.0,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "Les Argelières Cabernet Franc",
         "price": 28.0,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "Le Professeur Marselan",
         "price": 29.5,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "Bodegas Muerza Rioja Crianza",
         "price": 30.0,
-        "category": "red"
+        "category": "red",
+        "country": "Spain"
       },
       {
         "name": "Hornhead Malbec",
         "price": 30.5,
-        "category": "red"
+        "category": "red",
+        "country": "Argentina"
       },
       {
         "name": "Rupe Secca Nero d'Avola",
         "price": 32.0,
-        "category": "red"
+        "category": "red",
+        "country": "Italy"
       },
       {
         "name": "Les Argelières Pinot Noir",
         "price": 32.0,
-        "category": "red"
+        "category": "red",
+        "country": "France"
       },
       {
         "name": "Carlomagno Primitivo Appassimento",
         "price": 33.5,
-        "category": "red"
+        "category": "red",
+        "country": "Italy"
       },
       {
         "name": "Springhill - Irvine Estate Merlot",
         "price": 37.5,
-        "category": "red"
+        "category": "red",
+        "country": "Australia"
       },
       {
         "name": "Gouguenheim Malbec Reserva",
         "price": 38.5,
-        "category": "red"
+        "category": "red",
+        "country": "Argentina"
       },
       {
         "name": "The Crusher Pinot Noir",
         "price": 40.5,
-        "category": "red"
+        "category": "red",
+        "country": "USA"
       },
       {
         "name": "Jonty's Ducks Shiraz-Cabernet Blend",
         "price": 44.5,
-        "category": "red"
+        "category": "red",
+        "country": "South Africa"
       },
       {
         "name": "Deux Grives Marsanne-Viognier",
         "price": 27.5,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Las Manitos Chardonnay",
         "price": 23.5,
-        "category": "white"
+        "category": "white",
+        "country": "Argentina"
       },
       {
         "name": "Tonada Sauvignon Blanc",
         "price": 4.1,
-        "category": "white"
+        "category": "white",
+        "country": "Chile"
       },
       {
         "name": "Moet Chandon Rose",
         "price": 40.5,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "France"
       },
       {
         "name": "Moet Chandon Brut",
         "price": 36.0,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "France"
       },
       {
         "name": "Big Beltie Cabernet Sauvignon",
         "price": 30.5,
-        "category": "red"
+        "category": "red",
+        "country": "South Africa"
       },
       {
         "name": "Cave de Buxy Macon Azé",
         "price": 39.5,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Mineralium Chenin Blanc",
         "price": 27.0,
-        "category": "white"
+        "category": "white",
+        "country": "South Africa"
       },
       {
         "name": "Kuki Sauvignon Blanc",
         "price": 5.1,
-        "category": "white"
+        "category": "white",
+        "country": "New Zealand"
       },
       {
         "name": "Talisman Gruner Veltliner",
         "price": 26.0,
-        "category": "white"
+        "category": "white",
+        "country": "Austria"
       },
       {
         "name": "Villa Sandi Pinot Grigio",
         "price": 29.5,
-        "category": "white"
+        "category": "white",
+        "country": "Italy"
       },
       {
         "name": "Coroa d'Ouro Branco",
         "price": 32.5,
-        "category": "white"
+        "category": "white",
+        "country": "Portugal"
       },
       {
         "name": "Dopff & Irion Riesling",
         "price": 36.5,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Campo Nuevo Tempranillo",
         "price": 4.1,
-        "category": "red"
+        "category": "red",
+        "country": "Spain"
       },
       {
         "name": "Route 606 Zinfandel Rosé",
         "price": 4.1,
-        "category": "rosé"
+        "category": "rosé",
+        "country": "USA"
       },
       {
         "name": "Elysium Black Muscat",
         "price": 7.9,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "USA"
       },
       {
         "name": "Poças 10 Year Old Tawny Port",
         "price": 5.2,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Portugal"
       },
       {
         "name": "Poças Ruby",
         "price": 3.5,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Portugal"
       },
       {
         "name": "Las Manitos Malbec-Shiraz",
         "price": 22.0,
-        "category": "red"
+        "category": "red",
+        "country": "Argentina"
       },
       {
         "name": "Poças LBV Port",
         "price": 4.6,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "Portugal"
       },
       {
         "name": "Chateau de Diusse",
         "price": 4.9,
-        "category": "fortified"
+        "category": "fortified",
+        "country": "France"
       },
       {
         "name": "El Picador Cabernet Sauvignon",
         "price": 4.0,
-        "category": "red"
+        "category": "red",
+        "country": "Chile"
       },
       {
         "name": "Tonada Merlot",
         "price": 4.1,
-        "category": "red"
+        "category": "red",
+        "country": "Chile"
       },
       {
         "name": "Kuraka Sauvignon Blanc",
         "price": 30.0,
-        "category": "white"
+        "category": "white",
+        "country": "Chile"
       },
       {
         "name": "Le Charme Sauvignon Blanc",
         "price": 4.8,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Coquille de Mer Vermentino",
         "price": 5.0,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Santa Rosa White Malbec",
         "price": 5.1,
-        "category": "white"
+        "category": "white",
+        "country": "Argentina"
       },
       {
         "name": "Les Argelières Oak Aged Chardonnay",
         "price": 29.0,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Picpoul de Pinet",
         "price": 32.5,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Bodegas Aquitania Albariño",
         "price": 39.5,
-        "category": "white"
+        "category": "white",
+        "country": "Spain"
       },
       {
         "name": "Domaine Jean Thomas Sancerre",
         "price": 45.0,
-        "category": "white"
+        "category": "white",
+        "country": "France"
       },
       {
         "name": "Château Terrebonne Provence Rosé",
         "price": 37.0,
-        "category": "rosé"
+        "category": "rosé",
+        "country": "France"
       },
       {
         "name": "Pitchfork Chardonnay",
         "price": 4.6,
-        "category": "white"
+        "category": "white",
+        "country": "Australia"
       }
     ]
   },
@@ -1712,12 +1858,14 @@ export const venueWineLists = {
       {
         "name": "Steinbock Alcohol-Free Sparkling NV",
         "price": 35.0,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "Germany"
       },
       {
         "name": "Itinera Prosecco DOC Treviso Brut NV",
         "price": 45.0,
-        "category": "sparkling"
+        "category": "sparkling",
+        "country": "Italy"
       },
       {
         "name": "Woodchester Valley Cotswold Way NV",
@@ -1957,21 +2105,25 @@ export const venueWineLists = {
       {
         "name": "Prosecco Borgo SanLeo",
         "category": "sparkling",
+        "country": "Italy",
         "price": 40
       },
       {
         "name": "Baron De Villeboerg Brut",
         "category": "sparkling",
+        "country": "France",
         "price": 60
       },
       {
         "name": "Woodchester Valley Sparkling Rose",
-        "category": "sparkling-rose",
+        "category": "sparkling-rosé",
+        "country": "England",
         "price": 65
       },
       {
         "name": "Bollinger Special Cuvée Brut",
         "category": "sparkling",
+        "country": "France",
         "price": 95,
         "stars": 4.3,
         "reviewSource": "Vivino community",
@@ -1980,12 +2132,16 @@ export const venueWineLists = {
       },
       {
         "name": "Laurent Perrier Rose",
-        "category": "sparkling-rose",
+        "category": "sparkling-rosé",
+        "country": "France",
+        "country": "France",
         "price": 130
       },
       {
         "name": "Dom Perignon",
         "category": "sparkling",
+        "country": "France",
+        "country": "France",
         "price": 250,
         "stars": 4.5,
         "reviewSource": "Vivino community",
@@ -1995,151 +2151,181 @@ export const venueWineLists = {
       {
         "name": "Tanti Petali Catarratto-Pinot Grigio",
         "category": "white",
+        "country": "Italy",
         "price": 26
       },
       {
         "name": "Alta Baliza Chardonnay",
         "category": "white",
+        "country": "Argentina",
         "price": 26
       },
       {
         "name": "Urmeneta Sauvignon Blanc",
         "category": "white",
+        "country": "Chile",
         "price": 27
       },
       {
         "name": "Terrazzo Falanghina",
         "category": "white",
+        "country": "Italy",
         "price": 28
       },
       {
         "name": "Picpoul de Pinet, Jean-Luc Colombo",
         "category": "white",
+        "country": "France",
         "price": 33
       },
       {
         "name": "Outnumbered Sauvignon Blanc",
         "category": "white",
+        "country": "New Zealand",
         "price": 36
       },
       {
         "name": "Mâcon Villages, 'Crepillionne' Domaine Fichet",
         "category": "white",
+        "country": "France",
         "price": 46
       },
       {
         "name": "Cossetti Gavi di Gavi",
         "category": "white",
+        "country": "Italy",
         "price": 51
       },
       {
         "name": "Sancerre, Domaine de la Perrière",
         "category": "white",
+        "country": "France",
         "price": 62
       },
       {
         "name": "Chablis, Alain Geoffroy",
         "category": "white",
+        "country": "France",
         "price": 65
       },
       {
         "name": "Montagny, Louis Latour",
         "category": "white",
+        "country": "France",
         "price": 70
       },
       {
         "name": "Chassagne Montrachet",
         "category": "white",
+        "country": "France",
         "price": 120
       },
       {
         "name": "Tanti Petali Pinot Grigio Rosato",
         "category": "rosé",
+        "country": "Italy",
         "price": 25
       },
       {
         "name": "Falling Petal Zinfandel Rosé",
         "category": "rosé",
+        "country": "USA",
         "price": 27
       },
       {
         "name": "Pierre de Taille Rosé",
         "category": "rosé",
+        "country": "France",
         "price": 35
       },
       {
         "name": "Sancerre rosé, Domaine de la Perriere",
         "category": "rosé",
+        "country": "France",
         "price": 60
       },
       {
         "name": "Villa Rosaura Merlot Reserva",
         "category": "red",
+        "country": "Chile",
         "price": 26
       },
       {
         "name": "Coreto Red",
         "category": "red",
+        "country": "Portugal",
         "price": 28
       },
       {
         "name": "Cleefs Classic Cabernet Sauvignon",
         "category": "red",
+        "country": "South Africa",
         "price": 36
       },
       {
         "name": "The Den Pinotage, Painted Wolf",
         "category": "red",
+        "country": "South Africa",
         "price": 37
       },
       {
         "name": "Côtes du Rhône Rouge, M. Chapoutier",
         "category": "red",
+        "country": "France",
         "price": 38
       },
       {
         "name": "Château Lamothe Castera",
         "category": "red",
+        "country": "France",
         "price": 42
       },
       {
         "name": "Ermita de San Felices Reserva",
         "category": "red",
+        "country": "Spain",
         "price": 52
       },
       {
         "name": "Valmoissine Pinot Noir, Louis Latour",
         "category": "red",
+        "country": "France",
         "price": 46
       },
       {
         "name": "The Crossing Pinot Noir",
         "category": "red",
+        "country": "New Zealand",
         "price": 53
       },
       {
         "name": "The Federalist Zinfandel",
         "category": "red",
+        "country": "USA",
         "price": 55
       },
       {
         "name": "Château Fontesteau Cru Bourgeois 2016",
         "category": "red",
+        "country": "France",
         "price": 70
       },
       {
         "name": "Cossetti Barolo",
         "category": "red",
+        "country": "Italy",
         "price": 80
       },
       {
         "name": "Châteauneuf-du-Pape, Colombo & Fille",
         "category": "red",
+        "country": "France",
         "price": 95
       },
       {
         "name": "Chateau Pichon Longueville Comtesse de Lalande 1983",
         "category": "red",
+        "country": "France",
         "price": 165
       }
     ]
@@ -2437,6 +2623,259 @@ export const venueWineLists = {
 
       // ── PORT ──
       { "name": "Galvin 10 Year Old Tawny Port", "price": 14, "category": "fortified", "country": "Portugal", "note": "Rich and elegant style. Powerful dried fruit, figs, honey and almonds with a long pleasing fresh finish. 100ml." }
+    ]
+  },
+  "lowell-hotel-nyc": {
+    "source": "The Club Room Menu at The Lowell (PDF provided in workspace)",
+    "sourceUrl": "/The_Club_Room_Menu.pdf",
+    "checkedOn": "2026-03-13",
+    "priceNote": "Prices captured from the by-the-glass page of the Club Room menu PDF. Food, cocktails, and spirits are also listed in the source menu.",
+    "items": [
+      { "name": "L. Albrecht Crémant d'Alsace Brut Rosé NV", "price": 19, "category": "sparkling-rosé", "country": "France", "page": 2 },
+      { "name": "French Bloom Le Rosé 0% Alcohol", "price": 25, "category": "sparkling-rosé", "country": "France", "page": 2 },
+      { "name": "Delamotte, Le Mesnil-sur-Oger NV", "price": 38, "category": "sparkling", "country": "France", "page": 2 },
+      { "name": "Vranken Demoiselle Brut Rosé, Reims NV", "price": 38, "category": "sparkling-rosé", "country": "France", "page": 2 },
+      { "name": "Louis Roederer Brut Rosé, Reims 2016", "price": 43, "category": "sparkling-rosé", "country": "France", "page": 2 },
+
+      { "name": "La Chapelle Gordonne, Côtes de Provence 2023", "price": 23, "category": "rosé", "country": "France", "page": 2 },
+      { "name": "Whispering Angel, Côtes de Provence 2024", "price": 23, "category": "rosé", "country": "France", "page": 2, "libraryWineId": "ms-whispering-angel-rose", "reviewSource": "Wine Guide library" },
+      { "name": "Domaine d'Ott, Château de Romassan, Bandol 2023", "price": 33, "category": "rosé", "country": "France", "page": 2 },
+
+      { "name": "Elena Walch Pinot Grigio, Alto Adige 2024", "price": 19, "category": "white", "country": "Italy", "page": 2 },
+      { "name": "William Fèvre Chablis 2023", "price": 28, "category": "white", "country": "France", "page": 2 },
+      { "name": "Domaine Alphonse Mellot Sancerre 'La Moussière' 2023", "price": 29, "category": "white", "country": "France", "page": 2 },
+      { "name": "Domaine Aline Beauné Montagny 2023", "price": 28, "category": "white", "country": "France", "page": 2 },
+
+      { "name": "Domaine Vallot 'Le Coriançon' Côtes du Rhône 2021", "price": 23, "category": "red", "country": "France", "page": 2 },
+      { "name": "Fanny Sabre Bourgogne Rouge 2023", "price": 29, "category": "red", "country": "France", "page": 2 },
+      { "name": "Chappellet Mountain Cuvée Cabernet, Napa Valley 2023", "price": 26, "category": "red", "country": "United States", "page": 2 },
+      { "name": "Château Saint-Georges Saint-Emilion 2016", "price": 35, "category": "red", "country": "France", "page": 2 }
+    ]
+  },
+
+  // ── Valencia ──────────────────────────────────────────────────────────────
+  "forastera-valencia": {
+    "source": "Forastera restaurant carta page, fetched 2026-03-13",
+    "sourceUrl": "https://forasterarestaurant.es/carta",
+    "checkedOn": "2026-03-13",
+    "priceNote": "Bottle prices in euros from the online carta. null = price not publicly listed.",
+    "items": [
+      // ── CHAMPAGNE ──
+      { "name": "Les Epinettes, Adrien Renoir, 2019", "price": 190, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Pinot Noir" },
+      { "name": "Les Agneaux, Gounel Lasalle, 2019", "price": 90, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Pinot Meunier" },
+      { "name": "Blanc de Blancs, Frédéric Savart, NV", "price": 125, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Chardonnay" },
+      { "name": "Boréal, Champagne Clandestin, 2021", "price": null, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Pinot Noir" },
+      { "name": "Prémices, Jules Brochet, 2022", "price": 120, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Chardonnay/Pinot Noir/Meunier" },
+      { "name": "Le Mont-Chainqueux, Elise Bougy, 2022", "price": null, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Pinot Noir/Meunier" },
+      { "name": "Cuvée Perpetuelle, Bonnet-Ponson, 2021", "price": null, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Pinot Noir/Chardonnay/Meunier" },
+      { "name": "L'Amateur, David Léclapart, 2020", "price": null, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Chardonnay" },
+      { "name": "L'Aphrodisiaque, David Léclapart, 2018", "price": 320, "category": "sparkling", "country": "France", "region": "Reims", "grape": "Chardonnay/Pinot Noir" },
+      { "name": "Champ Bouton, La Rogerie, 2020", "price": 175, "category": "sparkling", "country": "France", "region": "Côte des Blancs", "grape": "Chardonnay" },
+      { "name": "Initial, Jacques Selosse, NV", "price": 340, "category": "sparkling", "country": "France", "region": "Côte des Blancs", "grape": "Chardonnay" },
+      { "name": "Les Nogers, Dhondt-Grellet, 2019", "price": 205, "category": "sparkling", "country": "France", "region": "Côte des Blancs", "grape": "Chardonnay" },
+      { "name": "Les Terres Fines, Dhondt-Grellet, 2021", "price": 108, "category": "sparkling", "country": "France", "region": "Côte des Blancs", "grape": "Chardonnay" },
+      { "name": "«Auge» Lieu-Dit, Domaine Vincey, 2018", "price": null, "category": "sparkling", "country": "France", "region": "Côte des Blancs", "grape": "Chardonnay" },
+      { "name": "Les Revenants, Étienne Calsac, 2021", "price": 170, "category": "sparkling", "country": "France", "region": "Côte de Sézanne", "grape": "Pinot Blanc/Petit Meslier/Arbane" },
+      { "name": "Jacquesson 747, Famille Chiquet, 2019", "price": 115, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Chardonnay/Meunier/Pinot Noir" },
+      { "name": "Ramosa Ripa, Maison Raday, 2023", "price": null, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Chardonnay/Pinot Noir" },
+      { "name": "Troissy Les Genevraux, Dehours & Fils, 2013-2020", "price": 105, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Pinot Meunier" },
+      { "name": "Oeil de Perdrix, Dehours & Fils, 2022", "price": 68, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Pinot Meunier/Chardonnay" },
+      { "name": "Petraea V, Francis Boulard et Fille, 2024", "price": 120, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Pinot Noir" },
+      { "name": "ADN de Meunier, Christophe Mignon, 2020-2021", "price": 70, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Pinot Meunier" },
+      { "name": "Initiation, Benoît Déhu, 2021", "price": 99, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Pinot Noir/Meunier" },
+      { "name": "La Rue des Noyers, Benoît Déhu, 2019", "price": 120, "category": "sparkling", "country": "France", "region": "Vallée de la Marne", "grape": "Pinot Meunier" },
+      { "name": "Côte, Les Monts Fournois, 2017", "price": 180, "category": "sparkling", "country": "France", "region": "Vallée de la Marne Grand Cru", "grape": "Chardonnay" },
+      { "name": "Le Jardinot, Amaury Beaufort, 2021", "price": 112, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Pinot Noir/Chardonnay" },
+      { "name": "Roses de Jeanne VV/R22, Cédric Bouchard, 2021", "price": null, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Pinot Noir" },
+      { "name": "Roses de Jeanne UR/R20, Cédric Bouchard, 2020", "price": null, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Pinot Noir" },
+      { "name": "Val L'Hermite, Étienne Calsac, 2020", "price": null, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Pinot Noir" },
+      { "name": "La Colline Inspirée, Jacques Lassaigne, NV", "price": 155, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Chardonnay" },
+      { "name": "Millésime 2009, Jacques Lassaigne, 2009", "price": 270, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Chardonnay" },
+      { "name": "Autour de Minuit La Voie Creuse, Jacques Lassaigne, 2018", "price": 260, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Chardonnay" },
+      { "name": "Le Grain de Beauté 2017, Jacques Lassaigne, 2017", "price": 200, "category": "sparkling", "country": "France", "region": "Côte des Bars", "grape": "Chardonnay" },
+
+      // ── SPARKLING (NON-CHAMPAGNE) ──
+      { "name": "2n, Celler 9+, NV", "price": 27, "category": "sparkling", "country": "Spain", "region": "Penedès", "grape": "Cartoixà Vermell" },
+      { "name": "Cremat du Jura Réserve, Domaine des Marnes Blanches, NV", "price": 47, "category": "sparkling", "country": "France", "region": "Côtes du Jura", "grape": "Chardonnay" },
+      { "name": "La Bubulle á Jeannot, Anne & JF Ganevat, NV", "price": null, "category": "sparkling", "country": "France", "region": "Rotalier", "grape": "Pétillant Naturel" },
+      { "name": "Blanc de Blanc V03, Johannes Aufricht, 2021", "price": 97, "category": "sparkling", "country": "Germany", "region": "Baden", "grape": "Chardonnay" },
+      { "name": "Blanc de Blanc 19, Johannes Aufricht, 2020", "price": 97, "category": "sparkling", "country": "Germany", "region": "Baden", "grape": "Chardonnay" },
+
+      // ── WHITE — SPAIN ──
+      { "name": "Eulogio Pomares Maceración con Pieles, GV Desiguales, 2021", "price": 62, "category": "orange", "country": "Spain", "region": "Rías Baixas", "grape": "Albariño" },
+      { "name": "Sal da Terra, Eulogio Pomares, 2022", "price": null, "category": "white", "country": "Spain", "region": "Rías Baixas", "grape": "Albariño" },
+      { "name": "200 Monges Selección Especial, Bodegas Vinícola Real, 2010", "price": 100, "category": "white", "country": "Spain", "region": "Rioja", "grape": "Viura/Malvasía/Garnacha" },
+      { "name": "Las Llanas, Alegre Valgañón, 2020", "price": 45, "category": "white", "country": "Spain", "region": "Rioja", "grape": "Rojal/Viura/Garnacha Blanca" },
+      { "name": "DBS, De Blas Serrano, 2019", "price": 48, "category": "white", "country": "Spain", "region": "Ribera del Duero", "grape": "Albillo" },
+      { "name": "Comasorts, Furtiva, 2023", "price": 48, "category": "white", "country": "Spain", "region": "Terra Alta", "grape": "Macabeo" },
+      { "name": "El Cerrico, Bodega Cerrón, 2023", "price": null, "category": "white", "country": "Spain", "region": "Jumilla", "grape": "Airén" },
+      { "name": "Bina, Luis Pérez, 2023", "price": 45, "category": "white", "country": "Spain", "region": "Cádiz", "grape": "Palomino Fino" },
+      { "name": "Jable de Tao, Jable de Tao, 2022", "price": 55, "category": "white", "country": "Spain", "region": "Lanzarote", "grape": "Malvasía" },
+
+      // ── WHITE — INTERNATIONAL ──
+      { "name": "Tüz, Szóló, 2020", "price": 45, "category": "white", "country": "Hungary", "region": "Tokaj-Hegyalja", "grape": "Tokösmáj" },
+      { "name": "Kirchberg GG, Heymann-Löwenstein, 2018", "price": 55, "category": "white", "country": "Germany", "region": "VDP Grosse Lage", "grape": "Riesling" },
+      { "name": "Native, Wenzel, 2022", "price": 45, "category": "white", "country": "Austria", "region": "Weinland", "grape": "Furmint" },
+      { "name": "Pyritis, Artemis Karamolegos Winery, 2021", "price": 90, "category": "white", "country": "Greece", "region": "Santorini", "grape": "Asyrtiko" },
+
+      // ── WHITE — ITALY ──
+      { "name": "Langhe Solea, Az Agricola Roagna, 2021", "price": 120, "category": "white", "country": "Italy", "region": "Piemonte", "grape": "Chardonnay" },
+      { "name": "Radikon, Radikon, 2016", "price": 85, "category": "orange", "country": "Italy", "region": "Venezia Giulia", "grape": "Ribolla" },
+      { "name": "Trebbiano d'Abruzzo, Emidio Pepe, 2022", "price": 120, "category": "white", "country": "Italy", "region": "Abruzzo", "grape": "Trebbiano" },
+      { "name": "Marche Bianco, Contrada Contro, 2023", "price": 70, "category": "white", "country": "Italy", "region": "Marche", "grape": "Trebbiano/Pecorino" },
+      { "name": "Soki Soki, Tanca Nica, 2024", "price": null, "category": "white", "country": "Italy", "region": "Sicilia", "grape": "Moscatel de Alejandría" },
+      { "name": "Gravner, Josko Gravner, 2014", "price": 132, "category": "orange", "country": "Italy", "region": "Venezia Giulia", "grape": "Ribolla" },
+
+      // ── WHITE — FRANCE ──
+      { "name": "Coteaux 2019, Domaine Vincey, 2019", "price": 110, "category": "white", "country": "France", "region": "Coteaux Champenois", "grape": "Chardonnay" },
+      { "name": "Rully Les Maizières, François de Nicolay, 2020", "price": 75, "category": "white", "country": "France", "region": "Rully", "grape": "Chardonnay" },
+      { "name": "La Lumière Blanc, Maison Glandien, 2023", "price": 205, "category": "white", "country": "France", "region": "Mercurey", "grape": "Chardonnay" },
+      { "name": "Pouilly-Fuissé Clos Varambon, Château des Rontets, 2022", "price": 60, "category": "white", "country": "France", "region": "Pouilly-Fuissé", "grape": "Chardonnay" },
+      { "name": "Initiales B.B., Domaine Bernard-Bonin, 2022", "price": null, "category": "white", "country": "France", "region": "Bourgogne", "grape": "Chardonnay" },
+      { "name": "Bourgogne 2022, Benoit Ente, 2022", "price": 140, "category": "white", "country": "France", "region": "Bourgogne", "grape": "Chardonnay" },
+      { "name": "Les Femelottes, Domaine Chavy-Chouet, 2022", "price": 66, "category": "white", "country": "France", "region": "Meursault", "grape": "Chardonnay" },
+      { "name": "Meursault 2022, Rodolphe Demougeot, 2022", "price": 105, "category": "white", "country": "France", "region": "Meursault", "grape": "Chardonnay" },
+      { "name": "Meursault 2021, Antoine Jobard, 2021", "price": 125, "category": "white", "country": "France", "region": "Meursault", "grape": "Chardonnay" },
+      { "name": "Puligny-Montrachet Champ Gain, Olivier Leflaive, 2019", "price": 180, "category": "white", "country": "France", "region": "Puligny-Montrachet 1er Cru", "grape": "Chardonnay" },
+      { "name": "Clos de la Truffière, Benoit Ente, 2022", "price": 450, "category": "white", "country": "France", "region": "Puligny-Montrachet 1er Cru", "grape": "Chardonnay" },
+      { "name": "Hautes-Côtes de Beaune, Jean Fery, 2021", "price": null, "category": "white", "country": "France", "region": "Hautes-Côtes de Beaune", "grape": "Chardonnay" },
+      { "name": "Les Chagniots, Chanterêves, 2022", "price": 65, "category": "white", "country": "France", "region": "Bourgogne", "grape": "Aligoté" },
+      { "name": "Les Clous Aimé, Domaine de Villaine, 2022", "price": 56, "category": "white", "country": "France", "region": "Côtes Chalonnaise", "grape": "Chardonnay" },
+      { "name": "Vent d'Ange 2022, Pattes Loup, 2022", "price": null, "category": "white", "country": "France", "region": "Chablis", "grape": "Chardonnay" },
+      { "name": "Chablis 1er Cru, François de Nicolay, 2018", "price": null, "category": "white", "country": "France", "region": "Chablis 1er Cru", "grape": "Chardonnay" },
+      { "name": "Chablis, Tribut-Dauvissat, 2022", "price": 51, "category": "white", "country": "France", "region": "Chablis", "grape": "Chardonnay" },
+      { "name": "Bourgogne Chitry, De Moor, 2023", "price": 52, "category": "white", "country": "France", "region": "Bourgogne Chitry", "grape": "Chardonnay" },
+      { "name": "Roc Breïa, Théo Dancer, 2022", "price": 100, "category": "white", "country": "France", "region": "Mâcon", "grape": "Chardonnay" },
+      { "name": "Les Varrons, Domaine Labet, 2022", "price": null, "category": "white", "country": "France", "region": "Côtes du Jura", "grape": "Chardonnay" },
+      { "name": "En Quatre Vis, Domaine des Marnes Blanches, 2020", "price": null, "category": "white", "country": "France", "region": "Côtes du Jura", "grape": "Chardonnay" },
+      { "name": "Charmille, Domaine Overnoy, 2021", "price": null, "category": "white", "country": "France", "region": "Côtes du Jura", "grape": "Chardonnay" },
+      { "name": "Clos de Jerminy, Domaine Overnoy, 2021", "price": 46, "category": "white", "country": "France", "region": "Côtes du Jura", "grape": "Chardonnay" },
+      { "name": "Les Chassagnes, Tony Bornard, 2018", "price": null, "category": "white", "country": "France", "region": "Jura", "grape": "Savagnin" },
+      { "name": "Savagnin en Amphore, Bénédicte & Stéphane Tissot, 2017", "price": 100, "category": "orange", "country": "France", "region": "Arbois", "grape": "Savagnin" },
+      { "name": "Réserve du Caveau, Lucien Aviet & Fils, 2017", "price": null, "category": "white", "country": "France", "region": "Arbois", "grape": "Savagnin" },
+      { "name": "Chardonnay 2023, Fabrice Dodane, 2023", "price": null, "category": "white", "country": "France", "region": "Arbois", "grape": "Chardonnay" },
+      { "name": "Cuvée Capucine, Julien Crinquand, 2022", "price": 55, "category": "white", "country": "France", "region": "Arbois", "grape": "Chardonnay" },
+      { "name": "En Spois Vin Jaune, Bénédicte & Stéphane Tissot, 2011", "price": 120, "category": "white", "country": "France", "region": "Arbois", "grape": "Savagnin" },
+      { "name": "Schiste, Domaine des Ardoisières, 2022", "price": 86, "category": "white", "country": "France", "region": "Savoie", "grape": "Jacquère/Roussanne/Malvoisie" },
+      { "name": "Clos de la Hutte, Thibaud Boudignon, 2021", "price": 100, "category": "white", "country": "France", "region": "Savennières", "grape": "Chenin Blanc" },
+      { "name": "La Guimardiere, Abel Benmaamar, 2022", "price": 40, "category": "white", "country": "France", "region": "Anjou", "grape": "Chenin Blanc" },
+      { "name": "Fidès, Domaine Eric Morgat, 2018", "price": null, "category": "white", "country": "France", "region": "Loire", "grape": "Chenin Blanc" },
+      { "name": "Théia, Domaine Bretaudeau, 2023", "price": 40, "category": "white", "country": "France", "region": "Loire", "grape": "Melon de Bourgogne" },
+      { "name": "Crozes-Hermitage, Dard & Ribo, 2021", "price": 75, "category": "white", "country": "France", "region": "Crozes-Hermitage", "grape": "Marsanne/Roussanne" },
+      { "name": "Grange Bara, Daniel Sage, 2021", "price": null, "category": "white", "country": "France", "region": "Rhône", "grape": "Roussanne" },
+      { "name": "Le Serre du Rieu, Domaine Santa Duc, 2022", "price": 42, "category": "white", "country": "France", "region": "Côtes du Rhône", "grape": "Clairette/Bourboulenc" },
+      { "name": "St Jean, St Jean de Bebian, 2022", "price": 60, "category": "white", "country": "France", "region": "Languedoc", "grape": "Roussanne/Grenache Gris/Chardonnay" },
+
+      // ── RED — SPAIN ──
+      { "name": "Attis Pedral, Attis Bodegas, 2016", "price": 40, "category": "red", "country": "Spain", "region": "Rías Baixas", "grape": "Pedral" },
+      { "name": "Finca Genoveva, Forjas del Salnés, 2017", "price": 60, "category": "red", "country": "Spain", "region": "Rías Baixas", "grape": "Caiño Tinto" },
+      { "name": "Garnacha Tintorera, Quinta da Muradella, 2016", "price": 75, "category": "red", "country": "Spain", "region": "Monterrei", "grape": "Garnacha Tintorera" },
+      { "name": "El Pliegue, Quinta da Muradella, 2015", "price": 70, "category": "red", "country": "Spain", "region": "Monterrei", "grape": "Bastardo/Mencía/Carabuñenta" },
+      { "name": "Massuria, Mas Asturias, 2009", "price": 43, "category": "red", "country": "Spain", "region": "Bierzo", "grape": "Mencía" },
+      { "name": "Grano a Grano, Abel Mendoza, 2020", "price": 80, "category": "red", "country": "Spain", "region": "Rioja", "grape": "Graciano" },
+      { "name": "Kalamity, Oxer Wines, 2017", "price": null, "category": "red", "country": "Spain", "region": "Rioja", "grape": "Tempranillo" },
+      { "name": "Campanella, Manuel Cantalapiedra, 2023", "price": 75, "category": "red", "country": "Spain", "region": "Villafranca del Duero", "grape": "Garnacha/Cariñena" },
+      { "name": "Las Uvas de la Ira, Vitícola Mentridana, 2021", "price": null, "category": "red", "country": "Spain", "region": "Méntrida", "grape": "Garnacha" },
+      { "name": "Dits del Terra, Terroir al Límit, 2021", "price": 100, "category": "red", "country": "Spain", "region": "Priorat", "grape": "Carinyena" },
+      { "name": "La Pell, Celler Lagravera, 2018", "price": 87, "category": "red", "country": "Spain", "region": "Lleida", "grape": "Parcelario" },
+      { "name": "Mas de la Rosa, Vall Llach, 2010", "price": 280, "category": "red", "country": "Spain", "region": "Priorat", "grape": "Cariñena" },
+      { "name": "Quincha Corral, Mustiguillo, 2019", "price": 130, "category": "red", "country": "Spain", "region": "El Terrerazo", "grape": "Bobal" },
+      { "name": "Escombro, Laboratorio Rupestre, 2021", "price": 110, "category": "red", "country": "Spain", "region": "Murcia", "grape": "Alicante Bouschet" },
+      { "name": "La Calera del Escaramujo, Bodega Cerrón, 2022", "price": 120, "category": "red", "country": "Spain", "region": "Jumilla", "grape": "Monastrell" },
+      { "name": "Candelario, Michael Candelario, 2023", "price": 50, "category": "red", "country": "Spain", "region": "La Palma", "grape": "Negramoll/Listán Negro" },
+
+      // ── RED — INTERNATIONAL ──
+      { "name": "Cuvée du Soleil, Sept, 2020", "price": null, "category": "red", "country": "Lebanon", "grape": "Cabernet Sauvignon/Tempranillo" },
+      { "name": "Kriegsheimer Rosengarten, WongAmat, 2023", "price": 100, "category": "red", "country": "Germany", "grape": "Pinot Noir" },
+      { "name": "Nachtweid, Johannes Aufricht, 2022", "price": null, "category": "red", "country": "Austria", "grape": "Pinot Noir" },
+      { "name": "Bühl, Claus Preisinger, 2016", "price": 65, "category": "red", "country": "Austria", "grape": "Blaufränkisch" },
+
+      // ── RED — ITALY ──
+      { "name": "Vike Vike, Simone Sedilesu, 2019", "price": 49, "category": "red", "country": "Italy", "region": "Sardinia", "grape": "Cannonau" },
+      { "name": "Ghirada Ocruarana, Teularju, 2022", "price": 85, "category": "red", "country": "Italy", "region": "Sardinia", "grape": "Garnacha" },
+      { "name": "Bramaterra, Odilio Antoniotti, 2020", "price": 60, "category": "red", "country": "Italy", "region": "Bramaterra", "grape": "Nebbiolo/Croatina/Vespolina" },
+      { "name": "Coste della Sesia, Odilio Antoniotti, 2022", "price": 40, "category": "red", "country": "Italy", "region": "Bramaterra", "grape": "Nebbiolo" },
+      { "name": "Bricco Ernesto Rosso, Bricco Ernesto, 2021", "price": 85, "category": "red", "country": "Italy", "region": "Piemonte", "grape": "Nebbiolo" },
+      { "name": "Albesani, Az Agricola Roagna, 2019", "price": 175, "category": "red", "country": "Italy", "region": "Barbaresco", "grape": "Nebbiolo" },
+      { "name": "Figli Luigi Oddero, Figli Luigi Oddero, 2019", "price": null, "category": "red", "country": "Italy", "region": "Barolo", "grape": "Nebbiolo" },
+      { "name": "Barolo, Francesco Versio, 2021", "price": 72, "category": "red", "country": "Italy", "region": "Barolo", "grape": "Nebbiolo" },
+      { "name": "Rosso di Montalcino, J G Benda, 2021", "price": 68, "category": "red", "country": "Italy", "region": "Rosso di Montalcino", "grape": "Sangiovese" },
+      { "name": "Brunello di Montalcino, Salvioni, 2020", "price": 160, "category": "red", "country": "Italy", "region": "Brunello di Montalcino", "grape": "Sangiovese" },
+      { "name": "Istine, Angela Fronti, 2020", "price": 66, "category": "red", "country": "Italy", "region": "Chianti Classico", "grape": "Sangiovese" },
+      { "name": "Priore Mozzatta, La Visciola, 2020", "price": 60, "category": "red", "country": "Italy", "region": "Cesanese del Piglio", "grape": "Cesanese" },
+
+      // ── RED — FRANCE ──
+      { "name": "Château Tour Peyronneau, Famille Lavau, 2016", "price": 40, "category": "red", "country": "France", "region": "Saint-Émilion", "grape": "Merlot" },
+      { "name": "Clos du Bas de Teurons, Domaine R&P Bouley, 2017", "price": 80, "category": "red", "country": "France", "region": "Bourgogne", "grape": "Pinot Noir" },
+      { "name": "Emphase, Antoine Lienhardt, 2022", "price": 82, "category": "red", "country": "France", "region": "Bourgogne", "grape": "Pinot Noir" },
+      { "name": "Clos Vougeot Grand Cru, Domaine Phillippe Charlopin, 2014", "price": 425, "category": "red", "country": "France", "region": "Clos Vougeot Grand Cru", "grape": "Pinot Noir" },
+      { "name": "Aux Chaignots, Chanterêves, 2022", "price": 170, "category": "red", "country": "France", "region": "Nuits-Saint-Georges 1er Cru", "grape": "Pinot Noir" },
+      { "name": "L'Atmosphère, Maison Glandien, 2022", "price": 220, "category": "red", "country": "France", "region": "Bourgogne", "grape": "Pinot Noir" },
+      { "name": "Morey-Saint-Denis, Domaine Phillippe Charlopin, 2020", "price": 125, "category": "red", "country": "France", "region": "Morey-Saint-Denis", "grape": "Pinot Noir" },
+      { "name": "Marsannay Les Échezots, Domaine Phillippe Charlopin, 2020", "price": 80, "category": "red", "country": "France", "region": "Marsannay", "grape": "Pinot Noir" },
+      { "name": "Les Petites Pierres-Gandelins, Julien Guillot, 2021", "price": 60, "category": "red", "country": "France", "region": "Chénas", "grape": "Gamay" },
+      { "name": "Bourgogne Côte-d'Or, Domaine Méo-Camuzet, 2020", "price": 62, "category": "red", "country": "France", "region": "Bourgogne Côte-d'Or", "grape": "Pinot Noir" },
+      { "name": "Auxey-Duresses, Comte Armand, 2023", "price": 75, "category": "red", "country": "France", "region": "Côte-d'Or", "grape": "Pinot Noir" },
+      { "name": "Volnay VS, Domaine Michel Lafarge, 2020", "price": 100, "category": "red", "country": "France", "region": "Volnay", "grape": "Pinot Noir" },
+      { "name": "Clos des Epenaux, Comte Armand, 2022", "price": 200, "category": "red", "country": "France", "region": "Pommard 1er Cru", "grape": "Pinot Noir" },
+      { "name": "Au Chant de la Huppe, Henri Chauvet, 2023", "price": null, "category": "red", "country": "France", "region": "Côtes d'Auvergne", "grape": "Gamay" },
+      { "name": "Vie Ordinaire, Henri Chauvet, 2023", "price": 70, "category": "red", "country": "France", "region": "Vin de France", "grape": "Pinot Noir" },
+      { "name": "Abrupts, Henri Chauvet, 2023", "price": 70, "category": "red", "country": "France", "region": "Côtes d'Auvergne", "grape": "Gamay" },
+      { "name": "Ciel à Perdre, Henri Chauvet, 2023", "price": 50, "category": "red", "country": "France", "region": "Vin de France", "grape": "Carignan" },
+      { "name": "Les Chonchons, Domaine Ganevat, 2022", "price": null, "category": "red", "country": "France", "region": "Côtes du Jura", "grape": "Pinot Noir" },
+      { "name": "Les Chazaux, Nicolas Jacob, 2023", "price": null, "category": "red", "country": "France", "region": "Côtes du Jura", "grape": "Poulsard" },
+      { "name": "Les Corvées, Domaine de Saint Pierre, 2023", "price": null, "category": "red", "country": "France", "region": "Arbois", "grape": "Pinot Noir/Trousseau" },
+      { "name": "Le Ginglet, Tony Bornard, 2022", "price": 47, "category": "red", "country": "France", "region": "Arbois", "grape": "Trousseau" },
+      { "name": "Aufil des Générations, Tony Bornard, 2021", "price": 60, "category": "red", "country": "France", "region": "Vin de France", "grape": "Poulsard" },
+      { "name": "Cuvée du P'tit Prince, Julien Crinquand, 2023", "price": null, "category": "red", "country": "France", "region": "Arbois", "grape": "Trousseau" },
+      { "name": "Flotsam, Mai & Kenji Hodgson, 2019", "price": 41, "category": "red", "country": "France", "region": "Loire", "grape": "Cabernet Franc" },
+      { "name": "Gabouchons, Terra Vita Vinum, 2021", "price": null, "category": "red", "country": "France", "region": "Loire", "grape": "Cabernet Franc" },
+      { "name": "Les Cormiers, Le Porte Saint Jean, 2022", "price": 80, "category": "red", "country": "France", "region": "Saumur", "grape": "Cabernet Franc" },
+      { "name": "Montée des Roches, Arnaud Lambert, 2018", "price": 41, "category": "red", "country": "France", "region": "Saumur-Champigny", "grape": "Cabernet Franc" },
+      { "name": "Lirac Rouge, Gaël Petit, 2021", "price": 43, "category": "red", "country": "France", "region": "Lirac", "grape": "Garnacha/Cariñena" },
+      { "name": "Pitrou, Dard & Ribo, 2023", "price": 80, "category": "red", "country": "France", "region": "Saint-Joseph", "grape": "Syrah" },
+      { "name": "Pe de Loup, Dard & Ribo, 2023", "price": 70, "category": "red", "country": "France", "region": "Crozes-Hermitage", "grape": "Syrah" },
+      { "name": "Tavel Sables, L'Anglore, 2023", "price": 60, "category": "rosé", "country": "France", "region": "Tavel", "grape": "Garnacha/Cinsault/Clairette/Carignan" },
+      { "name": "Tavel Vaucrose, L'Anglore, 2023", "price": 60, "category": "rosé", "country": "France", "region": "Tavel", "grape": "Garnacha/Cinsault/Clairette" },
+      { "name": "Tavel, L'Anglore, 2023", "price": 48, "category": "rosé", "country": "France", "region": "Tavel", "grape": "Garnacha/Cinsault/Clairette" },
+      { "name": "La Montagne, L'Anglore, 2021", "price": 46, "category": "red", "country": "France", "region": "Tavel", "grape": "Garnacha/Cinsault" },
+      { "name": "Prima, L'Anglore, 2023", "price": null, "category": "red", "country": "France", "region": "Tavel", "grape": "Garnacha/Cinsault/Clairette" },
+      { "name": "Chemin de la Brune, L'Anglore, 2023", "price": 40, "category": "red", "country": "France", "region": "Rhône", "grape": "Garnacha/Cinsault/Aramon" },
+      { "name": "Terre d'Ombre, L'Anglore, 2022", "price": 45, "category": "red", "country": "France", "region": "Rhône", "grape": "Garnacha/Syrah/Clairette" },
+      { "name": "Nizon, L'Anglore, 2022", "price": null, "category": "red", "country": "France", "region": "Rhône", "grape": "Garnacha" },
+      { "name": "Cuvée Emma, A. Galetty, 2019", "price": 56, "category": "red", "country": "France", "region": "Côtes du Vivarais", "grape": "Garnacha/Syrah" },
+      { "name": "Une Vie la Nuit, Clos du Rouge Gorge, 2021", "price": 35, "category": "red", "country": "France", "region": "Roussillon", "grape": "Syrah/Garnacha" },
+      { "name": "Les Myrs, Danjou & Banessy, 2021", "price": 60, "category": "red", "country": "France", "region": "Côtes Catalanes", "grape": "Cariñena" },
+
+      // ── ROSÉ ──
+      { "name": "Vida Líquida, A. Pedrón & Eclèctic Vins, 2020", "price": null, "category": "rosé", "country": "Spain", "region": "Los Pedrones", "grape": "Garnacha" },
+      { "name": "200 Monges Rosado Reserva, Bodegas Vinícola Real, 2017", "price": 65, "category": "rosé", "country": "Spain", "region": "Rioja", "grape": "Viura/Garnacha" },
+      { "name": "Gran Cáus Rosé, Can Ràfols dels Caus, 2006", "price": 48, "category": "rosé", "country": "Spain", "region": "Penedès", "grape": "Merlot" },
+      { "name": "Rosato 2024, Marino Colleoni, 2024", "price": 35, "category": "rosé", "country": "Italy", "region": "Toscana", "grape": "Sangiovese Grosso" },
+      { "name": "Brunes Blanches, Gaël Petit, 2022", "price": 37, "category": "rosé", "country": "France", "region": "Tavel", "grape": "Grenache/Cinsault/Carignan" },
+      { "name": "Cuvée Prestige Caroline, Clos Cibonne, 2021", "price": 65, "category": "rosé", "country": "France", "region": "Côtes de Provence", "grape": "Tibouren/Garnacha" }
+    ]
+  },
+
+  "rausell-valencia": {
+    "source": "Rausell restaurant bodega page, fetched 2026-03-13",
+    "sourceUrl": "https://www.rausell.es/bodega",
+    "checkedOn": "2026-03-13",
+    "priceNote": "Prices in euros. Individual Spanish wine bottle names were not published on the web page; only champagnes and by-the-glass fortified wines had specific names and prices. Spanish wine sections recorded at region/price-range level only.",
+    "items": [
+      // ── CHAMPAGNE (bottles) ──
+      { "name": "Moët & Chandon Brut Imperial NV", "price": 52, "category": "sparkling", "country": "France" },
+      { "name": "Dom Pérignon Vintage", "price": 190, "category": "sparkling", "country": "France" },
+      { "name": "Louis Roederer Cristal", "price": 220, "category": "sparkling", "country": "France" },
+      { "name": "Krug Grande Cuvée", "price": 220, "category": "sparkling", "country": "France" },
+
+      // ── BY THE GLASS — FORTIFIED & DESSERT ──
+      { "name": "Verdil de Gel", "price": 4, "category": "dessert", "country": "Spain", "grape": "Verdil", "note": "By the glass" },
+      { "name": "Sitta Pereiras", "price": 5, "category": "white", "country": "Spain", "grape": "Albariño", "note": "By the glass" },
+      { "name": "Vi de Glass", "price": 6, "category": "white", "country": "Spain", "grape": "Gewurztraminer", "note": "By the glass" },
+      { "name": "Château Dereszla Tokaji 5 Puttonyos", "price": 8, "category": "dessert", "country": "Hungary", "note": "By the glass" },
+      { "name": "Fino, Palomino Fino", "price": 3.5, "category": "fortified", "country": "Spain", "grape": "Palomino Fino", "note": "By the glass" },
+      { "name": "Pedro Ximénez", "price": 4, "category": "fortified", "country": "Spain", "grape": "Pedro Ximénez", "note": "By the glass" }
     ]
   }
 }

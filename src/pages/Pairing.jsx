@@ -29,6 +29,12 @@ export default function Pairing() {
     return dish.wineIds.map(id => wines.find(w => w.id === id)).filter(Boolean)
   }, [dish])
 
+  const totalDishCount = useMemo(
+    () => cuisines.reduce((count, cuisine) => count + cuisine.dishes.length, 0),
+    []
+  )
+  const nextStepLabel = selectedCuisine ? (selectedDish ? 'See the bottle shortlist' : 'Pick a dish') : 'Choose a cuisine'
+
   function handleCuisineSelect(id) {
     setSelectedCuisine(id)
     setSelectedDish(null)
@@ -44,24 +50,61 @@ export default function Pairing() {
           <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-terracotta/10 -translate-x-16 translate-y-16" />
         </div>
         <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
-          <p className="section-label text-gold/70 mb-3">Food &amp; Wine</p>
-          <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
-            The Pairing Wizard
-          </h1>
-          <p className="font-body text-lg text-white/60 max-w-2xl">
-            Tell us what you're cooking — we'll find the perfect bottle and explain <em>why</em> it works.
-            Good pairings aren't magic; they're chemistry.
-          </p>
+          <div className="grid xl:grid-cols-[1.12fr_0.88fr] gap-6 items-start">
+            <div>
+              <p className="section-label text-gold/70 mb-3">Food &amp; Wine</p>
+              <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
+                The Pairing Wizard
+              </h1>
+              <p className="font-body text-lg text-white/60 max-w-2xl">
+                Tell us what you're cooking and we’ll find the bottle styles that make the dish sing. Good pairings are not magic, they are chemistry, texture, and balance.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {cuisines.length} cuisines
+                </span>
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {totalDishCount} dishes
+                </span>
+                <span className="tag bg-gold/20 border border-gold/30 text-gold-lt text-[10px]">
+                  Next: {nextStepLabel}
+                </span>
+              </div>
+            </div>
+
+            <div className="surface-panel p-4 lg:p-5">
+              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Pairing Snapshot</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Cuisine', value: cuisine?.label || 'Choose' },
+                  { label: 'Dish', value: dish?.label || 'Pick' },
+                  { label: 'Matches', value: matchedWines.length || 0 },
+                  { label: 'Mode', value: dish ? 'Ready' : 'Browsing' },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-2xl lg:text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="font-body text-xs text-slate-lt mt-3">
+                Start broad with cuisine, narrow to a dish, then use the bottle grid as your shortlist rather than a rigid rulebook.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
 
         {/* Step 1 — Cuisine */}
-        <div className="mb-10">
+        <div className="surface-panel p-5 lg:p-6 mb-10">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-7 h-7 rounded-full bg-gold text-white font-body text-sm font-semibold flex items-center justify-center flex-shrink-0">1</span>
-            <h2 className="font-display font-semibold text-2xl text-slate">What are you cooking?</h2>
+            <div>
+              <h2 className="font-display font-semibold text-2xl text-slate">What are you cooking?</h2>
+              <p className="font-body text-sm text-slate-lt mt-1">Choose the broad cuisine family first, then we’ll narrow to the dish itself.</p>
+            </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
             {cuisines.map(c => (
@@ -83,10 +126,15 @@ export default function Pairing() {
 
         {/* Step 2 — Dish */}
         {cuisine && (
-          <div className="mb-10 animate-fade-up">
+          <div className="surface-panel p-5 lg:p-6 mb-10 animate-fade-up">
             <div className="flex items-center gap-3 mb-6">
               <span className="w-7 h-7 rounded-full bg-gold text-white font-body text-sm font-semibold flex items-center justify-center flex-shrink-0">2</span>
-              <h2 className="font-display font-semibold text-2xl text-slate">Pick a dish</h2>
+              <div>
+                <h2 className="font-display font-semibold text-2xl text-slate">Pick a dish</h2>
+                <p className="font-body text-sm text-slate-lt mt-1">
+                  We’re now inside <span className="text-slate font-medium">{cuisine.label}</span>. Choose the dish that best matches what’s on the table.
+                </p>
+              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {cuisine.dishes.map(d => (
@@ -112,13 +160,31 @@ export default function Pairing() {
           <div className="animate-fade-up">
             <div className="flex items-center gap-3 mb-6">
               <span className="w-7 h-7 rounded-full bg-gold text-white font-body text-sm font-semibold flex items-center justify-center flex-shrink-0">3</span>
-              <h2 className="font-display font-semibold text-2xl text-slate">Your perfect match</h2>
+              <div>
+                <h2 className="font-display font-semibold text-2xl text-slate">Your perfect match</h2>
+                <p className="font-body text-sm text-slate-lt mt-1">
+                  Here’s the logic, the style cue, and the bottle shortlist for <span className="text-slate font-medium">{dish.label}</span>.
+                </p>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
               {/* Pairing Logic */}
               <div className="lg:col-span-1 space-y-5">
+                <div className="surface-panel p-5">
+                  <p className="section-label mb-2">Pairing Read</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl bg-[#fbf7ee] border border-cream px-4 py-3">
+                      <p className="font-body text-[9px] uppercase tracking-[0.16em] text-slate-lt/75">Cuisine</p>
+                      <p className="font-body text-sm text-slate mt-1 leading-snug">{cuisine?.label}</p>
+                    </div>
+                    <div className="rounded-2xl bg-[#fbf7ee] border border-cream px-4 py-3">
+                      <p className="font-body text-[9px] uppercase tracking-[0.16em] text-slate-lt/75">Matches found</p>
+                      <p className="font-body text-sm text-slate mt-1 leading-snug">{matchedWines.length || 'Style-led'}</p>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="card p-6">
                   <h3 className="font-display font-semibold text-lg text-slate mb-3">Why it works</h3>
@@ -151,6 +217,12 @@ export default function Pairing() {
               <div className="lg:col-span-2">
                 {matchedWines.length > 0 ? (
                   <>
+                    <div className="surface-panel p-5 mb-4">
+                      <p className="section-label mb-2">Bottle Shortlist</p>
+                      <p className="font-body text-sm text-slate-lt">
+                        From our collection, these bottles pair beautifully with {dish.label}. Treat them as strong starting points rather than the only possible answers.
+                      </p>
+                    </div>
                     <p className="font-body text-sm text-slate-lt mb-4">
                       From our collection — wines that pair beautifully with {dish.label}:
                     </p>
@@ -186,6 +258,9 @@ export default function Pairing() {
             <div className="text-center mb-10">
               <p className="section-label mb-2">The Science</p>
               <h2 className="font-display font-bold text-3xl text-slate">Pairing Principles</h2>
+              <p className="font-body text-sm text-slate-lt max-w-2xl mx-auto mt-3">
+                If you’re not ready to choose a dish yet, use these core rules to understand why certain matches keep working.
+              </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {PRINCIPLES.map(p => (

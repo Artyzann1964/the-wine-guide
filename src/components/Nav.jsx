@@ -83,27 +83,27 @@ export default function Nav({ onSearchOpen }) {
               <span className="font-body text-xs">Search</span>
               <kbd className="font-body text-xs text-white/40 border border-white/20 rounded px-1 py-0.5 leading-none">⌘K</kbd>
             </button>
-          <ul className="hidden lg:flex items-center gap-1 rounded-full border border-white/18 bg-white/10 p-1.5 backdrop-blur-xl shadow-[0_8px_26px_rgba(0,0,0,0.2)]">
-            {NAV_LINKS.map(({ to, label }) => {
-              const active = isActivePath(location.pathname, to)
-              return (
-                <li key={to}>
-                  <Link
-                    to={to}
-                  className={`relative px-3.5 py-2 font-body text-sm rounded-full transition-all duration-200 ${
-                      active ? 'text-white bg-gold/30 shadow-gold' : 'text-white/90 hover:text-white hover:bg-white/16'
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
+            <ul className="hidden lg:flex items-center gap-1 rounded-full border border-white/18 bg-white/10 p-1.5 backdrop-blur-xl shadow-[0_8px_26px_rgba(0,0,0,0.2)]">
+              {NAV_LINKS.map(({ to, label }) => {
+                const active = isActivePath(location.pathname, to)
+                return (
+                  <li key={to}>
+                    <Link
+                      to={to}
+                      className={`relative px-3.5 py-2 font-body text-sm rounded-full transition-all duration-200 ${
+                        active ? 'text-white bg-gold/30 shadow-gold' : 'text-white/90 hover:text-white hover:bg-white/16'
+                      }`}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
 
           <div className="lg:hidden flex items-center gap-2 min-w-0 flex-1 justify-end">
-            <div className="flex items-center gap-1.5 min-w-0">
+            <div className="hidden min-[360px]:flex items-center gap-1.5 min-w-0">
               {MOBILE_QUICK_LINKS.map(({ to, label }) => {
                 const active = isActivePath(location.pathname, to)
                 return (
@@ -122,12 +122,22 @@ export default function Nav({ onSearchOpen }) {
               })}
             </div>
             <button
+              onClick={onSearchOpen}
+              className="h-10 w-10 rounded-xl border border-white/15 bg-white/6 flex items-center justify-center hover:bg-white/10 transition-colors"
+              aria-label="Search wines"
+            >
+              <svg className="w-4 h-4 text-white" viewBox="0 0 20 20" fill="none">
+                <circle cx="9" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M13 13l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+            <button
               onClick={() => setMenuOpen(v => !v)}
-              className="h-10 rounded-xl border border-white/15 bg-white/6 flex items-center justify-center gap-1.5 px-3"
+              className="h-10 rounded-xl border border-white/15 bg-white/6 flex items-center justify-center gap-1.5 px-3 hover:bg-white/10 transition-colors"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
             >
-              <span className="hidden min-[460px]:inline font-body text-[11px] tracking-wide text-white/90 uppercase">Menu</span>
+              <span className="hidden min-[440px]:inline font-body text-[11px] tracking-wide text-white/90 uppercase">Menu</span>
               <svg className="w-5 h-5 text-white" viewBox="0 0 20 20" fill="none">
                 {menuOpen ? (
                   <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -154,8 +164,32 @@ export default function Nav({ onSearchOpen }) {
           onClick={() => setMenuOpen(false)}
           aria-label="Close menu overlay"
         />
-        <aside className="absolute top-20 left-4 right-4 surface-panel p-4 safe-bottom">
+        <aside className="absolute top-20 left-4 right-4 mx-auto max-w-md surface-panel p-4 safe-bottom">
           <p className="section-label mb-3">Navigate</p>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              onClick={() => {
+                setMenuOpen(false)
+                onSearchOpen?.()
+              }}
+              className="rounded-xl px-3 py-3 text-sm font-body bg-slate text-white text-left"
+            >
+              Search the guide
+            </button>
+            <Link
+              to="/pairing"
+              className="block rounded-xl px-3 py-3 text-sm font-body bg-white/70 text-slate-lt hover:bg-white hover:text-slate transition-colors"
+            >
+              Start with pairings
+            </Link>
+          </div>
+          <div className="rounded-2xl border border-cream bg-white/70 px-4 py-3 mb-4">
+            <p className="font-body text-[11px] uppercase tracking-[0.18em] text-slate/45 mb-1">Quick read</p>
+            <p className="font-display text-xl text-slate">Explore, then save</p>
+            <p className="font-body text-sm text-slate-lt mt-2">
+              Use the menu for a fast jump, then keep the best bottles in My Cellar once you find them.
+            </p>
+          </div>
           <ul className="grid grid-cols-2 gap-2">
             {NAV_LINKS.map(({ to, label }) => {
               const active = isActivePath(location.pathname, to)
@@ -178,8 +212,15 @@ export default function Nav({ onSearchOpen }) {
         </aside>
       </div>
 
-      <nav className="lg:hidden fixed bottom-3 left-3 right-3 z-50">
-        <div className="glass-panel px-1.5 py-1.5 safe-bottom">
+      <nav className="lg:hidden fixed bottom-2 left-4 right-4 z-50">
+        <div
+          className="rounded-[1.35rem] border border-white/50 px-1.5 py-1 safe-bottom shadow-[0_18px_40px_rgba(25,26,46,0.18)]"
+          style={{
+            background: 'linear-gradient(160deg, rgba(255,255,255,0.78), rgba(255,255,255,0.62))',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+          }}
+        >
           <ul className="grid grid-cols-5 gap-1">
             {MOBILE_DOCK_LINKS.map(({ to, label, icon }) => {
               const active = isActivePath(location.pathname, to)
@@ -187,10 +228,10 @@ export default function Nav({ onSearchOpen }) {
                 <li key={to}>
                   <Link
                     to={to}
-                    className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2.5 transition-all ${
+                    className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 transition-all ${
                       active
-                        ? 'bg-slate text-white'
-                        : 'text-slate-lt hover:text-slate hover:bg-white/80'
+                        ? 'bg-slate/92 text-white shadow-[0_8px_18px_rgba(32,35,58,0.2)]'
+                        : 'text-slate-lt hover:text-slate hover:bg-white/70'
                     }`}
                   >
                     <NavIcon type={icon} active={active} />

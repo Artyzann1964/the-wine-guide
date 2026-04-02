@@ -1,10 +1,55 @@
 import { Link } from 'react-router-dom'
 import { AmandaAvatar, AmandaBrandGlyph } from './Logo'
 
+const GUIDE_CLOSE_ROUTES = [
+  {
+    label: 'Explore the guide',
+    to: '/explore',
+    note: 'Filter by style, price, producer, or country when you want the full picture.',
+  },
+  {
+    label: 'Start with pairings',
+    to: '/pairing',
+    note: 'Best when dinner is already decided and the bottle still is not.',
+  },
+  {
+    label: 'Open my cellar',
+    to: '/cellar',
+    note: 'Save the good ideas, keep notes, and make the next choice faster.',
+  },
+]
+
 export default function Footer() {
   return (
     <footer className="bg-slate text-white/70 mt-16 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6 mb-10">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+            <div>
+              <p className="font-body text-[11px] tracking-[0.18em] uppercase text-gold/75 mb-2">Guide Close</p>
+              <h3 className="font-display text-3xl text-white">Keep the next bottle easy.</h3>
+              <p className="font-body text-sm text-white/55 mt-3 max-w-2xl">
+                Explore the guide when you want depth, open pairings when dinner is already on the go, or save bottles to the cellar so the good ideas stick.
+              </p>
+            </div>
+            <div className="space-y-3">
+              {GUIDE_CLOSE_ROUTES.map(({ label, to, note }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="block rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-body text-sm text-white">{label}</span>
+                    <span aria-hidden="true" className="text-white/65">→</span>
+                  </div>
+                  <p className="font-body text-xs text-white/45 mt-1.5">{note}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
 
           {/* Brand */}

@@ -466,27 +466,64 @@ function IntroScreen({ onStart }) {
   return (
     <div className="min-h-screen flex flex-col hero-mesh">
       <div className="flex-1 flex items-center justify-center px-6 py-20 pt-28">
-        <div className="max-w-xl text-center animate-fade-in">
-          <div className="text-6xl mb-6 select-none">🍷</div>
-          <p className="font-body text-gold/70 text-xs tracking-[0.25em] uppercase mb-4">
-            Wine Personality Quiz
-          </p>
-          <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-5 leading-tight">
-            What's your<br />wine personality?
-          </h1>
-          <p className="font-body text-white/60 text-base leading-relaxed mb-10 max-w-md mx-auto">
-            Answer 5 quick questions and we'll pinpoint exactly which wines
-            from our collection you'll love — every quiz is different.
-          </p>
-          <button
-            onClick={onStart}
-            className="btn-primary text-base px-10 py-4 rounded-2xl animate-scale-in"
-          >
-            Find my wines →
-          </button>
-          <p className="font-body text-white/30 text-xs mt-5">
-            Takes about 60 seconds · 232 wines analysed
-          </p>
+        <div className="max-w-5xl w-full grid xl:grid-cols-[1.05fr_0.95fr] gap-6 items-center animate-fade-in">
+          <div className="text-center xl:text-left">
+            <div className="text-6xl mb-6 select-none">🍷</div>
+            <p className="font-body text-gold/70 text-xs tracking-[0.25em] uppercase mb-4">
+              Wine Personality Quiz
+            </p>
+            <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-5 leading-tight">
+              What's your<br />wine personality?
+            </h1>
+            <p className="font-body text-white/60 text-base leading-relaxed mb-6 max-w-md mx-auto xl:mx-0">
+              Answer 5 quick questions and we'll pinpoint exactly which wines from our collection you'll love. Every run is a little different, so it stays playful rather than formulaic.
+            </p>
+            <div className="flex flex-wrap justify-center xl:justify-start gap-2 mb-8">
+              <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                5 questions
+              </span>
+              <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                232 wines analysed
+              </span>
+              <span className="tag bg-gold/20 border border-gold/30 text-gold-lt text-[10px]">
+                about 60 seconds
+              </span>
+            </div>
+            <button
+              onClick={onStart}
+              className="btn-primary text-base px-10 py-4 rounded-2xl animate-scale-in"
+            >
+              Find my wines →
+            </button>
+          </div>
+
+          <div className="surface-panel p-5 lg:p-6">
+            <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">How it works</p>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {[
+                { label: 'Questions', value: 5 },
+                { label: 'Price-aware', value: 'Yes' },
+                { label: 'Category-aware', value: 'Yes' },
+                { label: 'Output', value: '6 matches' },
+              ].map(stat => (
+                <div key={stat.label} className="card p-3 text-center">
+                  <p className="font-display text-2xl lg:text-3xl text-gold leading-none">{stat.value}</p>
+                  <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-2">
+              {[
+                'We build a taste profile from your answers.',
+                'Budget and category preferences influence the shortlist.',
+                'You get a personality read plus six bottle matches from the guide.',
+              ].map(line => (
+                <div key={line} className="rounded-xl bg-[#fbf7ee] border border-cream px-4 py-3">
+                  <p className="font-body text-sm text-slate-lt leading-relaxed">{line}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -513,6 +550,21 @@ function QuizScreen({ question, questionNumber, totalQuestions, selected, onSele
       </div>
 
       <div className="max-w-2xl mx-auto px-5 py-14">
+        <div className="surface-panel p-4 mb-6">
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Current', value: questionNumber },
+              { label: 'Remaining', value: totalQuestions - questionNumber },
+              { label: 'Next', value: isLast ? 'Results' : questionNumber + 1 },
+            ].map(stat => (
+              <div key={stat.label} className="rounded-2xl bg-[#fbf7ee] border border-cream px-3 py-3 text-center">
+                <p className="font-display text-2xl text-gold leading-none">{stat.value}</p>
+                <p className="font-body text-[10px] uppercase tracking-[0.16em] text-slate-lt mt-1">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Step indicator */}
         <div className="flex items-center gap-2 mb-5">
           {Array.from({ length: totalQuestions }).map((_, i) => (
@@ -591,22 +643,44 @@ function ResultsScreen({ results, personality, onReset }) {
     <div className="min-h-screen bg-ivory">
       {/* Personality hero */}
       <section className="hero-mesh pt-24 lg:pt-28 pb-16 px-5 border-b border-white/10">
-        <div className="max-w-2xl mx-auto text-center animate-fade-in">
-          <p className="font-body text-xs tracking-[0.25em] uppercase mb-4"
-             style={{ color: `${personality.accentColor}99` }}>
-            Your wine personality
-          </p>
-          <div className="text-5xl mb-4 select-none">{personality.emoji}</div>
-          <h1 className="font-display font-bold text-3xl md:text-4xl text-white mb-5 leading-tight">
-            {personality.title}
-          </h1>
-          <p className="font-body text-white/65 text-sm leading-relaxed max-w-lg mx-auto">
-            {personality.desc}
-          </p>
-          <div
-            className="w-16 h-0.5 mx-auto mt-8 rounded-full"
-            style={{ background: personality.accentColor }}
-          />
+        <div className="max-w-5xl mx-auto grid xl:grid-cols-[1.04fr_0.96fr] gap-6 items-center animate-fade-in">
+          <div className="text-center xl:text-left">
+            <p className="font-body text-xs tracking-[0.25em] uppercase mb-4"
+               style={{ color: `${personality.accentColor}99` }}>
+              Your wine personality
+            </p>
+            <div className="text-5xl mb-4 select-none">{personality.emoji}</div>
+            <h1 className="font-display font-bold text-3xl md:text-4xl text-white mb-5 leading-tight">
+              {personality.title}
+            </h1>
+            <p className="font-body text-white/65 text-sm leading-relaxed max-w-lg mx-auto xl:mx-0">
+              {personality.desc}
+            </p>
+            <div
+              className="w-16 h-0.5 mx-auto xl:mx-0 mt-8 rounded-full"
+              style={{ background: personality.accentColor }}
+            />
+          </div>
+
+          <div className="surface-panel p-5 lg:p-6">
+            <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Result Snapshot</p>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Personality', value: personality.emoji },
+                { label: 'Matches', value: results.length },
+                { label: 'Top route', value: 'Explorer' },
+                { label: 'Mode', value: 'Ready to browse' },
+              ].map(stat => (
+                <div key={stat.label} className="card p-3 text-center">
+                  <p className="font-display text-2xl lg:text-3xl text-gold leading-none">{stat.value}</p>
+                  <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+            <p className="font-body text-xs text-slate-lt mt-3">
+              Use these matches as a strong shortlist, then open individual bottles for fuller guide notes, pairings, and buying routes.
+            </p>
+          </div>
         </div>
       </section>
 

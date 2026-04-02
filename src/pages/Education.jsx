@@ -59,6 +59,7 @@ export default function Education() {
     () => SECTIONS.reduce((sum, section) => sum + (SECTION_META[section.id]?.minutes || 0), 0),
     [],
   )
+  const nextSection = SECTIONS.find(section => !completedSections.includes(section.id)) || SECTIONS[0]
 
   function toggleComplete(sectionId) {
     setCompletedSections(prev => (
@@ -78,11 +79,46 @@ export default function Education() {
           <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-sage/10 -translate-x-16 translate-y-16" />
         </div>
         <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
-          <p className="section-label text-gold/70 mb-3">Education</p>
-          <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4">Wine School</h1>
-          <p className="font-body text-lg text-white/60 max-w-2xl">
-            From grape to glass — everything you need to develop your wine knowledge, confidently choose bottles, and taste like a professional.
-          </p>
+          <div className="grid xl:grid-cols-[1.12fr_0.88fr] gap-6 items-start">
+            <div>
+              <p className="section-label text-gold/70 mb-3">Education</p>
+              <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4">Wine School</h1>
+              <p className="font-body text-lg text-white/60 max-w-2xl">
+                From grape to glass, everything you need to develop your wine knowledge, choose bottles with more confidence, and taste with more structure.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {totalSections} core lessons
+                </span>
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {totalMinutes} minutes total
+                </span>
+                <span className="tag bg-gold/20 border border-gold/30 text-gold-lt text-[10px]">
+                  {progress}% complete
+                </span>
+              </div>
+            </div>
+
+            <div className="surface-panel p-4 lg:p-5">
+              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Learning Snapshot</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Completed', value: completedCount },
+                  { label: 'Remaining', value: totalSections - completedCount },
+                  { label: 'Current', value: activeMeta.icon },
+                  { label: 'Next up', value: SECTION_META[nextSection.id]?.icon || '📘' },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="font-body text-xs text-slate-lt mt-3">
+                Work section by section, mark lessons complete, and use the menu as a lightweight course outline rather than a linear textbook.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -95,6 +131,21 @@ export default function Education() {
               <p className="font-body text-sm text-slate-lt leading-relaxed mb-4">
                 Progress is saved on this device. Work section-by-section, mark complete, and keep the visual flow fast on iPhone and desktop.
               </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {SECTIONS.slice(0, 4).map(section => (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`tag transition-colors ${
+                      activeSection === section.id
+                        ? 'bg-gold text-white border border-gold'
+                        : 'bg-white border border-cream text-slate hover:border-gold/40'
+                    }`}
+                  >
+                    {SECTION_META[section.id]?.icon || '📘'} {section.label}
+                  </button>
+                ))}
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
                   { label: 'Completed', value: completedCount },

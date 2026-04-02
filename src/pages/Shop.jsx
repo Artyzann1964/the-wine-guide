@@ -276,17 +276,17 @@ const RETAILERS = [
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function CheckIcon() {
+function CheckIcon({ className = 'w-4 h-4 shrink-0 mt-0.5' }) {
   return (
-    <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor">
       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
     </svg>
   )
 }
 
-function InfoIcon() {
+function InfoIcon({ className = 'w-4 h-4 shrink-0 mt-0.5' }) {
   return (
-    <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor">
       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
     </svg>
   )
@@ -493,24 +493,67 @@ export default function Shop() {
     )
   }, [selected])
 
+  const specialistCount = RETAILERS.filter(retailer => retailer.type === 'specialist').length
+  const supermarketCount = RETAILERS.filter(retailer => retailer.type === 'supermarket').length
+
   return (
     <div className="min-h-screen bg-ivory">
 
       {/* Hero */}
       <section className="hero-mesh border-b border-white/10 pt-24 pb-16 md:pt-28 md:pb-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="section-label text-gold/70 mb-3">The Honest Guide</p>
-          <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
-            Know Your Shop
-          </h1>
-          <p className="font-body text-white/60 text-lg max-w-2xl leading-relaxed">
-            Not all supermarket wine aisles were created equal. Here's the unvarnished truth about
-            where to spend your money — and what to reach for when you get there.
-          </p>
-          <div className="mt-6">
-            <Link to="/places" className="btn-primary">
-              Amanda's Favourite Places →
-            </Link>
+          <div className="grid xl:grid-cols-[1.12fr_0.88fr] gap-6 items-start">
+            <div>
+              <p className="section-label text-gold/70 mb-3">The Honest Guide</p>
+              <h1 className="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
+                Know Your Shop
+              </h1>
+              <p className="font-body text-white/60 text-lg max-w-2xl leading-relaxed">
+                Not all supermarket wine aisles were created equal. Here's the unvarnished truth about
+                where to spend your money — and what to reach for when you get there.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {RETAILERS.length} buying routes in guide
+                </span>
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {supermarketCount} supermarkets
+                </span>
+                <span className="tag bg-white/10 border border-white/15 text-white/75 text-[10px]">
+                  {specialistCount} specialists
+                </span>
+                {selected && (
+                  <span className="tag bg-gold/20 border border-gold/30 text-gold-lt text-[10px]">
+                    Currently viewing {selected.name}
+                  </span>
+                )}
+              </div>
+              <div className="mt-6">
+                <Link to="/places" className="btn-primary">
+                  Amanda's Favourite Places →
+                </Link>
+              </div>
+            </div>
+
+            <div className="surface-panel p-4 lg:p-5">
+              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-slate-lt mb-3">Buying Snapshot</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Retailers', value: RETAILERS.length },
+                  { label: 'Selected wines', value: retailerWines.length },
+                  { label: 'Lead route', value: selected ? selected.name : 'Browse all' },
+                  { label: 'Best use', value: selected?.type === 'specialist' ? 'Depth' : 'Everyday range' },
+                ].map(stat => (
+                  <div key={stat.label} className="card p-3 text-center">
+                    <p className="font-display text-2xl lg:text-3xl text-gold leading-none">{stat.value}</p>
+                    <p className="font-body text-xs text-slate-lt mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="font-body text-xs text-slate-lt mt-3">
+                Start with the retailer grid below, then use Explorer if you want to compare that shop’s wines by region, grape, or pairing.
+              </p>
+            </div>
           </div>
         </div>
       </section>
