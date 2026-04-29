@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useCellar } from '../hooks/useCellar'
 import { parseVivinoCsv, vivinoRowsToTastedEntries } from '../utils/vivinoImport'
+import { formatPrice } from '../utils/formatPrice'
 
 import { TABS } from '../components/cellar/constants'
 import CellarSyncPanel from '../components/cellar/CellarSyncPanel'
@@ -96,7 +97,7 @@ export default function Cellar() {
               { label: 'Wishlist',  value: stats.wishlistCount },
               { label: 'Tasted',    value: stats.tastedCount },
               cellarValue > 0
-                ? { label: 'Est. Value', value: `£${cellarValue.toLocaleString('en-GB', { maximumFractionDigits: 0 })}` }
+                ? { label: 'Est. Value', value: formatPrice(cellarValue, { decimals: 0 }) }
                 : { label: 'Est. Value', value: '—' },
             ].map(s => (
               <div key={s.label} className="rounded-xl bg-white/10 px-4 py-3 text-center">

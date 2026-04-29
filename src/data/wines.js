@@ -3,6 +3,8 @@
 // 25 world-class wines across all categories
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { formatPrice } from '../utils/formatPrice'
+
 export const CATEGORIES = ['sparkling', 'white', 'red', 'rosé', 'dessert']
 
 export const REGIONS = [
@@ -14272,9 +14274,9 @@ function normalizeWine(w) {
   // 3. price — ensure it's a display string with £ prefix
   let price = w.price
   if (typeof price === 'number') {
-    price = `£${price.toFixed(2)}`
+    price = formatPrice(price)
   } else if (typeof price === 'string' && price && !price.startsWith('£') && !isNaN(parseFloat(price))) {
-    price = `£${parseFloat(price).toFixed(2)}`
+    price = formatPrice(parseFloat(price))
   } else if (!price) {
     price = fallbackPriceByTier[priceRange] || 'Price on request'
   }

@@ -4,6 +4,7 @@ import WineCard from '../components/WineCard'
 import { wines } from '../data/wines'
 import { venueWineLists } from '../data/venueWineLists'
 import { getWineVintageLabel } from '../utils/wineDisplay'
+import { formatPrice } from '../utils/formatPrice'
 import { useVenueSourceInbox } from '../hooks/useVenueSourceInbox'
 import {
   VENUES,
@@ -25,8 +26,7 @@ function bookingUrl(name, town) {
 
 function formatVenueWinePrice(price) {
   if (typeof price !== 'number') return 'Price on menu'
-  if (Number.isInteger(price)) return `£${price}`
-  return `£${price.toFixed(2)}`
+  return formatPrice(price, { decimals: Number.isInteger(price) ? 0 : 2 })
 }
 
 function normalizeVenueWineCategory(category) {

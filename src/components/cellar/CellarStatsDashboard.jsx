@@ -1,4 +1,5 @@
 import { CATEGORY_COLORS } from './constants'
+import { formatPrice } from '../../utils/formatPrice'
 
 const CAT_FILL = {
   sparkling: '#d97706',
@@ -73,7 +74,7 @@ function SummaryCards({ bottles }) {
 
   const cards = [
     avgRating && { label: 'Avg Rating', value: `${avgRating} ★`, icon: '⭐' },
-    totalValue > 0 && { label: 'Total Value', value: `£${totalValue.toFixed(0)}`, icon: '💰' },
+    totalValue > 0 && { label: 'Total Value', value: formatPrice(totalValue, { decimals: 0 }), icon: '💰' },
     oldestVintage && { label: 'Oldest Vintage', value: oldestVintage, icon: '🍷' },
     { label: 'Rated', value: `${rated.length}/${bottles.length}`, icon: '📝' },
   ].filter(Boolean)
