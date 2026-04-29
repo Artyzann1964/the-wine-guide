@@ -49,66 +49,10 @@ function similarity(wine, other) {
   return taste * 0.35 + grape * 0.25 + style * 0.20 + cat * 0.10 + region * 0.10
 }
 
-/**
- * Get wines most similar to a given wine.
- */
 export function getRecommendations(wine, allWines, count = 6) {
   return allWines
     .filter(w => w.id !== wine.id)
     .map(w => ({ wine: w, score: similarity(wine, w) }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, count)
-    .map(r => r.wine)
-}
-
-/**
- * Get recommendations based on the user's cellar profile.
- * Aggregates taste preferences from all cellar bottles and finds
- * wines from the database that best match but aren't already in the cellar.
- */
-export function getCellarRecommendations(bottles, allWines, count = 6) {
-  if (!bottles.length) return []
-
-  // Build an aggregate cellar profile
-  const cellarIds = new Set(bottles.map(b => b.wineId).filter(Boolean))
-  const cellarWines = allWines.filter(w => cellarIds.has(w.id))
-
-  if (cellarWines.length === 0) return []
-
-  // Average taste profile
-  const keys = ['sweetness', 'acidity', 'tannin', 'body', 'fruitiness']
-  const avgProfile = {}
-  for (const k of keys) {
-    const vals = cellarWines.map(w => w.tasteProfile?.[k]).filter(v => v != null)
-    avgProfile[k] = vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : 3
-  }
-
-  // Collect all grapes and styles
-  const allGrapes = cellarWines.flatMap(w => w.grapes || [])
-  const allStyles = cellarWines.flatMap(w => w.style || [])
-
-  // Most common category
-  const catCounts = {}
-  cellarWines.forEach(w => { catCounts[w.category] = (catCounts[w.category] || 0) + 1 })
-  const topCat = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'red'
-
-  // Most common region/country
-  const regionCounts = {}
-  cellarWines.forEach(w => { regionCounts[w.region] = (regionCounts[w.region] || 0) + 1 })
-  const topRegion = Object.entries(regionCounts).sort((a, b) => b[1] - a[1])[0]?.[0]
-
-  const profile = {
-    tasteProfile: avgProfile,
-    grapes: allGrapes,
-    style: allStyles,
-    category: topCat,
-    region: topRegion,
-    country: cellarWines[0]?.country,
-  }
-
-  return allWines
-    .filter(w => !cellarIds.has(w.id))
-    .map(w => ({ wine: w, score: similarity(profile, w) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, count)
     .map(r => r.wine)

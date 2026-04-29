@@ -136,24 +136,27 @@ export default function GlobalSearch({ open, onClose }) {
     onClose()
   }, [navigate, onClose])
 
-  const handleKeyDown = useCallback((e) => {
-    if (!open) return
-    if (e.key === 'Escape') { onClose(); return }
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setSelectedIdx(i => Math.min(i + 1, results.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setSelectedIdx(i => Math.max(i - 1, 0))
-    } else if (e.key === 'Enter') {
-      if (results[selectedIdx]) goToWine(results[selectedIdx].id)
-    }
-  }, [open, results, selectedIdx, goToWine, onClose])
+  const keyStateRef = useRef({ open, results, selectedIdx, goToWine, onClose })
+  keyStateRef.current = { open, results, selectedIdx, goToWine, onClose }
 
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      const { open, results, selectedIdx, goToWine, onClose } = keyStateRef.current
+      if (!open) return
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSelectedIdx(i => Math.min(i + 1, results.length - 1))
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSelectedIdx(i => Math.max(i - 1, 0))
+      } else if (e.key === 'Enter') {
+        if (results[selectedIdx]) goToWine(results[selectedIdx].id)
+      }
+    }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [handleKeyDown])
+  }, [])
 
   if (!open) return null
 
