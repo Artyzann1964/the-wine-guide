@@ -65,11 +65,16 @@ const QUICK_ROUTES = [
   { label: 'Learn', sub: 'Wine school and glass guide', to: '/learn', icon: 'learn' },
 ]
 
-const AMANDA_TOP_THREE = [
+const AMANDA_SHEFFIELD_PICKS = [
   {
     name: 'Gill & Co.',
     to: '/places?venue=gill-and-co',
     note: 'Discovery nights and by-the-glass exploration.',
+  },
+  {
+    name: 'The Gillmont',
+    to: '/places?venue=the-gillmont',
+    note: 'New Champagne and hotel-bar cocktail stop.',
   },
   {
     name: 'The Harritt Wine Bar',
@@ -289,7 +294,7 @@ export default function Home() {
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] mb-4">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="section-label mb-1">Amanda's Top 3</p>
+                  <p className="section-label mb-1">Amanda's Sheffield picks</p>
                   <h2 className="font-display text-4xl text-slate">Her favourite Sheffield picks</h2>
                 </div>
                 <Link to="/places" className="btn-ghost">Open full Places guide →</Link>
@@ -303,8 +308,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-3 stagger">
-              {AMANDA_TOP_THREE.map((place, index) => (
+            <div className="grid md:grid-cols-4 gap-3 stagger">
+              {AMANDA_SHEFFIELD_PICKS.map((place, index) => (
                 <Link key={place.name} to={place.to} className="card interactive-lift p-4 hover:-translate-y-0.5">
                   <p className="section-label mb-1">Favourite {index + 1}</p>
                   <p className="font-display text-2xl text-slate leading-tight">{place.name}</p>

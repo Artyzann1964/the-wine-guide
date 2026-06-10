@@ -645,7 +645,7 @@ export default function Places() {
                   <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
                     <div>
                       <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-1">Current Menu Cues</p>
-                      <p className="font-display text-2xl text-slate">What to order in the Club Room</p>
+                      <p className="font-display text-2xl text-slate">What to order at {venue.name}</p>
                     </div>
                     {venueWineInfo?.sourceUrl && (
                       <a href={venueWineInfo.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
@@ -678,7 +678,7 @@ export default function Places() {
                             </Link>
                           ) : null}
                           <div className="min-w-0">
-                            <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Club Room</p>
+                            <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">{venue.type}</p>
                             <h4 className="font-display text-2xl text-slate leading-tight">{item.dish}</h4>
                             <p className="font-body text-sm text-slate-lt mt-2 leading-relaxed">{item.note}</p>
                             <p className="font-body text-sm text-slate mt-3">

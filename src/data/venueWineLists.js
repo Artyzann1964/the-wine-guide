@@ -40,6 +40,31 @@ export const venueWineLists = {
       { "name": "Chateauneuf du Pape, Signature, Domaine La Barroche 2022", "price": 150, "category": "red", "country": "France", "region": "Rhone", "page": 3, "note": "Also £25 / £35 by the glass (125ml / 175ml)" }
     ]
   },
+  "moet-chandon-bar-harrods": {
+    "source": "Moët & Chandon Bar Harrods official food and drinks menu PDF",
+    "sourceUrl": "https://www.moet.com/sites/default/files/2024-11/Moet_Menu_Autumn_Harrods_2.pdf",
+    "checkedOn": "2026-05-16",
+    "priceNote": "Prices from the official Moët & Chandon Bar Harrods menu PDF. Rarer vintages may change with availability.",
+    "curatedProfile": "Harrods Champagne stop: strongest for flights, vintage Moët, oysters, caviar, and paired bar bites rather than a broad still-wine list.",
+    "items": [
+      { "name": "The Discovery tasting flight: Brut Impérial, Rosé Impérial, Grand Vintage 2016", "price": 32, "category": "sparkling", "country": "France", "region": "Champagne", "page": 3, "note": "3x50ml flight" },
+      { "name": "The Rosé Encounter tasting flight: Rosé Impérial, Grand Vintage 2016 Rosé, Nectar Impérial Rosé", "price": 34, "category": "sparkling-rosé", "country": "France", "region": "Champagne", "page": 3, "note": "3x50ml flight" },
+      { "name": "The Elevation tasting flight: Brut Impérial, Grand Vintage 2016, Collection Impériale Création No. 1", "price": 42, "category": "sparkling", "country": "France", "region": "Champagne", "page": 3, "note": "3x50ml flight" },
+      { "name": "Moët & Chandon Brut Impérial", "price": 19.5, "category": "sparkling", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £105" },
+      { "name": "Moët & Chandon Rosé Impérial", "price": 21, "category": "sparkling-rosé", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £125" },
+      { "name": "Moët & Chandon Nectar Impérial", "price": 21.5, "category": "sparkling", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £125" },
+      { "name": "Moët & Chandon Nectar Impérial Rosé", "price": 23, "category": "sparkling-rosé", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £135" },
+      { "name": "Moët & Chandon Ice Impérial", "price": 22, "category": "sparkling", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £130" },
+      { "name": "Moët & Chandon Ice Impérial Rosé", "price": 24, "category": "sparkling-rosé", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £140" },
+      { "name": "Moët & Chandon Grand Vintage 2016", "price": 29, "category": "sparkling", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £165" },
+      { "name": "Moët & Chandon Grand Vintage Rosé 2016", "price": 31, "category": "sparkling-rosé", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £175" },
+      { "name": "Moët & Chandon Collection Impériale Création No. 1", "price": 65, "category": "sparkling", "country": "France", "region": "Champagne", "page": 4, "note": "By the glass; bottle £390" },
+      { "name": "Moët & Chandon Grand Vintage Collection 2004", "price": 270, "category": "sparkling", "country": "France", "region": "Champagne", "page": 5, "note": "Bottle" },
+      { "name": "Moët & Chandon Grand Vintage Collection 2002", "price": 290, "category": "sparkling", "country": "France", "region": "Champagne", "page": 5, "note": "Bottle" },
+      { "name": "Moët & Chandon Grand Vintage Collection 1996", "price": 400, "category": "sparkling", "country": "France", "region": "Champagne", "page": 5, "note": "Bottle" },
+      { "name": "Moët & Chandon Grand Vintage Collection 1990 Magnum", "price": 825, "category": "sparkling", "country": "France", "region": "Champagne", "page": 5, "note": "Magnum" }
+    ]
+  },
   "domo-vino": {
     "source": "DOMO Vino wine list PDF shared by user",
     "sourceUrl": "https://ef2b59f3-dcd1-4417-ace0-48a9254fd1d2.filesusr.com/ugd/6c60c6_c4b8c25fac464a1dbeb7816f4a4ff8e6.pdf",
@@ -82,11 +107,25 @@ export const venueWineLists = {
       { "name": "Prosecco Rosé Treviso DOC, Colli del Soligo", "price": 32, "category": "sparkling-rosé", "country": "Italy", "region": "Veneto", "page": 9 }
     ]
   },
+  "the-gillmont": {
+    "source": "The Gillmont official site and OpenTable menu updated 24 February 2026",
+    "sourceUrl": "https://www.opentable.com/r/the-gillmont-sheffield",
+    "checkedOn": "2026-05-16",
+    "priceNote": "OpenTable publishes cocktail prices; the official site confirms vintage and non-vintage Champagnes by glass and bottle but does not publish the full Champagne bottle list online.",
+    "curatedProfile": "Hotel-bar-style Champagne and cocktail venue: best for Champagne by the glass or bottle, English sparkling in cocktails, afternoon tea with Laurent-Perrier, and classic hotel-bar serves.",
+    "items": [
+      { "name": "Laurent-Perrier La Cuvée Brut Champagne upgrade", "price": 24, "category": "sparkling", "country": "France", "region": "Champagne", "note": "Champagne upgrade listed on Champagne & Spritz cocktails and afternoon tea guidance" },
+      { "name": "English sparkling wine cocktail base", "price": 12.5, "category": "sparkling", "country": "England", "note": "Used for Cherry Bakewell, French 75, and Blueberry Royale before Champagne upgrade" },
+      { "name": "Vintage Champagne selection, currently spanning 2003 to 2011", "price": null, "category": "sparkling", "country": "France", "region": "Champagne", "note": "Official site names Louis Roederer, Taittinger, Dom Pérignon, Dom Ruinart, Billecart-Salmon, and Pol Roger among the houses" },
+      { "name": "Non-vintage Champagne and sparkling wines by glass or bottle", "price": null, "category": "sparkling", "country": "France", "region": "Champagne", "note": "Official site confirms a considered NV Champagne and sparkling range from England and France" }
+    ]
+  },
   "gill-and-co": {
-    "source": "Gill & Co Wine List February 2026 (PDF uploaded to public folder)",
-    "sourceUrl": "/Gills & Co Wine List February 2026.pdf",
-    "checkedOn": "2026-03-05",
-    "priceNote": "Bottle prices from venue PDF.",
+    "source": "Gill & Co Wine List updated 02 February 2026, confirmed against Star Wine List White Star listing",
+    "sourceUrl": "https://starwinelist.com/wine-place/gills-and-co",
+    "checkedOn": "2026-05-16",
+    "priceNote": "Bottle prices from the February 2026 Gill & Co wine list already captured in the app; Star Wine List confirms the venue and list update.",
+    "curatedProfile": "Ecclesall Road discovery list with strong old-world and new-world breadth, plus orange, dessert, mature bottles, and useful by-the-glass/service guidance in the room.",
     "items": [
       {
         "name": "Bodegas Colome, Salta, 2024",

@@ -2,54 +2,18 @@
  * Data invariant tests for src/data/venueWineLists.js
  *
  * Checks that:
- * - Every venue-list ID exists in the Sheffield VENUES array
+ * - Every venue-list ID exists in the live VENUES array
  * - Every item has the required fields and valid category values
  * - Prices are numeric where present (not strings)
  */
 
 import { describe, it, expect } from 'vitest'
+import { existsSync, readdirSync, readFileSync } from 'fs'
+import { join } from 'path'
 import { venueWineLists, venueWineListIds } from '../data/venueWineLists.js'
+import { VENUES } from '../data/places.js'
 
-// We pull the VENUES array directly from Sheffield.jsx so the check stays
-// authoritative. Sheffield.jsx is a React component but exports a plain JS
-// array — we can import it with a mock for JSX if needed. To keep this
-// test file free of React dependencies we read the IDs from a known-good
-// list derived from the file. If Sheffield IDs change, update this set.
-const KNOWN_SHEFFIELD_IDS = new Set([
-  'gill-and-co',
-  'harritt-wine-bar',
-  'rafters-restaurant',
-  'domo-vino',
-  'joro-restaurant',
-  'grazie-sheffield',
-  'la-bottega-sheffield',
-  'guyshi-sheffield',
-  'peacock-inn',
-  'rose-and-crown',
-  'crown-and-glove',
-  'the-swan-walton',
-  'the-anglers',
-  'stroud-hotel',
-  'painwick-hotel',
-  'linden-hall',
-  'eshott-hall',
-  'galvin-green-man',
-  'el-poblet-valencia',
-  'forastera-valencia',
-  'tinto-fino-ultramarino',
-  'taberna-la-samorra',
-  'ostras-pedro-valencia',
-  'barbaric-valencia',
-  'vivevino-valencia',
-  'flama-valencia',
-  'goya-gallery-valencia',
-  'rausell-valencia',
-  'casa-montana-valencia',
-  'casa-carmela-valencia',
-  'hawksmoor-air-street',
-  'lowell-hotel-nyc',
-  'blue-box-cafe-nyc',
-])
+const KNOWN_VENUE_IDS = new Set(VENUES.map(venue => venue.id))
 
 const VALID_CATEGORIES = new Set([
   'white',
@@ -61,6 +25,26 @@ const VALID_CATEGORIES = new Set([
   'fortified',
   'sparkling-rosé',
 ])
+
+function isLikelyImage(bytes) {
+  if (bytes.length < 12) return false
+  const ascii = bytes.subarray(0, 12).toString('ascii')
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return true
+  if (bytes[0] === 0x89 && ascii.slice(1, 4) === 'PNG') return true
+  if (ascii.startsWith('RIFF') && ascii.slice(8, 12) === 'WEBP') return true
+  if (ascii.slice(4, 12) === 'ftypavif' || ascii.slice(4, 12) === 'ftypavis') return true
+  if (ascii.trimStart().startsWith('<svg')) return true
+  return false
+}
+
+function getPublicImageFiles(dir = join(process.cwd(), 'public')) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+    const fullPath = join(dir, entry.name)
+    if (entry.isDirectory()) return getPublicImageFiles(fullPath)
+    if (/\.(avif|jpe?g|png|svg|webp)$/i.test(entry.name)) return [fullPath]
+    return []
+  })
+}
 
 describe('venueWineLists — exports', () => {
   it('venueWineLists is a non-null object', () => {
@@ -80,12 +64,37 @@ describe('venueWineLists — exports', () => {
 })
 
 describe('venueWineLists — venue ID cross-reference', () => {
-  it('every wine-list ID exists in the VENUES array (Sheffield.jsx)', () => {
-    const orphans = venueWineListIds.filter(id => !KNOWN_SHEFFIELD_IDS.has(id))
+  it('every wine-list ID exists in the VENUES array', () => {
+    const orphans = venueWineListIds.filter(id => !KNOWN_VENUE_IDS.has(id))
     if (orphans.length > 0) {
       console.error('Wine-list IDs not found in VENUES:', orphans)
     }
     expect(orphans).toHaveLength(0)
+  })
+})
+
+describe('venue image assets', () => {
+  it('all public image files contain image data', () => {
+    const bad = getPublicImageFiles()
+      .filter(assetPath => !isLikelyImage(readFileSync(assetPath).subarray(0, 32)))
+      .map(assetPath => assetPath.replace(`${process.cwd()}/`, ''))
+
+    expect(bad).toHaveLength(0)
+  })
+
+  it('local venue image paths point to real image files in public/', () => {
+    const bad = VENUES
+      .filter(venue => typeof venue.image === 'string' && venue.image.startsWith('/'))
+      .map(venue => {
+        const assetPath = join(process.cwd(), 'public', venue.image)
+        if (!existsSync(assetPath)) return `${venue.id}: missing ${venue.image}`
+        const bytes = readFileSync(assetPath).subarray(0, 32)
+        if (!isLikelyImage(bytes)) return `${venue.id}: not an image ${venue.image}`
+        return null
+      })
+      .filter(Boolean)
+
+    expect(bad).toHaveLength(0)
   })
 })
 
