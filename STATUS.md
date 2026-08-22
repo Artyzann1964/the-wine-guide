@@ -6,7 +6,7 @@ Test status: `npm test -- --run` passes cleanly (`122/122`)
 Deployment: Railway production at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
 Release state: Sheffield and Valencia Places refresh deployed and verified in production
 Latest deployed source commit: `7431a8f feat: reimagine Sheffield and Valencia places guide`
-Latest Railway deployment: `79a5e86e-b63b-4461-b4fe-1a3487205925` (`SUCCESS`)
+Application release deployment: `79a5e86e-b63b-4461-b4fe-1a3487205925` (`SUCCESS`; subsequently superseded by an equivalent documentation-only rebuild)
 
 ## Current Snapshot
 
@@ -60,7 +60,8 @@ Latest Railway deployment: `79a5e86e-b63b-4461-b4fe-1a3487205925` (`SUCCESS`)
 
 ## Production Verification - 2026-08-22
 
-- Railway deployment `79a5e86e-b63b-4461-b4fe-1a3487205925`: `SUCCESS`
+- Application release deployment `79a5e86e-b63b-4461-b4fe-1a3487205925`: `SUCCESS`
+- Subsequent documentation pushes may create equivalent no-code Railway rebuilds; use Railway's live deployment status for the current instance ID.
 - Linked target: `lucid-surprise` / `production` / `the-wine-guide`
 - Production `/healthz`: `{"ok":true}`
 - Production root response: HTTP 200 from Railway
