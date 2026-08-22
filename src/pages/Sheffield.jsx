@@ -24,6 +24,21 @@ function bookingUrl(name, town) {
   return `https://www.google.com/search?q=${encodeURIComponent(`${name} ${town} booking`)}`
 }
 
+const VALENCIA_TRIP_WINDOW = 'Sunday 21 to Sunday 28 June 2026'
+const VALENCIA_TRIP_SUMMARY = [
+  'Book Casa Montaña, Casa Carmela, Rausell and the Michelin rooms first; the strongest lunch and dinner slots will go quickly.',
+  'Use Nuvó, Café Madrid, Café de las Horas, Anyora, ViveVino and Tinto Fino as flexible stops when formal restaurants are full or closed.',
+  'Sunday and Monday need extra care: several serious kitchens close one or both days, so check the official site before travelling across town.',
+]
+
+const SHEFFIELD_NEW_IDS = [
+  'gillsons-brasserie-sheffield',
+  'restaurant-elm-sheffield',
+  'bench-la-cave-sheffield',
+  'barks-wine-sheffield',
+  'grub-records-sheffield',
+]
+
 function formatVenueWinePrice(price) {
   if (typeof price !== 'number') return 'Price on menu'
   return formatPrice(price, { decimals: Number.isInteger(price) ? 0 : 2 })
@@ -171,8 +186,8 @@ export default function Places() {
   const [searchParams] = useSearchParams()
   const selectedVenueParam = searchParams.get('venue')
   const [region, setRegion] = useState('UK')
-  const [town, setTown] = useState('all')
-  const [venueId, setVenueId] = useState(VENUES[0].id)
+  const [town, setTown] = useState('Sheffield')
+  const [venueId, setVenueId] = useState('gillsons-brasserie-sheffield')
   const [momentId, setMomentId] = useState(MOMENTS[0].id)
   const [budgetId, setBudgetId] = useState(BUDGET_BANDS[1].id)
   const [paceId, setPaceId] = useState(ORDER_PACES[0].id)
@@ -195,6 +210,9 @@ export default function Places() {
     }
     if (town !== 'all') {
       filtered = filtered.filter(v => v.town === town)
+    }
+    if (town === 'Sheffield') {
+      return [...filtered].sort((a, b) => Number(b.guideStatus === 'new') - Number(a.guideStatus === 'new'))
     }
     return filtered
   }, [region, town])
@@ -344,10 +362,23 @@ export default function Places() {
 
   const visibleVenueWineItems = filteredVenueWineItems.slice(0, venueWineLimit)
   const hasMoreVenueWineItems = filteredVenueWineItems.length > visibleVenueWineItems.length
-  const amandaFavourites = VENUES.filter(v => v.amandaFavourite).map(v => v.name)
+  const sheffieldVenueCount = VENUES.filter(v => v.town === 'Sheffield').length
   function handleVenueSelect(nextVenueId) {
     setVenueId(nextVenueId)
     setScrollToDetail(true)
+  }
+
+  function showValenciaTripList() {
+    setRegion('Europe')
+    setTown('Valencia')
+    setVenueId('casa-montana-valencia')
+    setScrollToDetail(true)
+  }
+
+  function showSheffieldEdit() {
+    setRegion('UK')
+    setTown('Sheffield')
+    setVenueId('gillsons-brasserie-sheffield')
   }
 
   function markVenueImageFailed(nextVenueId) {
@@ -367,50 +398,84 @@ export default function Places() {
   }
 
   return (
-    <main className="min-h-screen">
-      <section className="hero-mesh pt-24 lg:pt-28 pb-14 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-10">
-          <div className="flex-1">
-            <p className="section-label text-gold-lt/85 mb-3">Amanda's Places Guide</p>
-            <h1 className="font-display text-5xl lg:text-6xl text-white leading-[1.03] mb-4">
-              Favourite venues,
-              <span className="block text-gradient-gold">chosen the Amanda way.</span>
-            </h1>
-            <p className="font-body text-white/75 max-w-3xl text-lg leading-relaxed">
-              From Sheffield to Stroud, Morpeth to Valencia and beyond — use Amanda's venue list to decide where to go and what to order.
-            </p>
-            <p className="font-body text-sm text-gold-lt/90 mt-3">
-              Amanda favourites: {amandaFavourites.join(', ')}.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/pairing" className="btn-primary">Open Pairing Wizard</Link>
-              <Link to="/shop" className="btn-secondary">Compare Retailers</Link>
-            </div>
-          </div>
-          <div className="relative flex-shrink-0">
-            <div className="absolute inset-4 rounded-[2rem] bg-gold/10 blur-2xl" aria-hidden="true" />
-            <div className="relative w-44 h-60 lg:w-52 lg:h-[21rem] overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm">
-              <img
-                src="/amanda-holmes.png"
-                alt="Amanda Holmes"
-                className="w-full h-full object-cover object-top opacity-95"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0f1424]/78 via-transparent to-transparent" />
-              <div className="absolute left-4 right-4 bottom-4">
-                <p className="font-body text-[10px] uppercase tracking-[0.24em] text-gold-lt/85">Amanda's shortlist</p>
-                <p className="font-display text-xl text-white mt-1">Places she would send you to first.</p>
+    <main className="min-h-screen places-page">
+      <section className="places-hero pt-24 lg:pt-28" aria-labelledby="places-title">
+        <div className="places-hero-grid" aria-hidden="true" />
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+          <div className="grid lg:grid-cols-[1.16fr_0.84fr] gap-10 lg:gap-16 items-end pb-10 lg:pb-14">
+            <div className="animate-fade-up">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="places-live-dot" />
+                <p className="font-body text-[11px] font-semibold uppercase tracking-[0.25em] text-[#d7b968]">
+                  The Sheffield edit · August 2026
+                </p>
+              </div>
+              <h1 id="places-title" className="font-display text-[3.8rem] sm:text-7xl lg:text-[6.7rem] text-white leading-[0.82] tracking-[-0.055em] text-balance">
+                Drink the city
+                <span className="block pl-[0.12em] italic font-light text-[#d8e3df]">after dark.</span>
+              </h1>
+              <p className="font-body text-[#c7d3d1] max-w-2xl text-base sm:text-lg leading-relaxed mt-7">
+                A personal field guide to rooms worth crossing Sheffield for — from candlelit natural wine and vinyl to the city’s newest serious brasserie.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button onClick={showSheffieldEdit} className="places-cta-primary">
+                  Explore {sheffieldVenueCount} Sheffield places <span aria-hidden="true">↘</span>
+                </button>
+                <button onClick={showValenciaTripList} className="places-cta-ghost">Open Valencia edit</button>
               </div>
             </div>
+
+            <div className="relative animate-fade-in">
+              <div className="places-cover-card">
+                <img
+                  src="https://www.exposedmagazine.co.uk/wp-content/uploads/2026/08/Gillsons-brasserie-1000-feature.jpg"
+                  alt="Gillson's Brasserie on Ecclesall Road"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,28,0.02)_15%,rgba(7,18,28,0.9)_100%)]" />
+                <div className="absolute left-5 top-5 flex gap-2">
+                  <span className="places-cover-label">Just opened</span>
+                  <span className="places-cover-label places-cover-label-muted">Ecclesall Road</span>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-7">
+                  <p className="font-body text-[10px] uppercase tracking-[0.24em] text-[#e9cd7a] mb-2">The new arrival</p>
+                  <p className="font-display text-4xl text-white leading-none">Gillson’s Brasserie</p>
+                  <p className="font-body text-sm text-white/70 mt-3">Classic cooking. Warm service. A cellar curated by Gills & Co.</p>
+                </div>
+              </div>
+              <div className="places-issue-stamp" aria-label="Five new Sheffield discoveries">
+                <strong>05</strong>
+                <span>new finds</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="places-new-rail" aria-label="New Sheffield additions">
+            <p className="places-rail-intro"><span>New</span> to the guide</p>
+            {SHEFFIELD_NEW_IDS.map((id, index) => {
+              const newVenue = VENUES.find(item => item.id === id)
+              return (
+                <button
+                  key={id}
+                  onClick={() => { showSheffieldEdit(); setVenueId(id); setScrollToDetail(true) }}
+                  className="places-rail-item"
+                >
+                  <span>0{index + 1}</span>
+                  <strong>{newVenue.name}</strong>
+                  <small>{newVenue.type}</small>
+                </button>
+              )
+            })}
           </div>
         </div>
       </section>
 
       <section className="py-8 max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="card p-4">
+        <div className="places-filter-panel p-4 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Region</p>
-              <div className="flex flex-wrap gap-1.5 mb-3">
+              <div className="places-chip-row flex gap-1.5 mb-3">
                 <button
                   onClick={() => { setRegion('all'); setTown('all') }}
                   className={`chip ${region === 'all' ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
@@ -435,7 +500,7 @@ export default function Places() {
               {currentRegionTowns.length > 1 && (
                 <>
                   <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Town</p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="places-chip-row flex gap-1.5">
                     <button
                       onClick={() => setTown('all')}
                       className={`chip ${town === 'all' ? 'bg-slate text-white' : 'bg-white border border-cream text-slate-lt'}`}
@@ -462,6 +527,16 @@ export default function Places() {
           <p className="font-body text-xs text-slate-lt mt-3">
             Live wine lists sourced for {VENUES.filter(v => venueWineLists[v.id]?.items?.length).length} of {VENUES.length} venues.
           </p>
+          {town === 'Valencia' && (
+            <div className="mt-4 rounded-2xl border border-gold/25 bg-gold/10 p-4">
+              <p className="font-body text-xs uppercase tracking-[0.16em] text-gold mb-2">Valencia trip focus · {VALENCIA_TRIP_WINDOW}</p>
+              <div className="grid md:grid-cols-3 gap-2.5">
+                {VALENCIA_TRIP_SUMMARY.map(item => (
+                  <p key={item} className="font-body text-sm text-slate-lt leading-relaxed">{item}</p>
+                ))}
+              </div>
+            </div>
+          )}
           {sources.length > 0 && (
             <div className="mt-3 border-t border-cream pt-3">
               <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Source inbox</p>
@@ -486,23 +561,38 @@ export default function Places() {
         </div>
       </section>
 
-      <section className="pb-8 max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="grid md:grid-cols-2 gap-4">
-          {venueCards.map(({ venue: v, visual, suggestedWines: cardSuggestedWines, sourcedCount }) => (
+      <section className="pb-10 max-w-7xl mx-auto px-6 lg:px-10">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+          <div>
+            <p className="font-body text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8f2d48] mb-2">
+              {town === 'Sheffield' ? 'The Sheffield shortlist' : 'Amanda’s places'}
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl text-[#12232c] leading-none">
+              {town === 'all' ? `${region === 'all' ? 'Every' : region} place worth knowing` : `Where to go in ${town}`}
+            </h2>
+          </div>
+          <p className="font-body text-sm text-slate-lt">{visibleVenues.length} considered places · select one for the full edit</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-5 lg:gap-6">
+          {venueCards.map(({ venue: v, visual, suggestedWines: cardSuggestedWines, sourcedCount }, index) => (
             <button
               key={v.id}
               onClick={() => handleVenueSelect(v.id)}
-              className={`text-left card flex h-full flex-col p-4 transition-all ${venue.id === v.id ? 'border-gold shadow-gold' : ''}`}
+              className={`places-venue-card group text-left flex h-full flex-col p-3.5 sm:p-4 ${venue.id === v.id ? 'is-selected' : ''} ${index === 0 && town === 'Sheffield' ? 'md:col-span-2 lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:gap-5' : ''}`}
             >
-              <div className="mb-4">
+              <div className="relative mb-4 overflow-hidden rounded-[1.45rem]">
                 <VenueVisualPanel
                   venue={v}
                   visual={visual}
                   compact
                   onImageError={() => markVenueImageFailed(v.id)}
                 />
+                {v.guideStatus === 'new' && (
+                  <span className="absolute right-3 top-3 places-new-badge">New to the edit</span>
+                )}
               </div>
-              <div className="mb-4 px-1">
+              <div className="flex flex-col px-1">
+              <div className="mb-4">
                 <p className="font-body text-sm text-slate-lt leading-relaxed line-clamp-2 min-h-[2.75rem]">
                   {visual?.note || v.imageFallbackNote || 'No honest venue photo yet; keeping this card clean and text-led is better than using the wrong image.'}
                 </p>
@@ -541,72 +631,91 @@ export default function Places() {
                 </span>
               </div>
               <p className="font-body text-xs text-gold mt-2">{v.note}</p>
+              </div>
             </button>
           ))}
         </div>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pb-8">
-        <div ref={detailRef} className="surface-panel p-6 lg:p-8">
-          <div className="grid lg:grid-cols-[0.92fr_1.08fr] gap-5 mb-8">
-            <div className="space-y-3">
-              <VenueVisualPanel
-                venue={venue}
-                visual={venueVisual}
-                onImageError={() => markVenueImageFailed(venue.id)}
-              />
-              <div className="rounded-[1.4rem] border border-cream bg-white/72 px-4 py-4 shadow-sm">
-                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-gold mb-1.5">
-                  {venue.town} · {venue.area}
-                </p>
-                <p className="font-display text-2xl text-slate leading-tight">{venue.name}</p>
-                <p className="font-body text-sm text-slate-lt mt-2 leading-relaxed">
-                  {venue.vibe}
-                </p>
-                {venueVisual?.note || venue.imageFallbackNote ? (
-                  <p className="font-body text-xs text-slate-lt/90 mt-3 leading-relaxed">
-                    {venueVisual?.note || venue.imageFallbackNote}
-                  </p>
-                ) : null}
+        <div ref={detailRef} className="places-detail-shell p-4 sm:p-5 lg:p-7">
+          <div className="grid lg:grid-cols-[1.08fr_0.92fr] overflow-hidden rounded-[1.75rem] bg-[#0a1a23] mb-5">
+            <div className="relative min-h-[23rem] lg:min-h-[31rem]">
+              {venueVisual ? (
+                <img
+                  src={venueVisual.src}
+                  alt={venueVisual.alt}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                  onError={() => markVenueImageFailed(venue.id)}
+                />
+              ) : (
+                <VenueFallback venue={venue} />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07151f]/80 via-transparent to-[#07151f]/10" />
+              <div className="absolute left-5 top-5 flex flex-wrap gap-2">
+                {venue.guideStatus === 'new' && <span className="places-new-badge">New to the edit</span>}
+                <span className="places-cover-label places-cover-label-muted">{venue.type}</span>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:hidden">
+                <p className="font-body text-[10px] font-semibold uppercase tracking-[0.22em] text-[#e8c66d]">{venue.town} · {venue.area}</p>
+                <h3 className="font-display text-4xl text-white mt-2 leading-none">{venue.name}</h3>
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-3">
-              {[
-                { label: 'Bottle benchmarks', value: suggestedWines.length, note: 'Amanda-style references already matched to this venue.' },
-                { label: 'Sourced menu wines', value: venueWineItems.length || '0', note: venueWineItems.length ? 'Captured from the current menu or wine list source.' : 'No public wine list ingested yet.' },
-                { label: 'Wine styles on list', value: sourcedCategoryCount || '—', note: sourcedCategoryCount ? 'Different style groups currently visible in the sourced list.' : 'Will populate when a source is added.' },
-                { label: 'Best for', value: venue.bestFor[0], note: venue.bestFor.slice(1).join(' · ') || 'A strong first-use case for this venue.' },
-              ].map((item) => (
-                <div key={item.label} className="card p-4">
-                  <p className="font-body text-[10px] uppercase tracking-[0.18em] text-gold mb-2">{item.label}</p>
-                  <p className="font-display text-3xl text-slate leading-tight">{item.value}</p>
-                  <p className="font-body text-xs text-slate-lt mt-2 leading-relaxed">{item.note}</p>
+            <div className="flex flex-col justify-between p-6 sm:p-8 lg:p-10 text-white">
+              <div>
+                <div className="hidden lg:block">
+                  <p className="font-body text-[10px] font-semibold uppercase tracking-[0.22em] text-[#e8c66d]">Selected room · {venue.town}</p>
+                  <h3 className="font-display text-5xl xl:text-6xl mt-3 leading-[0.9]">{venue.name}</h3>
                 </div>
-              ))}
-              <div className="sm:col-span-2 card p-4">
-                <div className="flex items-end justify-between gap-3 mb-3">
-                  <div>
-                    <p className="font-body text-[10px] uppercase tracking-[0.18em] text-gold mb-1">Amanda shortlist</p>
-                    <p className="font-display text-2xl text-slate">What Amanda would scan for first in this room</p>
-                  </div>
-                  <span className="font-body text-xs text-slate-lt">{venue.note}</span>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  {suggestedWines.slice(0, 3).map(wine => (
-                    <Link
-                      key={wine.id}
-                      to={`/explore/${wine.id}`}
-                      className="rounded-[1.35rem] border border-cream bg-gradient-to-br from-white to-[#f5efe4] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
-                    >
-                      <p className="font-body text-[10px] uppercase tracking-[0.16em] text-gold">{wine.country}</p>
-                      <h4 className="font-display text-lg text-slate leading-tight mt-2">{wine.name}</h4>
-                      <p className="font-body text-xs text-slate-lt mt-1">{wine.producer}</p>
-                      <p className="font-body text-xs text-slate-lt mt-2">{[getWineVintageLabel(wine), wine.price].filter(Boolean).join(' · ')}</p>
-                    </Link>
-                  ))}
-                </div>
+                <p className="font-body text-sm sm:text-base text-[#c7d3d1] leading-relaxed mt-5">{venue.vibe}</p>
+                <blockquote className="mt-6 border-l border-[#e8c66d]/55 pl-5 font-display text-2xl italic leading-snug text-white/90">
+                  {venue.whyAmandaLovesIt}
+                </blockquote>
               </div>
+              <div className="mt-8">
+                <div className="flex flex-wrap gap-2">
+                  {venue.bestFor.map(item => <span key={item} className="places-detail-chip">{item}</span>)}
+                </div>
+                <p className="font-body text-xs text-white/55 mt-5">{venue.note} · {venue.typicalSpend}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-8">
+            {[
+              { label: 'Bottle cues', value: suggestedWines.length, note: 'matched references' },
+              { label: 'Menu wines', value: venueWineItems.length || '—', note: venueWineItems.length ? 'captured from source' : 'source still needed' },
+              { label: 'List styles', value: sourcedCategoryCount || '—', note: sourcedCategoryCount ? 'wine categories' : 'pending list' },
+              { label: 'Go for', value: venue.bestFor[0], note: venue.bestFor.slice(1, 2).join('') || venue.type },
+            ].map((item) => (
+              <div key={item.label} className="places-detail-stat">
+                <p>{item.label}</p>
+                <strong>{item.value}</strong>
+                <span>{item.note}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-[1.65rem] border border-[#18353e]/10 bg-white/70 p-4 sm:p-5 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4">
+              <div>
+                <p className="font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f2d48]">Bottle compass</p>
+                <p className="font-display text-2xl sm:text-3xl text-[#12232c] mt-1">What to scan for first in this room</p>
+              </div>
+              <span className="font-body text-xs text-slate-lt">Amanda-style benchmarks</span>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              {suggestedWines.slice(0, 3).map(wine => (
+                <Link key={wine.id} to={`/explore/${wine.id}`} className="places-bottle-cue">
+                  <p>{wine.country} · {getWineVintageLabel(wine)}</p>
+                  <h4>{wine.name}</h4>
+                  <span>{wine.producer} · {wine.price}</span>
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -620,6 +729,9 @@ export default function Places() {
                 <p className="font-body text-sm text-slate-lt mb-1"><strong className="text-slate">Town:</strong> {venue.town}</p>
                 <p className="font-body text-sm text-slate-lt mb-1"><strong className="text-slate">Typical spend:</strong> {venue.typicalSpend}</p>
                 <p className="font-body text-sm text-slate-lt"><strong className="text-slate">Booking tip:</strong> {venue.reserveTip}</p>
+                {venue.tripTip && (
+                  <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">For {VALENCIA_TRIP_WINDOW}:</strong> {venue.tripTip}</p>
+                )}
                 {venue.address && (
                   <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">Address:</strong> {venue.address}</p>
                 )}
@@ -660,7 +772,7 @@ export default function Places() {
                       : null
                     return (
                       <article key={item.dish} className="rounded-2xl border border-cream bg-white/75 p-4">
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
                           {featuredBottleImage ? (
                             <Link
                               to={`/explore/${item.featuredWine.id}`}
