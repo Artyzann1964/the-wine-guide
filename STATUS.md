@@ -4,8 +4,9 @@ Last updated: 2026-08-22
 Build status: `npm run build` passes cleanly
 Test status: `npm test -- --run` passes cleanly (`122/122`)
 Deployment: Railway production at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
-Release state: Sheffield and Valencia Places refresh verified locally; production deployment pending
-Latest deployed source commit: `a87a593 feat: expand Valencia places guide`
+Release state: Sheffield and Valencia Places refresh deployed and verified in production
+Latest deployed source commit: `7431a8f feat: reimagine Sheffield and Valencia places guide`
+Latest Railway deployment: `79a5e86e-b63b-4461-b4fe-1a3487205925` (`SUCCESS`)
 
 ## Current Snapshot
 
@@ -56,6 +57,18 @@ Latest deployed source commit: `a87a593 feat: expand Valencia places guide`
   - all five new Sheffield venues are navigable
   - the themed shortlist rail and venue detail transitions work
   - town chips remain usable as a horizontal swipe rail on mobile
+
+## Production Verification - 2026-08-22
+
+- Railway deployment `79a5e86e-b63b-4461-b4fe-1a3487205925`: `SUCCESS`
+- Linked target: `lucid-surprise` / `production` / `the-wine-guide`
+- Production `/healthz`: `{"ok":true}`
+- Production root response: HTTP 200 from Railway
+- Live browser check at `/#/places?venue=gillsons-brasserie`:
+  - Sheffield hero and all five new additions rendered
+  - Gillson's Brasserie detail content rendered
+  - 15 Sheffield places and 98 total venues reported
+  - browser console: 0 errors, 0 warnings
 
 ## Important Files
 
