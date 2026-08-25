@@ -12,8 +12,10 @@ import { existsSync, readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { venueWineLists, venueWineListIds } from '../data/venueWineLists.js'
 import { VENUES } from '../data/places.js'
+import { wines } from '../data/wines.js'
 
 const KNOWN_VENUE_IDS = new Set(VENUES.map(venue => venue.id))
+const KNOWN_WINE_IDS = new Set(wines.map(wine => wine.id))
 
 const VALID_CATEGORIES = new Set([
   'white',
@@ -70,6 +72,22 @@ describe('venueWineLists — venue ID cross-reference', () => {
       console.error('Wine-list IDs not found in VENUES:', orphans)
     }
     expect(orphans).toHaveLength(0)
+  })
+})
+
+describe('places — data references', () => {
+  it('every venue ID is unique', () => {
+    expect(KNOWN_VENUE_IDS.size).toBe(VENUES.length)
+  })
+
+  it('every suggested wine ID exists in the wine dataset', () => {
+    const missing = VENUES.flatMap(venue =>
+      venue.wineIds
+        .filter(wineId => !KNOWN_WINE_IDS.has(wineId))
+        .map(wineId => `${venue.id}: ${wineId}`)
+    )
+
+    expect(missing).toHaveLength(0)
   })
 })
 

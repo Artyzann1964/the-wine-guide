@@ -1,93 +1,101 @@
 # The Wine Guide - Project Status
 
-Last updated: 2026-08-22
-Build status: `npm run build` passes cleanly
-Test status: `npm test -- --run` passes cleanly (`122/122`)
+Last updated: 2026-08-25
+Build status: `npm run build` passes
+Test status: `npm test -- --run` passes (`124/124`)
 Deployment: Railway production at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
-Release state: Sheffield and Valencia Places refresh deployed and verified in production
-Latest deployed source commit: `7431a8f feat: reimagine Sheffield and Valencia places guide`
-Application release deployment: `79a5e86e-b63b-4461-b4fe-1a3487205925` (`SUCCESS`; subsequently superseded by an equivalent documentation-only rebuild)
+Release state: Berlin Places release candidate verified locally; production release evidence will be added after deployment
+Release target: `lucid-surprise` / `production` / `the-wine-guide`
 
 ## Current Snapshot
 
-- App architecture: React 18 + Vite SPA behind an Express server (`server.mjs`)
+- Architecture: React 18 + Vite SPA served by Express (`server.mjs`)
 - Routing: `HashRouter`
 - Wine data: 321 wines
-- Places guide: 98 venues across 26 towns in 4 region groups
-- Sheffield coverage: 15 venues, including 5 newly researched wine-led or independent additions
-- Valencia coverage: 29 venues, with trip-planning cues and two new near-Calle-de-Escolano additions
+- Places guide: 114 venues across 27 towns in 4 region groups
+- Berlin coverage: 16 venues, led by 10 relaxed wine-bar, bistro and sharing-plate recommendations
+- Sheffield coverage: 15 venues
+- Valencia coverage: 29 venues
 - Venue wine-list sources: 15 sourced venue lists in `src/data/venueWineLists.js`
-- Places imagery follows a strict provenance policy: genuine venue photography or a deliberate text-led fallback
-- Cellar sync: intentionally untouched during this Places work
+- Places imagery policy: genuine venue photography or a deliberate text-led fallback
+- Cellar sync: intentionally untouched during this Places release
 
-## Release Candidate - 2026-08-22
+## Berlin Places Release - 2026-08-25
 
-### Sheffield guide and UI
+### Relaxed wine-bar and bistro shortlist
 
-- Rebuilt Amanda's Places as a more editorial, city-guide experience with:
-  - a high-impact Sheffield hero and live guide statistics
-  - a swipeable themed shortlist rail
-  - clearer region, town and venue navigation
-  - a dark, immersive venue detail panel
-  - practical occasion, atmosphere, bottle and nearby-venue cues
-  - improved responsive behaviour at a 390 x 844 mobile viewport
-- Made Sheffield the default Places destination and Gillson's Brasserie the opening venue.
-- Added five current Sheffield candidates:
-  - Gillson's Brasserie
-  - Restaurant Elm
-  - Bench La Cave
-  - Bark's Wine
-  - Grub Records
+The Berlin guide now leads with the social, wine-led brief rather than formal destination dining:
 
-### Valencia guide
+1. Trio
+2. Pluto
+3. Ottorink Weinbar
+4. ORA
+5. Jaja
+6. La Buvette
+7. Briefmarken Weine / Il Brief
+8. Der Weinlobbyist
+9. Barra
+10. Standard Serious Pizza
 
-- Added 2 Estaciones and Nuvo, taking Valencia to 29 entries.
-- Added trip-mode and near-Calle-de-Escolano guidance alongside practical booking, timing and ordering cues.
-- Preserved the existing evidence-led venue descriptions and intentional text-led fallbacks.
+These sit ahead of the six previously researched Berlin entries:
 
-## Local Verification - 2026-08-22
+- Muret la Barba
+- Freundschaft
+- Restaurant Chateau Royal
+- Bandol sur mer
+- Cookies Cream
+- Rutz
 
-- `npm test -- --run`: passed, `122/122`
+The set covers lean, mid-range, premium and luxury occasions across Mitte and well-connected nearby neighbourhoods. Trio is the modern German Wirtshaus answer; Pluto, Ottorink, Jaja and Der Weinlobbyist are the closest Gill & Co-style matches; ORA and Briefmarken supply the more unusual settings.
+
+### Data integrity and imagery
+
+- Added Berlin to the Europe town filter.
+- Added invariant coverage for unique venue IDs.
+- Added invariant coverage ensuring every venue `wineIds` reference exists in the wine dataset.
+- Verified all exposed Berlin images in a real browser.
+- Jaja remains deliberately text-led because its official site exposes no stable room image.
+- Ottorink remains deliberately text-led because its official image host returned HTTP 429 in browser use.
+
+## Local Verification - 2026-08-25
+
+- `npm test -- --run`: passed, `124/124`
 - `npm run build`: passed
 - `git diff --check`: passed
-- Desktop browser QA: passed with no runtime errors
-- Mobile browser QA at 390 x 844: passed with no runtime errors
-- Verified key UI states:
-  - Sheffield opens by default
-  - all five new Sheffield venues are navigable
-  - the themed shortlist rail and venue detail transitions work
-  - town chips remain usable as a horizontal swipe rail on mobile
+- Desktop browser QA at 1280px: passed
+- Mobile browser QA at 390 x 844: passed
+- Berlin town filter: 16 considered places
+- Ten new relaxed Berlin cards present in the intended order
+- Failed venue images: 0
+- Horizontal overflow: none
+- Browser console errors: 0
+- Existing non-blocking warnings: React Router future flags and stale Browserslist metadata
 
-## Production Verification - 2026-08-22
+## Production Verification - Pending
 
-- Application release deployment `79a5e86e-b63b-4461-b4fe-1a3487205925`: `SUCCESS`
-- Subsequent documentation pushes may create equivalent no-code Railway rebuilds; use Railway's live deployment status for the current instance ID.
-- Linked target: `lucid-surprise` / `production` / `the-wine-guide`
-- Production `/healthz`: `{"ok":true}`
-- Production root response: HTTP 200 from Railway
-- Live browser check at `/#/places?venue=gillsons-brasserie`:
-  - Sheffield hero and all five new additions rendered
-  - Gillson's Brasserie detail content rendered
-  - 15 Sheffield places and 98 total venues reported
-  - browser console: 0 errors, 0 warnings
+Record the following after the release is deployed:
 
-## Important Files
+- committed source revision
+- GitHub `origin/main` parity
+- Railway deployment ID and final status
+- production `/healthz` response
+- production root HTTP response
+- live Berlin Places browser evidence
+
+## Release Files
 
 - `src/data/places.js`
-  - Main Places dataset
-  - Current Sheffield count: 15
-  - Current Valencia count: 29
-  - Current total venue count: 98
-- `src/pages/Sheffield.jsx`
-  - Amanda's Places page structure, filters and editorial experience
-- `src/index.css`
-  - Places visual system, motion and responsive treatments
-- `src/data/venueWineLists.js`
-  - Sourced venue wine-list data
+  - 16 researched Berlin venues and Berlin town-group registration
 - `src/__tests__/venueWineLists.invariants.test.js`
-  - Venue wine-list and venue image invariants
-- `public/venue-images/`
-  - Local verified venue images
+  - unique venue-ID and wine-reference invariants
+- `STATUS.md`
+  - current release and verification record
+- `CLAUDE.md`
+  - current project facts for future sessions
+- `AGENTS.md`
+  - current project facts for Codex sessions
+- `CODEX_HANDOFF.md`
+  - release-specific handoff
 
 ## Deployment and Persistence
 
@@ -96,32 +104,21 @@ Application release deployment: `79a5e86e-b63b-4461-b4fe-1a3487205925` (`SUCCESS
 - Railway service: `the-wine-guide`
 - Railway runs `npm start`, which starts `server.mjs`
 - The Express server serves `dist/` and exposes the cellar sync APIs
-- Production Railway domain:
-  - [https://the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
 - Production persistence variables documented for the project:
   - `CELLAR_SYNC_STORE_PATH=/app/data/cellar-sync-store.json`
   - `RAILWAY_VOLUME_MOUNT_PATH=/app/data`
 
 ## Current Risks and Notes
 
-1. Cellar sync remains intentionally untouched.
-   Treat sync/auth work as a separate cautious project.
-
-2. Places image quality policy still matters.
-   Do not use retailer logos, bottle labels, vineyard stand-ins, food-only shots, slogans or guessed CDN paths for venue cards. If there is no honest venue image, keep the card text-led.
-
-3. Several venues are deliberately text-led.
-   This is preferable to weak, misleading or unstable imagery.
-
+1. Cellar sync remains intentionally untouched. Treat sync/auth work as a separate cautious project.
+2. Do not weaken the Places image provenance policy to fill text-led cards.
+3. Remote opening hours, prices, awards and menus can change; refresh venue facts before later trip use.
 4. The shared data bundle remains the main performance hotspot.
-   The app builds cleanly, but future performance work should start with splitting or lazy-loading the guide data.
-
-5. Unrelated local workspace files remain untracked.
-   Local notes, source images, scripts, output folders and CSVs are excluded from this release.
+5. Unrelated local images, datasets, sourcing notes, scripts and output folders are outside this release and must remain untouched.
 
 ## Suggested Next Improvements
 
-- Add stable official venue photography where it can be verified without weakening provenance.
-- Add sourced wine-list data for the highest-priority Sheffield and Valencia venues where public lists exist.
-- Add URL support for `region` and `town` query parameters; deep-linking is currently venue-based via `?venue=...`.
+- Add URL support for `region` and `town` query parameters so Berlin can be deep-linked directly.
+- Add sourced wine-list data for the highest-priority Berlin wine bars where stable public lists exist.
+- Re-check Berlin opening hours shortly before travel.
 - Profile and split the shared wine and guide data bundle as a separate performance tranche.

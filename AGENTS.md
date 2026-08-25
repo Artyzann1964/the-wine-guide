@@ -1,4 +1,4 @@
-# The Wine Guide - CLAUDE.md
+# The Wine Guide - AGENTS.md
 
 Project memory for future coding sessions. Keep this aligned with the live codebase.
 
