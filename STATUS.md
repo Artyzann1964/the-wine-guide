@@ -4,8 +4,10 @@ Last updated: 2026-08-25
 Build status: `npm run build` passes
 Test status: `npm test -- --run` passes (`124/124`)
 Deployment: Railway production at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
-Release state: Berlin Places release candidate verified locally; production release evidence will be added after deployment
+Release state: Berlin Places release deployed and verified in production
 Release target: `lucid-surprise` / `production` / `the-wine-guide`
+Application source commit: `47cddf2 feat: add Berlin wine bar guide`
+Application release deployment: `3853c615-b114-462c-8b97-5cdc0d2b7976` (`SUCCESS`)
 
 ## Current Snapshot
 
@@ -71,16 +73,23 @@ The set covers lean, mid-range, premium and luxury occasions across Mitte and we
 - Browser console errors: 0
 - Existing non-blocking warnings: React Router future flags and stale Browserslist metadata
 
-## Production Verification - Pending
+## Production Verification - 2026-08-25
 
-Record the following after the release is deployed:
-
-- committed source revision
-- GitHub `origin/main` parity
-- Railway deployment ID and final status
-- production `/healthz` response
-- production root HTTP response
-- live Berlin Places browser evidence
+- Application source commit: `47cddf2 feat: add Berlin wine bar guide`
+- GitHub push: `origin/main` matched the application commit before the final documentation update
+- Railway deployment: `3853c615-b114-462c-8b97-5cdc0d2b7976` (`SUCCESS`)
+- Production `/healthz`: `{"ok":true}`
+- Production root: HTTP 200 from Railway/Express
+- Runtime startup log: `Wine Guide server listening on 8080`
+- Live browser check at `/#/places`:
+  - Europe then Berlin filter selected successfully
+  - 16 considered Berlin places rendered
+  - all 10 new relaxed Berlin venue headings rendered
+  - failed venue images: 0
+  - desktop overflow at 1280px: none
+  - mobile overflow at 390 x 844: none
+  - browser console: 0 errors, 0 warnings
+- A final documentation-only push may trigger an equivalent Railway rebuild; the application release deployment above is the verified code release.
 
 ## Release Files
 
@@ -115,6 +124,7 @@ Record the following after the release is deployed:
 3. Remote opening hours, prices, awards and menus can change; refresh venue facts before later trip use.
 4. The shared data bundle remains the main performance hotspot.
 5. Unrelated local images, datasets, sourcing notes, scripts and output folders are outside this release and must remain untouched.
+6. Railway's release build reported 20 dependency audit findings: 1 low, 9 moderate and 10 high. This is a pre-existing dependency-maintenance backlog and was not changed during the Places release.
 
 ## Suggested Next Improvements
 

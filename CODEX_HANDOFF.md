@@ -6,7 +6,7 @@ Last updated: 2026-08-25
 
 The Berlin Places guide has been expanded to 16 recommendations and reorganised around Richard's actual brief: cool, well-regarded wine bars, bistros, small plates and relaxed rooms, with different price points and straightforward access from Mitte.
 
-The production deployment is the remaining release step at the time of this draft. Final commit, Railway and live-route evidence will be appended after deployment.
+The Berlin release has been committed, pushed, deployed to Railway production and verified in the live browser.
 
 ## What Changed
 
@@ -64,20 +64,28 @@ No cellar, sync, authentication, database or server code was changed.
 - Horizontal overflow: none
 - Browser console errors: 0
 
-## Release Evidence - Pending
+## Release Evidence
 
-Complete after deployment:
-
-- application commit
-- documentation commit, if separate
-- Railway deployment ID
-- Railway deployment status
-- production `/healthz`
-- live Berlin Places verification
+- Application commit: `47cddf2 feat: add Berlin wine bar guide`
+- Application commit pushed to `origin/main`
+- Railway deployment: `3853c615-b114-462c-8b97-5cdc0d2b7976`
+- Railway status: `SUCCESS`
+- Production `/healthz`: `{"ok":true}`
+- Production root: HTTP 200
+- Runtime startup: clean; Express listening on port 8080
+- Live Berlin Places check:
+  - 16 considered places
+  - all 10 new relaxed venue cards present
+  - no failed images
+  - no desktop or 390 x 844 mobile overflow
+  - browser console: 0 errors, 0 warnings
+- The final handoff/status update is a documentation-only commit after the application release. If Git integration rebuilds it, the application content is equivalent.
 
 ## Workspace Boundary
 
 Only the Berlin Places tranche and current project documentation belong in this release. Existing untracked images, CSVs, sourcing packs, scripts and `output/` material are unrelated local work and must not be staged implicitly.
+
+Railway's build reported 20 dependency audit findings (1 low, 9 moderate and 10 high). Treat this as a separate dependency-maintenance task; it was not introduced or resolved by the Berlin content release.
 
 ## Recommended Next Work
 
