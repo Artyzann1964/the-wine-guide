@@ -1,13 +1,13 @@
 # The Wine Guide - Project Status
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26
 Build status: `npm run build` passes
 Test status: `npm test -- --run` passes (`124/124`)
 Deployment: Railway production at [the-wine-guide-production.up.railway.app](https://the-wine-guide-production.up.railway.app)
-Release state: Berlin Places release deployed and verified in production
+Release state: Berlin Places photography correction deployed and verified in production
 Release target: `lucid-surprise` / `production` / `the-wine-guide`
-Application source commit: `47cddf2 feat: add Berlin wine bar guide`
-Application release deployment: `3853c615-b114-462c-8b97-5cdc0d2b7976` (`SUCCESS`)
+Application source commit: `7076f31 fix: add Berlin venue photography`
+Application release deployment: `b4c91d0e-8c48-40b6-b228-edafff568e35` (`SUCCESS`)
 
 ## Current Snapshot
 
@@ -19,7 +19,7 @@ Application release deployment: `3853c615-b114-462c-8b97-5cdc0d2b7976` (`SUCCESS
 - Sheffield coverage: 15 venues
 - Valencia coverage: 29 venues
 - Venue wine-list sources: 15 sourced venue lists in `src/data/venueWineLists.js`
-- Places imagery policy: genuine venue photography or a deliberate text-led fallback
+- Places imagery policy: genuine venue photography or a deliberate text-led fallback; all 16 Berlin cards now have photography
 - Cellar sync: intentionally untouched during this Places release
 
 ## Berlin Places Release - 2026-08-25
@@ -56,10 +56,23 @@ The set covers lean, mid-range, premium and luxury occasions across Mitte and we
 - Added invariant coverage for unique venue IDs.
 - Added invariant coverage ensuring every venue `wineIds` reference exists in the wine dataset.
 - Verified all exposed Berlin images in a real browser.
-- Jaja remains deliberately text-led because its official site exposes no stable room image.
-- Ottorink remains deliberately text-led because its official image host returned HTTP 429 in browser use.
+- Replaced Trio's browser-failing visitBerlin source with a genuine IGNANT dining-room image by Robert Rieger.
+- Replaced Pluto's slogan artwork with a genuine interior image by Robert Rieger, published by The Spaces and credited courtesy Pluto.
+- Added genuine venue photography for Ottorink via Raisin and Jaja via Falstaff, removing both Berlin text-led fallbacks.
 
-## Local Verification - 2026-08-25
+## Berlin Photography Correction - 2026-08-26
+
+- Application commit: `7076f31 fix: add Berlin venue photography`
+- Railway deployment: `b4c91d0e-8c48-40b6-b228-edafff568e35` (`SUCCESS`)
+- Production `/healthz`: `{"ok":true}`
+- Production root: HTTP 200
+- Live browser QA at 1280px and 390 x 844:
+  - Trio, Pluto, Ottorink and Jaja each rendered a real venue photograph at its expected natural dimensions
+  - Berlin heading and 16-place result count remained intact
+  - horizontal overflow: none
+  - browser console: 0 errors, 0 warnings
+
+## Local Verification - 2026-08-26
 
 - `npm test -- --run`: passed, `124/124`
 - `npm run build`: passed

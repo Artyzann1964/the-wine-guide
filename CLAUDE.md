@@ -226,13 +226,12 @@ Current intentional text-led venues:
 - `sail-fish-cap-ferret` (SSL error)
 - `beatson-house-cawthorne` (Wix site)
 - `seasons-wickersley` (Wix site)
-- `jaja-berlin` (official site exposes no reliable room photograph)
-- `ottorink-berlin` (official image host returned HTTP 429 in browser QA)
 
 Notable CDN patterns confirmed working:
 - Accor hotels: `https://m.ahstatic.com/is/image/accorhotels/[id]?qlt=82&wid=1200`
 - Catch at Old Fish Market uses `/upl_images/` paths, not WordPress
 - Rick Stein blocks WebFetch with 403 site-wide; Chrome extension JS also blocked
+- Berlin publisher/guide imagery verified in-browser: IGNANT for Trio, The Spaces for Pluto, Raisin for Ottorink and Falstaff for Jaja
 
 Note on Singapore: **Alma at Goodwood Park was permanently closed** and has been replaced with **Gordon Grill** (`gordon-grill-goodwood-park`) at the same 22 Scotts Road address. Gordon Grill has been operating since 1963 in the same heritage building. Alma (`alma-goodwood-park-singapore`) no longer exists in the VENUES array.
 
@@ -295,10 +294,10 @@ Build config:
 - chunk size warning limit is raised to `800`
 - the wine dataset still lands in its own large shared chunk
 
-Current verified build output from 2026-08-25:
-- `index`: 793.42 kB / 193.83 kB gzip
+Current verified build output from 2026-08-26:
+- `index`: 793.42 kB / 193.85 kB gzip
 - `vendor`: 162.98 kB / 53.24 kB gzip
-- `Sheffield`: 357.14 kB / 101.63 kB gzip
+- `Sheffield`: 357.53 kB / 101.79 kB gzip
 - `Education`: 102.47 kB / 30.35 kB gzip
 - `Cellar`: 89.54 kB / 19.38 kB gzip
 - `WineDetail`: 45.15 kB / 10.52 kB gzip
