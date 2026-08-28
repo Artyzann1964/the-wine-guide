@@ -135,8 +135,10 @@ Production guide: [open the Budapest Places edit](https://the-wine-guide-product
 - Tests: **130/130 passed** on 28 August 2026.
 - Production build: **passed** on 28 August 2026; 31 PWA precache entries generated.
 - Internal browser: 35-place Budapest edition rendered; FELIX booking, route distances, contact details, live menu buttons and dish recommendations confirmed.
-- Release commit: pending final commit.
-- Railway deployment: pending final production verification.
+- Feature commit: `3e94d18` (`feat: expand Budapest trip guide`).
+- Cache-safe production commit: `987b8c5` (`fix: invalidate cached Budapest guide bundle`).
+- Railway deployment: `5da5a018-160b-4291-a431-871c630ff401` completed successfully against `lucid-surprise / production / the-wine-guide`.
+- Live verification: production serves the new `index-ckWjJrq3.js` app shell; `/healthz` returned `{"ok":true}`; the internal browser rendered 35 Budapest places and the expanded shortlist.
 
 ## Files changed
 
