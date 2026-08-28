@@ -31,6 +31,15 @@ const VALENCIA_TRIP_SUMMARY = [
   'Sunday and Monday need extra care: several serious kitchens close one or both days, so check the official site before travelling across town.',
 ]
 
+const BUDAPEST_TRIP_WINDOW = 'Corinthia Budapest base · September 2026'
+const BUDAPEST_TRIP_SUMMARY = [
+  'The Corinthia at Erzsébet körút 43–49 is the fixed travel base. Jewish Quarter, Oktogon and Liszt Ferenc Square choices are mostly walkable.',
+  'For timed Buda reservations such as FELIX, Déryné or Stand25, a taxi is usually the cleanest choice. Tram 4/6 is the useful public-transport spine from the hotel.',
+  'Price conversions use the 28 August 2026 MNB rate of 425.37 Ft to £1. Allow for card conversion spread and check whether a 12–15% service charge is already included.',
+]
+
+const HUF_PER_GBP = 425.37
+
 const SHEFFIELD_NEW_IDS = [
   'gillsons-brasserie-sheffield',
   'restaurant-elm-sheffield',
@@ -39,9 +48,20 @@ const SHEFFIELD_NEW_IDS = [
   'grub-records-sheffield',
 ]
 
-function formatVenueWinePrice(price) {
+function formatVenueWinePrice(price, venueWineInfo) {
   if (typeof price !== 'number') return 'Price on menu'
+  if (venueWineInfo?.currency === 'HUF') {
+    const rate = venueWineInfo.gbpRate || HUF_PER_GBP
+    return `${price.toLocaleString('en-GB')} Ft · approx ${formatPrice(price / rate, { decimals: 0 })}`
+  }
   return formatPrice(price, { decimals: Number.isInteger(price) ? 0 : 2 })
+}
+
+function formatBudapestMenuPrice(priceHuf) {
+  if (typeof priceHuf !== 'number') return null
+  const huf = `${priceHuf.toLocaleString('en-GB')} Ft`
+  const gbp = formatPrice(priceHuf / HUF_PER_GBP, { decimals: 2 })
+  return `${huf} · approx ${gbp}`
 }
 
 function normalizeVenueWineCategory(category) {
@@ -537,6 +557,16 @@ export default function Places() {
               </div>
             </div>
           )}
+          {town === 'Budapest' && (
+            <div className="mt-4 rounded-2xl border border-gold/25 bg-gold/10 p-4">
+              <p className="font-body text-xs uppercase tracking-[0.16em] text-gold mb-2">Budapest trip focus · {BUDAPEST_TRIP_WINDOW}</p>
+              <div className="grid md:grid-cols-3 gap-2.5">
+                {BUDAPEST_TRIP_SUMMARY.map(item => (
+                  <p key={item} className="font-body text-sm text-slate-lt leading-relaxed">{item}</p>
+                ))}
+              </div>
+            </div>
+          )}
           {sources.length > 0 && (
             <div className="mt-3 border-t border-cream pt-3">
               <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">Source inbox</p>
@@ -615,6 +645,8 @@ export default function Places() {
               )}
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {v.bestFor.map(item => <span key={item} className="chip bg-cream text-slate-lt">{item}</span>)}
+                {v.mealTimes?.slice(0, 3).map(item => <span key={`meal-${item}`} className="chip bg-white border border-gold/25 text-gold">{item}</span>)}
+                {v.budgetLevel && <span className="chip bg-white border border-cream text-slate">{v.budgetLevel}</span>}
                 {v.amandaFavourite && (
                   <span className="chip bg-gold text-white">Amanda favourite</span>
                 )}
@@ -679,6 +711,8 @@ export default function Places() {
               <div className="mt-8">
                 <div className="flex flex-wrap gap-2">
                   {venue.bestFor.map(item => <span key={item} className="places-detail-chip">{item}</span>)}
+                  {venue.mealTimes?.map(item => <span key={`meal-${item}`} className="places-detail-chip">{item}</span>)}
+                  {venue.budgetLevel && <span className="places-detail-chip">{venue.budgetLevel}</span>}
                 </div>
                 <p className="font-body text-xs text-white/55 mt-5">{venue.note} · {venue.typicalSpend}</p>
               </div>
@@ -729,6 +763,9 @@ export default function Places() {
                 <p className="font-body text-sm text-slate-lt mb-1"><strong className="text-slate">Town:</strong> {venue.town}</p>
                 <p className="font-body text-sm text-slate-lt mb-1"><strong className="text-slate">Typical spend:</strong> {venue.typicalSpend}</p>
                 <p className="font-body text-sm text-slate-lt"><strong className="text-slate">Booking tip:</strong> {venue.reserveTip}</p>
+                {venue.fromHotel && (
+                  <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">From Corinthia Budapest:</strong> {venue.fromHotel}</p>
+                )}
                 {venue.tripTip && (
                   <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">For {VALENCIA_TRIP_WINDOW}:</strong> {venue.tripTip}</p>
                 )}
@@ -750,6 +787,11 @@ export default function Places() {
                   {venue.instagram && (
                     <a href={venue.instagram} target="_blank" rel="noopener noreferrer" className="btn-secondary">Instagram ↗</a>
                   )}
+                  {venue.menus?.map(menu => (
+                    <a key={menu.url} href={menu.url} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                      {menu.label} ↗
+                    </a>
+                  ))}
                 </div>
               </div>
               {venueMenuHighlights.length ? (
@@ -759,11 +801,18 @@ export default function Places() {
                       <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-1">Current Menu Cues</p>
                       <p className="font-display text-2xl text-slate">What to order at {venue.name}</p>
                     </div>
-                    {venueWineInfo?.sourceUrl && (
-                      <a href={venueWineInfo.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
-                        Open menu PDF ↗
-                      </a>
-                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {venueWineInfo?.sourceUrl && (
+                        <a href={venueWineInfo.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                          Open wine source ↗
+                        </a>
+                      )}
+                      {venue.menus?.map(menu => (
+                        <a key={menu.url} href={menu.url} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                          {menu.format === 'PDF' ? 'Download menu PDF' : menu.label} ↗
+                        </a>
+                      ))}
+                    </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-3">
                   {venueMenuHighlights.map((item) => {
@@ -792,6 +841,9 @@ export default function Places() {
                           <div className="min-w-0">
                             <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-2">{venue.type}</p>
                             <h4 className="font-display text-2xl text-slate leading-tight">{item.dish}</h4>
+                            {item.priceHuf && (
+                              <p className="font-body text-sm font-semibold text-gold mt-1">{formatBudapestMenuPrice(item.priceHuf)}</p>
+                            )}
                             <p className="font-body text-sm text-slate-lt mt-2 leading-relaxed">{item.note}</p>
                             <p className="font-body text-sm text-slate mt-3">
                               <strong className="text-slate">Best glass:</strong> {item.pour}
@@ -928,7 +980,7 @@ export default function Places() {
                               {item.country && <span className="chip bg-white border border-cream text-slate-lt">{item.country}</span>}
                             </div>
                           </div>
-                          <p className="font-body text-sm font-semibold text-gold whitespace-nowrap">{formatVenueWinePrice(item.price)}</p>
+                          <p className="font-body text-sm font-semibold text-gold whitespace-nowrap">{formatVenueWinePrice(item.price, venueWineInfo)}</p>
                         </div>
                         {(item.review || item.stars || item.reviewSource || item.libraryWineId) && (
                           <div className="mt-3 pt-3 border-t border-cream">

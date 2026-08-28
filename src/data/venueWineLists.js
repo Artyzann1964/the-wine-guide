@@ -2,6 +2,30 @@
 // Keep IDs aligned with src/pages/Sheffield.jsx venue IDs.
 
 export const venueWineLists = {
+  "felix-budapest": {
+    "source": "FELIX official wine list PDF — current Hall of Fame selection",
+    "sourceUrl": "https://felixbudapest.com/wp-content/uploads/2025/06/borlap_uj_arculattal-06.24.pdf",
+    "checkedOn": "2026-08-28",
+    "currency": "HUF",
+    "gbpRate": 425.37,
+    "priceNote": "Bottle prices in Hungarian Forint from the official FELIX list. These are the trophy-cellar pages, not a recommended everyday shortlist; 15% service is additional and vintages may change.",
+    "curatedProfile": "Current published cellar landmarks captured to make the scale of the list transparent; ask the sommelier for Hungarian alternatives at a stated budget.",
+    "items": [
+      { "name": "Bollinger R.D. 2008", "price": 219000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "Hall of Fame; RP 98" },
+      { "name": "Louis Roederer Cristal Vinothèque 1999", "price": 749000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "Hall of Fame; JS 98" },
+      { "name": "Pol Roger Sir Winston Churchill Magnum 2015", "price": 319000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "1.5 litre; WE 98" },
+      { "name": "Salon Blanc de Blancs Magnum 2013", "price": 919000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "1.5 litre; RP 97" },
+      { "name": "Domaine Vougeraie Charlemagne Grand Cru 2021", "price": 199000, "category": "white", "country": "France", "region": "Burgundy", "page": 1, "note": "Hall of Fame; TA 96" },
+      { "name": "Trimbach Riesling Clos Sainte Hune 2015", "price": 209000, "category": "white", "country": "France", "region": "Alsace", "page": 1, "note": "Hall of Fame; RP 97" },
+      { "name": "Faiveley Bienvenues-Bâtard-Montrachet Grand Cru 2022", "price": 239000, "category": "white", "country": "France", "region": "Burgundy", "page": 1, "note": "Hall of Fame; TA 98" },
+      { "name": "Vincent Dauvissat Chablis Les Clos Grand Cru 2010", "price": 319000, "category": "white", "country": "France", "region": "Chablis", "page": 1, "note": "Hall of Fame; RP 96" },
+      { "name": "Ornellaia 2016", "price": 269000, "category": "red", "country": "Italy", "region": "Tuscany", "page": 1, "note": "Hall of Fame; RP 98" },
+      { "name": "Lokoya Mount Veeder Cabernet Sauvignon 2013", "price": 329000, "category": "red", "country": "United States", "region": "Napa Valley", "page": 1, "note": "Hall of Fame; RP 100" },
+      { "name": "Ornellaia Masseto 2007", "price": 619000, "category": "red", "country": "Italy", "region": "Tuscany", "page": 1, "note": "Hall of Fame; WE 100" },
+      { "name": "Pétrus, Pomerol 2010", "price": 3490000, "category": "red", "country": "France", "region": "Bordeaux", "page": 1, "note": "Hall of Fame; RP 100" },
+      { "name": "Barta Öreg Király Tokaji Aszú 6 Puttonyos 2016", "price": 86900, "category": "dessert", "country": "Hungary", "region": "Tokaj", "page": 1, "note": "Hall of Fame; D 97" }
+    ]
+  },
   "hawksmoor-air-street": {
     "source": "Hawksmoor Air Street wine list PDF from official site",
     "sourceUrl": "https://thehawksmoor.com/wp-content/uploads/2025/12/AS-WINE-291225-BJ.pdf",

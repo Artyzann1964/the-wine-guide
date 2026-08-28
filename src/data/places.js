@@ -1,6 +1,8 @@
 // Venues + filter taxonomies for Amanda's Places guide.
 // Extracted from src/pages/Sheffield.jsx to keep the page chunk lean.
 
+import { BUDAPEST_VENUES } from './budapestPlaces.js'
+
 export const VENUES = [
   {
     id: 'gill-and-co',
@@ -2802,6 +2804,7 @@ export const VENUES = [
     wineIds: ['laurent-perrier-la-cuvee-nv', 'aldi-costellore-prosecco-spumante-nv', 'pol-roger-brut-reserve-nv', 'tesco-finest-provence-rose'],
   },
   // ── Singapore ─────────────────────────────────────────────────────────────
+  ...BUDAPEST_VENUES,
   {
     id: 'long-bar-raffles-singapore',
     name: 'The Long Bar at Raffles',
@@ -3147,7 +3150,7 @@ export const TOWNS = ['all', ...new Set(VENUES.map(v => v.town))]
 
 export const TOWN_GROUPS = [
   { region: 'UK', towns: ['Sheffield', 'Stannington', 'Morpeth', 'Stroud', 'Walton-on-Thames', 'London', 'Chelmsford', 'Leeds', 'Harrogate', 'York', 'Poole', 'Weymouth', 'Wentworth', 'Penistone', 'Doncaster', 'Barnsley', 'Rotherham'] },
-  { region: 'Europe', towns: ['Valencia', 'Málaga', 'Berlin', 'Munich', 'Arcachon', 'Cap Ferret'] },
+  { region: 'Europe', towns: ['Valencia', 'Málaga', 'Berlin', 'Munich', 'Budapest', 'Arcachon', 'Cap Ferret'] },
   { region: 'Asia', towns: ['Singapore'] },
   { region: 'Americas', towns: ['New York', 'Miami', 'Panama City'] },
 ]
