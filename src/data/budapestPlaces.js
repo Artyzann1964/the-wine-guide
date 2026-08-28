@@ -1,3 +1,5 @@
+import { BUDAPEST_PRACTICAL_ENRICHMENTS, BUDAPEST_VENUE_ADDITIONS } from './budapestPlacesExpansion.js'
+
 // Budapest trip edit for September 2026.
 // Corinthia Budapest, Erzsebet korut 43-49, is the travel reference point.
 // GBP conversions use the Magyar Nemzeti Bank rate published 2026-08-28:
@@ -793,12 +795,14 @@ const BUDAPEST_PROFILE_ENRICHMENTS = {
   },
 }
 
-export const BUDAPEST_VENUES = BUDAPEST_VENUES_BASE.map((venue) => {
+export const BUDAPEST_VENUES = [...BUDAPEST_VENUES_BASE, ...BUDAPEST_VENUE_ADDITIONS].map((venue) => {
   const enrichment = BUDAPEST_PROFILE_ENRICHMENTS[venue.id] || {}
+  const practical = BUDAPEST_PRACTICAL_ENRICHMENTS[venue.id] || {}
   const { additionalMenus = [], additionalHighlights = [], ...profile } = enrichment
 
   return {
     ...venue,
+    ...practical,
     ...profile,
     menus: [...(venue.menus || []), ...additionalMenus],
     menuHighlights: [...(venue.menuHighlights || []), ...additionalHighlights],

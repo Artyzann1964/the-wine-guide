@@ -51,10 +51,10 @@ const SHEFFIELD_NEW_IDS = [
 
 const BUDAPEST_HERO_IDS = [
   'felix-budapest',
-  'stand25-budapest',
-  'salt-budapest',
-  'kadarka-wine-bar-budapest',
-  'szimpla-kert-budapest',
+  'tati-budapest',
+  'stand-restaurant-budapest',
+  'n28-budapest',
+  'a38-ship-budapest',
 ]
 
 function formatVenueWinePrice(price, venueWineInfo) {
@@ -456,7 +456,7 @@ export default function Places() {
               </h1>
               <p className="font-body text-[#c7d3d1] max-w-2xl text-base sm:text-lg leading-relaxed mt-7">
                 {isBudapestView
-                  ? 'Twenty considered places for breakfast, lunch, dinner, Hungarian wine, craft beer and a proper night out — planned from the Corinthia Budapest without a car.'
+                  ? 'Thirty-five considered places for breakfast, lunch, dinner, Hungarian wine, craft beer, cocktails, live music and a proper night out — planned from the Corinthia Budapest without a car.'
                   : 'A personal field guide to rooms worth crossing Sheffield for — from candlelit natural wine and vinyl to the city’s newest serious brasserie.'}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -491,8 +491,8 @@ export default function Places() {
                   </p>
                 </div>
               </div>
-              <div className="places-issue-stamp" aria-label={isBudapestView ? 'Twenty Budapest places considered' : 'Five new Sheffield discoveries'}>
-                <strong>{isBudapestView ? '20' : '05'}</strong>
+              <div className="places-issue-stamp" aria-label={isBudapestView ? `${budapestVenueCount} Budapest places considered` : 'Five new Sheffield discoveries'}>
+                <strong>{isBudapestView ? budapestVenueCount : '05'}</strong>
                 <span>{isBudapestView ? 'trip picks' : 'new finds'}</span>
               </div>
             </div>
@@ -801,6 +801,9 @@ export default function Places() {
                 )}
                 {venue.fromHotel && (
                   <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">From Corinthia Budapest:</strong> {venue.fromHotel}</p>
+                )}
+                {venue.distanceFromHotel && (
+                  <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">Route distance:</strong> {venue.distanceFromHotel}</p>
                 )}
                 {venue.tripTip && (
                   <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">For {VALENCIA_TRIP_WINDOW}:</strong> {venue.tripTip}</p>
