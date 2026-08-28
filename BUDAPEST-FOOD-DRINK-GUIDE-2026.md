@@ -143,4 +143,5 @@ Production guide: [open the Budapest Places edit](https://the-wine-guide-product
 - `src/data/budapestPlacesExpansion.js` — 15 new full profiles and practical/contact/distance enrichment for all 35 venues.
 - `src/data/budapestPlaces.js` — composes the original and expanded Budapest datasets.
 - `src/pages/Sheffield.jsx` — 35-place Budapest presentation, new shortlist and explicit route-distance field.
+- `src/main.jsx` — release marker to invalidate stale app-shell caches when the lazy Places bundle changes.
 - `BUDAPEST-FOOD-DRINK-GUIDE-2026.md` — this handover.
