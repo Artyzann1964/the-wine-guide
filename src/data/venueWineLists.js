@@ -3,27 +3,25 @@
 
 export const venueWineLists = {
   "felix-budapest": {
-    "source": "FELIX official wine list PDF — current Hall of Fame selection",
-    "sourceUrl": "https://felixbudapest.com/wp-content/uploads/2025/06/borlap_uj_arculattal-06.24.pdf",
+    "source": "FELIX official July 2026 wine list and August 2026 food-and-glass menu",
+    "sourceUrl": "https://felixbudapest.com/wp-content/uploads/2026/07/borlap_uj-1.pdf",
     "checkedOn": "2026-08-28",
     "currency": "HUF",
     "gbpRate": 425.37,
-    "priceNote": "Bottle prices in Hungarian Forint from the official FELIX list. These are the trophy-cellar pages, not a recommended everyday shortlist; 15% service is additional and vintages may change.",
-    "curatedProfile": "Current published cellar landmarks captured to make the scale of the list transparent; ask the sommelier for Hungarian alternatives at a stated budget.",
+    "priceNote": "Bottle prices in Hungarian Forint; current 125 ml glass prices are shown in notes where published. A 15% service charge is additional and vintages may change.",
+    "curatedProfile": "Useful Hungarian by-the-glass choices come first, followed by a few cellar landmarks to show the list's upper range. State the bottle budget before asking for alternatives.",
     "items": [
-      { "name": "Bollinger R.D. 2008", "price": 219000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "Hall of Fame; RP 98" },
-      { "name": "Louis Roederer Cristal Vinothèque 1999", "price": 749000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "Hall of Fame; JS 98" },
-      { "name": "Pol Roger Sir Winston Churchill Magnum 2015", "price": 319000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "1.5 litre; WE 98" },
-      { "name": "Salon Blanc de Blancs Magnum 2013", "price": 919000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "1.5 litre; RP 97" },
-      { "name": "Domaine Vougeraie Charlemagne Grand Cru 2021", "price": 199000, "category": "white", "country": "France", "region": "Burgundy", "page": 1, "note": "Hall of Fame; TA 96" },
-      { "name": "Trimbach Riesling Clos Sainte Hune 2015", "price": 209000, "category": "white", "country": "France", "region": "Alsace", "page": 1, "note": "Hall of Fame; RP 97" },
-      { "name": "Faiveley Bienvenues-Bâtard-Montrachet Grand Cru 2022", "price": 239000, "category": "white", "country": "France", "region": "Burgundy", "page": 1, "note": "Hall of Fame; TA 98" },
-      { "name": "Vincent Dauvissat Chablis Les Clos Grand Cru 2010", "price": 319000, "category": "white", "country": "France", "region": "Chablis", "page": 1, "note": "Hall of Fame; RP 96" },
-      { "name": "Ornellaia 2016", "price": 269000, "category": "red", "country": "Italy", "region": "Tuscany", "page": 1, "note": "Hall of Fame; RP 98" },
-      { "name": "Lokoya Mount Veeder Cabernet Sauvignon 2013", "price": 329000, "category": "red", "country": "United States", "region": "Napa Valley", "page": 1, "note": "Hall of Fame; RP 100" },
-      { "name": "Ornellaia Masseto 2007", "price": 619000, "category": "red", "country": "Italy", "region": "Tuscany", "page": 1, "note": "Hall of Fame; WE 100" },
-      { "name": "Pétrus, Pomerol 2010", "price": 3490000, "category": "red", "country": "France", "region": "Bordeaux", "page": 1, "note": "Hall of Fame; RP 100" },
-      { "name": "Barta Öreg Király Tokaji Aszú 6 Puttonyos 2016", "price": 86900, "category": "dessert", "country": "Hungary", "region": "Tokaj", "page": 1, "note": "Hall of Fame; D 97" }
+      { "name": "Kreinbacher Classic Brut Magnum NV", "price": 41900, "category": "sparkling", "country": "Hungary", "region": "Nagy-Somló", "page": 1, "note": "Recommended local aperitif; 125 ml glass 3,990 Ft" },
+      { "name": "Váli Tabula Rasa Rajnai Rizling 2023", "price": 23900, "category": "white", "country": "Hungary", "region": "Badacsony", "page": 1, "note": "125 ml glass 4,390 Ft; useful volcanic-region white" },
+      { "name": "Balassa x Czinki Szent Tamás Furmint 2023", "price": 35900, "category": "white", "country": "Hungary", "region": "Tokaj", "page": 1, "note": "125 ml glass 5,990 Ft; first recommendation with seafood or tartare" },
+      { "name": "Jakab Syrah 2022", "price": 25900, "category": "red", "country": "Hungary", "region": "Badacsony", "page": 1, "note": "125 ml glass 4,790 Ft" },
+      { "name": "Heumann Trinitás Villányi Cabernet Franc 2019", "price": 30900, "category": "red", "country": "Hungary", "region": "Villány", "page": 1, "note": "125 ml glass 5,190 Ft; strongest value red for beef" },
+      { "name": "St. Andrea Merengő Egri Bikavér Grand Superior 2013", "price": 45900, "category": "red", "country": "Hungary", "region": "Eger", "page": 1, "note": "125 ml Coravin glass 8,490 Ft; mature local alternative to Bordeaux" },
+      { "name": "Pol Roger Sir Winston Churchill Vinothèque 2002", "price": 359000, "category": "sparkling", "country": "France", "region": "Champagne", "page": 1, "note": "International Icons cellar landmark" },
+      { "name": "Trimbach Riesling Clos Sainte Hune 2015", "price": 209000, "category": "white", "country": "France", "region": "Alsace", "page": 1, "note": "International Icons cellar landmark" },
+      { "name": "Tenuta dell'Ornellaia Ornellaia 2014", "price": 219000, "category": "red", "country": "Italy", "region": "Tuscany", "page": 1, "note": "International Icons cellar landmark" },
+      { "name": "Pétrus, Pomerol 2020", "price": 2190000, "category": "red", "country": "France", "region": "Bordeaux", "page": 1, "note": "Trophy reference, not the practical recommendation" },
+      { "name": "Domaine de la Romanée-Conti La Tâche Grand Cru 2019", "price": 2899000, "category": "red", "country": "France", "region": "Burgundy", "page": 1, "note": "Highest-tier trophy reference" }
     ]
   },
   "hawksmoor-air-street": {

@@ -3,7 +3,7 @@
 // GBP conversions use the Magyar Nemzeti Bank rate published 2026-08-28:
 // GBP 1 = HUF 425.37. They are planning estimates, not payment quotes.
 
-export const BUDAPEST_VENUES = [
+const BUDAPEST_VENUES_BASE = [
   {
     id: 'cirkusz-budapest',
     name: 'Cirkusz',
@@ -21,7 +21,7 @@ export const BUDAPEST_VENUES = [
     fromHotel: 'About a 10–12 minute walk from Corinthia Budapest; no transport needed.',
     address: 'Dob utca 25, 1074 Budapest',
     website: 'https://cirkuszbp.hu/',
-    menus: [{ label: 'Download brunch menu PDF', url: 'https://cirkuszbp.hu/wp-content/uploads/2025/02/2025_etlap_web.pdf', format: 'PDF' }],
+    menus: [{ label: 'View current all-day brunch menu', url: 'https://cirkuszbp.hu/#menu', format: 'Web' }],
     image: 'https://cirkuszbp.hu/img/ml_210918_021.jpg',
     imageAlt: 'Cirkusz Budapest official brunch room image',
     imageEyebrow: 'Official venue image',
@@ -52,7 +52,7 @@ export const BUDAPEST_VENUES = [
     address: 'Gerlóczy utca 1, 1052 Budapest',
     phone: '+36 1 501 4000',
     website: 'https://gerloczy.hu/',
-    menus: [{ label: 'Download English menu PDF', url: 'https://www.diningcity.hu/media/restaurantmenus/gerloczy_kavehaz_en_41733.pdf', format: 'PDF' }],
+    menus: [{ label: 'Open current food, drinks and daily menus', url: 'https://gerloczy.hu/#featured-breads', format: 'Web' }],
     imageFallbackLabel: 'Parisian café on a quiet square',
     imageFallbackNote: 'A calm, old-world terrace and dining room that works from breakfast through a live-music dinner.',
     stylePrompts: ['Coffeehouse breakfast', 'Austrian white', 'Hungarian Furmint', 'Light lunch wine'],
@@ -278,17 +278,20 @@ export const BUDAPEST_VENUES = [
     vibe: 'A glamorous Danube-side dining room in Miklós Ybl’s restored 1875 Water House, combining a broad international menu, Josper grill, cocktails and one of Budapest’s most ambitious cellars.',
     whyAmandaLovesIt: 'Felix is a setting-led premium night that also has enough substance behind the room. The menu ranges widely, so order with discipline: one or two excellent starters, a Josper main, and use Master Sommelier Tamás Czinki’s team to find a Hungarian bottle rather than wandering into the trophy pages. The 15% service charge materially changes the final bill.',
     bestFor: ['Big Budapest evening', 'Serious cellar', 'Danube + Buda setting'],
-    mealTimes: ['Brunch', 'Lunch', 'Dinner', 'Drinks'],
+    mealTimes: ['Lunch', 'Dinner', 'Drinks'],
     budgetLevel: '££££',
-    typicalSpend: '18,000–40,000 Ft per person · about £42–94 before wine and 15% service',
+    typicalSpend: '25,000–50,000 Ft per person · about £59–118 before substantial wine and 15% service',
     reserveTip: 'Book ahead and request the main historic room or terrace. Ask the sommelier for a Hungarian bottle at a firm HUF ceiling before opening the list.',
+    bookingNote: 'Booked for Thursday 3 September 2026 at 19:30.',
     fromHotel: 'Allow 12–18 minutes by taxi. Public transport is roughly 30 minutes; for an evening reservation, a taxi is the cleanest choice.',
     address: 'Ybl Miklós tér 9, 1013 Budapest',
     website: 'https://felixbudapest.com/',
     menus: [
-      { label: 'Download current à la carte menu PDF', url: 'https://felixbudapest.com/wp-content/uploads/2025/03/Alacarte_eng_allergen_frissitett_2025_online.pdf', format: 'PDF' },
-      { label: 'Download full wine list PDF', url: 'https://felixbudapest.com/wp-content/uploads/2025/06/borlap_uj_arculattal-06.24.pdf', format: 'PDF' },
-      { label: 'Download brunch menu PDF', url: 'https://felixbudapest.com/wp-content/uploads/2024/04/felix_brunch_2024_online-1.pdf', format: 'PDF' },
+      { label: 'Download August 2026 à la carte PDF', url: 'https://felixbudapest.com/wp-content/uploads/2026/08/B4_etlap_EN_2026_07_online.pdf', format: 'PDF' },
+      { label: 'Download July 2026 wine list PDF', url: 'https://felixbudapest.com/wp-content/uploads/2026/07/borlap_uj-1.pdf', format: 'PDF' },
+      { label: 'Download seasonal dessert PDF', url: 'https://felixbudapest.com/wp-content/uploads/2026/07/felix_desszert_seasonal_menu_100x375mm_online.pdf', format: 'PDF' },
+      { label: 'Download current drinks PDF', url: 'https://felixbudapest.com/wp-content/uploads/2026/05/Felix_drinks_2026_06.pdf', format: 'PDF' },
+      { label: 'Download current cocktail PDF', url: 'https://felixbudapest.com/wp-content/uploads/2026/05/koktellap_2026_158x297mm_final_online.pdf', format: 'PDF' },
     ],
     image: 'https://welovebudapest.com/i/62/fe-lix-20190423-hirling-ba-lint-008.inbox1560x1170.jpg',
     imageAlt: 'FELIX Kitchen and Bar historic gilded interior',
@@ -297,10 +300,11 @@ export const BUDAPEST_VENUES = [
     imageNote: 'The gilded arches, circular lights and tall windows explain why FELIX is being considered as an occasion restaurant.',
     stylePrompts: ['Hungarian sommelier selection', 'Furmint with seafood', 'Bordeaux with Josper beef', 'Tokaji finish'],
     menuHighlights: [
-      { dish: 'French beef steak tartare', priceHuf: 8490, note: 'A polished starter that suits the grand-room setting without immediately escalating to caviar.', pour: 'Ask for a structured Hungarian white or a light red by the glass.' },
-      { dish: 'Dorade fillet from the Josper', priceHuf: 12990, note: 'The cleaner premium main before side dishes and service.', pour: 'Dry Furmint, Somló Juhfark or a mineral white.' },
-      { dish: 'Hungarian tomahawk, 1 kg', priceHuf: 49990, note: 'A sharing centrepiece; sides and the 15% service charge are additional.', pour: 'Set a bottle budget first and ask for Hungarian Cabernet Franc or mature Bikavér.' },
-      { dish: 'Golden baked pastry for 2–3', priceHuf: 7990, note: 'Walnut, vanilla sauce and salted-caramel ice cream; 500 Ft supports a university foundation.', pour: 'Tokaji Aszú by the glass is the natural finish.' },
+      { dish: 'Truffled beef steak tartare', priceHuf: 9990, note: 'A luxurious but shareable opening plate that fits the room without immediately escalating to caviar.', pour: 'Kreinbacher sparkling or Balassa x Czinki dry Furmint by the glass.' },
+      { dish: 'FELIX signature breaded veal chop', priceHuf: 16990, note: 'Cotoletta alla Milanese is the named house signature and a more distinctive order than an anonymous steak.', pour: 'A textured dry Hungarian white or a lighter Kékfrankos.' },
+      { dish: 'FELIX beef tenderloin piccata', priceHuf: 13990, note: 'Served with mashed potatoes; polished comfort food with a recognisable FELIX identity.', pour: 'Heumann Villány Cabernet Franc or St. Andrea Bikavér by the glass.' },
+      { dish: 'Chilean sea bass from the Josper', priceHuf: 18990, note: 'The cleanest premium seafood main; garnish is additional because Josper dishes arrive without sides.', pour: 'Balassa x Czinki Furmint or the Badacsony Riesling by the glass.' },
+      { dish: 'Beef Wellington for 2–3', priceHuf: 59990, note: 'A true sharing centrepiece with buttered mash, tenderstem broccoli and jus.', pour: 'Set the bottle ceiling first; ask for mature Bikavér or Villány Cabernet Franc.' },
     ],
     wineIds: ['trimbach-clos-ste-hune', 'chateau-margaux-2015', 'barolo-conterno', 'dom-perignon-2013'],
   },
@@ -379,7 +383,7 @@ export const BUDAPEST_VENUES = [
     address: 'Király utca 42, 1061 Budapest',
     phone: '+36 1 266 5094',
     website: 'https://kadarkawinebar.com/',
-    menus: [{ label: 'View live wine list', url: 'https://kadarkawinebar.com/winelist/', format: 'Web' }],
+    menus: [{ label: 'View published official wine list', url: 'http://kadarkawinebar.com/winelist/', format: 'Web' }],
     image: 'https://xpatloop.com/binaries/content/gallery/2025-photos/food--drink/01/wine-bars/kadarka-wine-bar-budapest-10.jpg/kadarka-wine-bar-budapest-10.jpg/xpatloop%3Achannelslarge',
     imageAlt: 'Kadarka Wine Bar Budapest interior',
     imageEyebrow: 'Budapest wine guide image',
@@ -573,3 +577,231 @@ export const BUDAPEST_VENUES = [
     wineIds: ['bollinger-special-cuvee', 'dom-perignon-2013', 'trimbach-clos-ste-hune', 'vacheron-sancerre-le-pave'],
   },
 ]
+
+const BUDAPEST_PROFILE_ENRICHMENTS = {
+  'cirkusz-budapest': {
+    knownFor: 'Its Benedicts, own-roasted Bagira coffee and unusually substantial all-day brunches; this is a food-first breakfast rather than a pastry-and-coffee stop.',
+    orderStrategy: 'Go before 09:00, order one Benedict-style plate and the Bagira coffee. Choose the Recovery Breakfast only when it genuinely replaces lunch.',
+    additionalHighlights: [
+      { dish: 'Bagira speciality coffee', note: 'Cirkusz has roasted its own coffee since 2015; it is as central to the place as the brunch menu.', pour: 'Ask what is working best that morning as espresso or flat white.' },
+    ],
+  },
+  'gerloczy-cafe-budapest': {
+    knownFor: 'A Parisian-style terrace, an elegant eggs-Benedict breakfast and an all-day Austro-Hungarian café rhythm with live mood music at dinner.',
+    orderStrategy: 'Use it for a calm breakfast or lunch on the terrace. The Gerlóczy breakfast is the complete first order; at dinner, ask for the current Hungarian seasonal special.',
+    image: 'https://res2.weblium.site/res/64f1cb79ad4fa60016c9ed10/64f5ee4b86e89500177265d2_optimized',
+    imageAlt: 'Guests dining with wine in the official Gerlóczy Café dining room',
+    imageEyebrow: 'Official venue image',
+    imageAccent: 'Quiet downtown café',
+    imageNote: 'An official dining-room photograph shows the intimate green banquettes, white-clothed tables and unhurried café character.',
+    additionalHighlights: [
+      { dish: 'Viennese breakfast', priceHuf: 5900, note: 'Coffee or tea, juice or cordial, crisp Viennese sausage, Dijon mustard and sourdough bread.', pour: 'Coffee first; add a light Hungarian sparkling glass only if this is becoming brunch.' },
+    ],
+  },
+  'new-york-cafe-budapest': {
+    knownFor: 'The gilded neo-Renaissance room, live music and theatrical café experiences rather than value; the setting is the signature dish.',
+    orderStrategy: 'Arrive near 07:00 and buy the experience with one showpiece drink or cake. Avoid an elaborate full meal unless the room matters more than the food bill.',
+    additionalHighlights: [
+      { dish: '24-carat-gold cappuccino experience', note: 'The official signature pairs a gold-finished cappuccino with Valrhona chocolate and raspberry cake.', pour: 'Share if possible; this is the most room-specific order rather than the best-value coffee.' },
+    ],
+  },
+  'deryne-budapest': {
+    knownFor: 'Weekend Champagne brunch, oysters, caviar, house sourdough and croissants, plus a formidable dry-aged steak and whole-fish counter.',
+    orderStrategy: 'For the full Déryné experience, book weekend brunch, start with Prosecco and oysters, then choose a warm breakfast plate or chicken paprikash. Do not drift into prestige steak pricing without asking the weight and total price.',
+    additionalHighlights: [
+      { dish: 'Oysters and Prosecco', note: 'The official house recommendation for beginning its late, DJ-backed weekend brunch.', pour: 'A mineral Champagne or the driest Prosecco on the list.' },
+      { dish: 'Pistachio croissant', note: 'Made through Déryné’s own bakery and a sensible way to sample the institution without committing to the full brunch.', pour: 'Cappuccino or espresso; keep this visit simple.' },
+      { dish: 'Chicken paprikash', note: 'A comfort-food anchor specifically promoted as part of the long brunch-to-lunch progression.', pour: 'Dry Furmint or a light, peppery Kékfrankos.' },
+    ],
+  },
+  'getto-gulyas-budapest': {
+    knownFor: 'Pörkölt—slow-cooked paprika stew—in many forms, plus gulyás soup, chicken paprikash and other direct Hungarian comfort dishes.',
+    orderStrategy: 'Learn the local distinction: gulyás is soup; pörkölt is the thick stew many visitors expect. Share a gulyás starter, then order one pörkölt with dumplings or tarhonya and finish with túrógombóc or Somlói.',
+    additionalHighlights: [
+      { dish: 'Red-wine beef pörkölt', note: 'The menu’s core proposition: slow-cooked beef in a deep paprika sauce with house-made tarhonya pasta.', pour: 'Kékfrankos or a restrained Egri Bikavér.' },
+      { dish: 'Túrógombóc', note: 'Warm Hungarian cottage-cheese dumplings are the lighter, more characteristic finish.', pour: 'A small late-harvest Tokaji if available.' },
+    ],
+  },
+  'menza-budapest': {
+    knownFor: 'Reliable modernised Hungarian standards, a large Liszt Ferenc tér terrace and a kitchen broad enough for mixed appetites.',
+    orderStrategy: 'Order from the Hungarian core rather than the international filler: goulash, chicken paprikash, pörkölt, duck or Somlói. Check the weekly board because seasonal dishes change frequently.',
+    additionalHighlights: [
+      { dish: 'Traditional chicken paprikash', priceHuf: 4890, note: 'A farmhouse-style paprika chicken with sour cream and homemade spaetzle; one of the safest local orders.', pour: 'Dry Furmint, Olaszrizling or a light Kékfrankos.' },
+      { dish: 'Somlói-style sponge cake', priceHuf: 2890, note: 'The recognisably Hungarian dessert to choose over the more international sweets.', pour: 'Coffee or a small Tokaji; sharing is sensible after a full main.' },
+    ],
+  },
+  'mazel-tov-budapest': {
+    knownFor: 'Its planted glass-roofed courtyard, creamy hummus, sharing mezze and a lively Tel Aviv-style grill menu.',
+    orderStrategy: 'Book the main courtyard and build a table: hummus or the dip selection, one hot mezze and the mixed TLV grill for two. It works better shared than as separate starter-main orders.',
+    additionalHighlights: [
+      { dish: 'Matzo schnitzel', priceHuf: 5490, note: 'Thin chicken breast in a crisp matzo crumb with chive potato salad.', pour: 'Dry white, rosé or a simple lager.' },
+      { dish: 'Jerusalem cheesecake or flódni', priceHuf: 2450, note: 'Two place-appropriate finishes; choose the layered flódni for the stronger Jewish-Hungarian connection.', pour: 'Coffee or a small sweet Tokaji.' },
+    ],
+  },
+  'rosenstein-budapest': {
+    knownFor: 'Family-run Jewish-Hungarian cooking: matzo-ball consommé, goose, cholent, catfish paprikash and flódni.',
+    orderStrategy: 'Treat this as a traditional destination meal. Start with matzo-ball consommé or Jewish egg spread, choose catfish paprikash or goose, and leave room for flódni.',
+    image: 'https://rosenstein.hu/wp-content/uploads/rosenstein-vendeglo-fooldai-slider-01.jpg',
+    imageAlt: 'Official photograph of the red Rosenstein restaurant frontage in Budapest',
+    imageEyebrow: 'Official venue image',
+    imageAccent: 'Family institution near Keleti',
+    imageNote: 'The unmistakable red-and-blue official frontage is useful arrival recognition on a quiet side street near Keleti station.',
+    additionalHighlights: [
+      { dish: 'Matzo-ball consommé', note: 'A defining Jewish-Hungarian first course and a gentler lead-in than starting with a rich goose plate.', pour: 'Dry Furmint or simply sparkling water before the red wine.' },
+      { dish: 'Roast goose leg', note: 'Served traditionally with braised cabbage and onion mashed potatoes.', pour: 'Kadarka or Kékfrankos; ask for a Hungarian recommendation in the middle of the list.' },
+    ],
+  },
+  'stand25-budapest': {
+    knownFor: 'Chef Tamás Széll and Szabina Szulló’s precise versions of goulash and Somlói, alongside lángos, schnitzel and seasonal Hungarian produce.',
+    orderStrategy: 'The three-course menu is the clearest route. If choosing à la carte, make either goulash or Stand25 lángos the starter, take the seasonal Hungarian main and insist on Somlói for dessert.',
+    additionalHighlights: [
+      { dish: 'Stand25 lángos', priceHuf: 5900, note: 'Their polished version comes with grated Balaton cheese and aged ham.', pour: 'A high-acid dry Furmint or Somló white.' },
+      { dish: 'Somlói', note: 'One of the two emblematic dishes the restaurant itself identifies with its chefs.', pour: 'Tokaji, coffee, or share it without another drink.' },
+    ],
+  },
+  'felix-budapest': {
+    knownFor: 'A glamorous riverside room, luxury seafood and caviar, dry-aged beef, truffled steak tartare and an exceptionally deep trophy-cellar wine list.',
+    orderStrategy: 'For the Thursday 19:30 booking, arrive by taxi, begin with Hungarian sparkling wine, share the truffled tartare, then choose the signature veal chop, beef piccata or Chilean sea bass. State the wine budget before the sommelier opens the trophy pages.',
+    additionalHighlights: [
+      { dish: 'Kreinbacher Classic Brut Magnum', priceHuf: 3990, note: 'A 125 ml Hungarian traditional-method sparkling pour and the most locally grounded aperitif.', pour: 'Start here before the food rather than defaulting to imported Champagne.' },
+      { dish: 'Balassa x Czinki Szent Tamás Furmint 2023', priceHuf: 5990, note: 'A 125 ml Tokaj pour with a direct connection to FELIX Master Sommelier Tamás Czinki.', pour: 'The first still-wine recommendation for tartare, sea bass or the prawn dish.' },
+    ],
+  },
+  'borkonyha-budapest': {
+    knownFor: 'Michelin-starred Hungarian ingredients in a relaxed bistro format, backed by serious Hungarian wine and flexible four- or six-course menus.',
+    orderStrategy: 'Choose the four-course menu for balance or six courses for the full evening. For à la carte, ask the sommelier to build a Hungarian-only glass sequence around pike-perch or Mangalica.',
+    image: 'https://borkonyha.hu/wp-content/uploads/2017/08/img_1995.jpg',
+    imageAlt: 'Official Borkonyha photograph of the chef finishing a dish',
+    imageEyebrow: 'Official venue image',
+    imageAccent: 'Michelin wine kitchen',
+    imageNote: 'An official kitchen photograph emphasises the chef-led precision behind a deliberately un-stuffy dining room.',
+    additionalHighlights: [
+      { dish: 'Four-course degustation menu', priceHuf: 39000, note: 'The best balance between experiencing the kitchen and preserving the rest of the evening.', pour: 'The standard wine pairing is 29,000 Ft; ask whether a shorter Hungarian-only sequence is possible.' },
+      { dish: 'Duck liver, capia and green apple', priceHuf: 9750, note: 'A current starter that combines a Hungarian luxury ingredient with enough acidity to stay lively.', pour: 'Tokaji Szamorodni, late-harvest Tokaj or a precise dry Furmint.' },
+    ],
+  },
+  'salt-budapest': {
+    knownFor: 'István Veres’s contemporary Hungarian peasant cooking, foraged and fermented ingredients, cabbage pasta and a long open-kitchen tasting narrative.',
+    orderStrategy: 'Commit to the experience rather than trying to optimise individual courses. The local Carpathian pairing is the most coherent alcoholic choice; the house-juice pairing is a serious alternative.',
+    additionalHighlights: [
+      { dish: 'Cabbage pasta à la SALT', note: 'A year-round signature that turns a divisive Hungarian peasant staple into a contemporary statement.', pour: 'Let the pairing team decide; its sweetness-versus-savoury tension is part of the dish.' },
+      { dish: 'Duck liver, woodruff and rhubarb ponzu', priceHuf: 8000, note: 'A previous signature available as an optional extra on top of the tasting menu.', pour: 'Only add it if appetite allows; the local pairing is designed to accommodate it.' },
+    ],
+  },
+  'kadarka-wine-bar-budapest': {
+    knownFor: 'A broad, approachable Hungarian by-the-glass list, numerous fröccs formats and the chance to compare native grapes without ceremony.',
+    orderStrategy: 'Ask for four small pours in a deliberate arc: volcanic white, dry Tokaj, Kadarka and Kékfrankos. Name a total budget and avoid defaulting to familiar international grapes.',
+    additionalHighlights: [
+      { dish: 'Kreinbacher Brut Nature', priceHuf: 1990, note: 'A useful benchmark for Hungarian traditional-method sparkling wine; the listed price is the larger by-the-glass pour.', pour: 'Start here before moving into still whites.' },
+      { dish: 'Kadarka and Kékfrankos comparison', note: 'Ask for two small red pours side by side to understand Hungary’s lighter spicy red and its firmer, darker counterpart.', pour: 'Keep both lightly chilled and add a simple cheese or charcuterie plate if available.' },
+    ],
+  },
+  'tasting-table-budapest': {
+    knownFor: 'Structured sommelier-led Hungarian wine education in a brick cellar, paired with artisan cheese and charcuterie.',
+    orderStrategy: 'Book the 18:00 eight-wine Essentials tasting early in the trip. Choose Deluxe only if rare top-shelf bottles matter more than the foundational regional overview.',
+    additionalHighlights: [
+      { dish: 'Deluxe Hungarian wine tasting', note: 'Eight higher-end and more unusual Hungarian wines with cheese, charcuterie and chef-prepared bites.', pour: '€89; best for an enthusiast who already knows the basics and wants rarer producers.' },
+      { dish: 'Wine-shop staff pour', note: 'Across the road, the shop opens changing bottles by the glass and can help select bottles to take home.', pour: 'Ask for a dry Tokaj, a volcanic Balaton white and one distinctive red within an airline-safe bottle budget.' },
+    ],
+  },
+  'vinopest-budapest': {
+    knownFor: 'A changing 500-plus-bottle selection, all-day sommelier guidance and particularly useful coverage of Tokaj, volcanic Balaton whites and Villány reds.',
+    orderStrategy: 'Ask the sommelier for five to seven small Hungarian pours rather than browsing 500 labels. Specify dry styles, preferred weight and a firm total budget.',
+    image: 'https://static.wixstatic.com/media/3c7f5d_2d21e53dc7bd4902abc5c9c5535bb528~mv2.jpg',
+    imageAlt: 'Official VinoPest photograph of hanging glasses and wine shelves behind the bar',
+    imageEyebrow: 'Official venue image',
+    imageAccent: 'Wine bar and bottle shop',
+    imageNote: 'The official bar photograph shows exactly what matters here: proper glassware and bottle depth rather than decorative theatre.',
+    additionalHighlights: [
+      { dish: 'Five-to-seven-wine sommelier flight', note: 'The house’s recommended personalised format, selected from more than 500 changing wines.', pour: 'Ask for dry Tokaj, Somló or Badacsony, then Kékfrankos and Villány Cabernet Franc.' },
+      { dish: 'Volcanic white comparison', note: 'Compare Balaton Highlands or Somló with dry Tokaji Furmint to understand Hungary beyond sweet Tokaj.', pour: 'Request small measures and region-first explanation rather than producer prestige.' },
+      { dish: 'Bottle to take home', note: 'The shop format makes this one of the more practical places to buy after tasting.', pour: 'Ask for a distinctive Hungarian bottle unavailable in UK supermarkets and check airline packing.' },
+    ],
+  },
+  'hopaholic-budapest': {
+    knownFor: 'Ten rapidly rotating taps and a huge international bottle-and-can range, with Budapest Beer Week connections and unusually geeky staff knowledge.',
+    orderStrategy: 'Open the verified live tap list, then ask for two small pours: one Hungarian or Budapest Beer Week beer and one bar-team wildcard. Check ABV before ordering the imperial stout or wild ale.',
+    image: 'https://i0.wp.com/jetsettingfools.com/wp-content/uploads/2018/01/Hopaholic-Craft-Beer-Bar-Budapest-Hungary.jpg?resize=1024%2C683&ssl=1',
+    imageAlt: 'Hopaholic Budapest craft beer bar interior with green counter and bottle shelves',
+    imageEyebrow: 'Independent guide photograph',
+    imageAccent: 'Five minutes from the hotel',
+    imageNote: 'A genuine room photograph shows the compact green bar, ten taps and bottle-packed shelves more honestly than a brewery logo.',
+    additionalMenus: [
+      { label: 'View verified live tap list', url: 'https://untappd.com/v/hopaholic-craft-beer-bar-and-food-budapest/4012673', format: 'Web' },
+    ],
+    additionalHighlights: [
+      { dish: 'Current Hungarian or BPBW tap', note: 'The verified list changes quickly; at the latest check the Budapest Beer Week 2026 Pilsner was available.', pour: 'Start with 0.3 l, then decide whether to move hoppier, darker or sour.' },
+      { dish: 'Bar-team wildcard', note: 'Give the bartender one preferred style and a maximum ABV; the deep imported range is the point of the bar.', pour: 'Choose the smallest available measure for rare wild ales or double stouts.' },
+      { dish: 'Bottle-shop discovery', note: 'Use the fridges for one bottle that is genuinely hard to find rather than a familiar international label.', pour: 'Ask whether it is suitable to drink there or better taken away.' },
+    ],
+  },
+  'elesztohaz-budapest': {
+    knownFor: 'Thirty craft taps across an industrial courtyard complex, supported by a butcher’s kitchen, spirit bar and several different rooms.',
+    orderStrategy: 'Make this the beer-led evening. Ask for a three-beer Hungarian flight—lager or pilsner, pale/IPA and dark or sour—then order from the butcher’s kitchen before the stronger taps.',
+    image: 'https://en.elesztohaz.hu/wp-content/uploads/2021/04/Full_DSC04276-1280x1919.jpg',
+    imageAlt: 'Official Élesztőház photograph of the brick craft-beer courtyard and bar entrance',
+    imageEyebrow: 'Official venue image',
+    imageAccent: 'Thirty-tap beer courtyard',
+    imageNote: 'The official vertical courtyard view captures the raw brick, communal tables and dedicated Élesztő bar entrance.',
+    additionalMenus: [
+      { label: 'View the Butcher’s Kitchen', url: 'https://butcherskitchen.hu/', format: 'Web' },
+    ],
+    additionalHighlights: [
+      { dish: 'Three-beer Hungarian tap flight', note: 'Build a progression across three local breweries rather than committing immediately to a full pint.', pour: 'Ask what was tapped most recently and keep the strongest beer last.' },
+      { dish: 'Butcher’s Kitchen roast or sandwich', note: 'The in-house kitchen is designed for hearty food that can carry a longer beer session.', pour: 'Dark lager, amber ale or porter with roast meat; pale ale with a crisp sandwich.' },
+      { dish: 'One sour or experimental tap', note: 'Use the depth of thirty taps to try a style that the smaller central bars may not have.', pour: 'Take the smallest pour—the beer list is the evening, not any single pint.' },
+    ],
+  },
+  'szimpla-kert-budapest': {
+    knownFor: 'The original large-scale ruin-bar labyrinth: multiple rooms, recycled installations, live culture and a Sunday farmers’ market.',
+    orderStrategy: 'Visit in daylight or before 20:00, walk the whole building and buy one straightforward local beer or fröccs. Do not expect specialist wine advice or make it the drinking-quality centre of the night.',
+    additionalMenus: [
+      { label: 'View official events and market information', url: 'https://szimpla.hu/', format: 'Web' },
+    ],
+    additionalHighlights: [
+      { dish: 'Local draught beer', note: 'Choose a simple Hungarian lager or pale ale and concentrate on exploring the building.', pour: 'One drink is enough to experience the room before the late-night crush.' },
+      { dish: 'Fröccs', note: 'Wine and soda is the light, genuinely local alternative in a venue where the surroundings matter more than the list.', pour: 'Ask for a hosszúlépés for a longer, lower-alcohol drink.' },
+      { dish: 'Sunday farmers’ market visit', note: 'A calmer daytime way to see the building with local producers and food rather than nightclub crowds.', pour: 'Coffee or a soft drink; verify that week’s programme on the official site.' },
+    ],
+  },
+  'high-note-skybar-budapest': {
+    knownFor: 'A close Basilica panorama, sunset Champagne, a current Hungarian-folklore cocktail collection and polished rooftop bar food.',
+    orderStrategy: 'Reserve the standard terrace for sunset—not a Panorama Tower—and order one view-led signature cocktail or Hungarian sparkling glass. Eat only if the rooftop is the evening’s destination.',
+    image: 'https://highnoteskybar.hu/wp-content/uploads/2017/07/Koktelparti-hignnoteskybar1.jpg',
+    imageAlt: 'Official High Note SkyBar sunset rooftop panorama over Budapest',
+    imageEyebrow: 'Official venue image',
+    imageAccent: 'Basilica-side sunset',
+    imageNote: 'The official rooftop photograph shows the broad sunset terrace; the Basilica-facing angle is the table request to make when booking.',
+    additionalMenus: [
+      { label: 'Download current 2026 drinks PDF', url: 'https://highnoteskybar.hu/wp-content/uploads/2026/04/HNSB_drinks_menu_2026_03_online.pdf', format: 'PDF' },
+      { label: 'View current cocktails', url: 'https://highnoteskybar.hu/en/cocktails-rooftop-high-note-skybar-aria-hotel-tetoterasz-1051-budapest-hercegprimas-u-5/', format: 'Web' },
+    ],
+    additionalHighlights: [
+      { dish: 'Fizzy & Flirty', priceHuf: 5900, note: 'Pink gin, lychee, raspberry, hibiscus and sparkling wine; bright and suitably rooftop-like.', pour: 'Choose this for fruit and fizz without moving to the 9,900 Ft Champagne-cocktail tier.' },
+      { dish: 'Monkey with Revolver', priceHuf: 5700, note: 'Monkey Shoulder whisky, coffee and tobacco; the darker after-dinner choice.', pour: 'Best after sunset or after dinner, not as the first drink on a warm afternoon.' },
+      { dish: 'Kreinbacher Brut Nature', priceHuf: 5800, note: 'A Hungarian traditional-method sparkling glass and a more local alternative to imported Champagne.', pour: 'The clearest wine-led sunset recommendation.' },
+    ],
+  },
+  'muzsa-budapest': {
+    knownFor: 'Grand Art Nouveau surroundings, sensory house cocktails, Hungarian wine by the glass, Tokaji and Asian-Hungarian small plates with live music.',
+    orderStrategy: 'Go Thursday to Saturday for music. Choose one FEEL cocktail or a Hungarian wine glass, then share two small plates; avoid the vintage-cocktail prices unless collecting old spirits is the purpose.',
+    additionalHighlights: [
+      { dish: 'GIFT cocktail', priceHuf: 7900, note: 'Rum, chai, apricot and Tokaji Aszú in a clarified milkwash; the most locally anchored FEEL cocktail.', pour: 'A good single nightcap when another glass of wine feels repetitive.' },
+      { dish: 'Goulash-inspired beef dumplings', priceHuf: 4100, note: 'A compact Asian-Hungarian bar snack with chilli and celery.', pour: 'Dry Furmint, Kékfrankos or the HOPE gin cocktail.' },
+      { dish: 'Mangalica pork bites', priceHuf: 6500, note: 'Black-bean-marinated Hungarian pork with truffle hoisin sauce.', pour: 'Etyeki Kúria Pinot Noir or Villány Cabernet Franc by the glass.' },
+    ],
+  },
+}
+
+export const BUDAPEST_VENUES = BUDAPEST_VENUES_BASE.map((venue) => {
+  const enrichment = BUDAPEST_PROFILE_ENRICHMENTS[venue.id] || {}
+  const { additionalMenus = [], additionalHighlights = [], ...profile } = enrichment
+
+  return {
+    ...venue,
+    ...profile,
+    menus: [...(venue.menus || []), ...additionalMenus],
+    menuHighlights: [...(venue.menuHighlights || []), ...additionalHighlights],
+    menuVerifiedOn: '28 August 2026',
+  }
+})

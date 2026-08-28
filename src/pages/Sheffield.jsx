@@ -34,7 +34,8 @@ const VALENCIA_TRIP_SUMMARY = [
 const BUDAPEST_TRIP_WINDOW = 'Corinthia Budapest base · September 2026'
 const BUDAPEST_TRIP_SUMMARY = [
   'The Corinthia at Erzsébet körút 43–49 is the fixed travel base. Jewish Quarter, Oktogon and Liszt Ferenc Square choices are mostly walkable.',
-  'For timed Buda reservations such as FELIX, Déryné or Stand25, a taxi is usually the cleanest choice. Tram 4/6 is the useful public-transport spine from the hotel.',
+  'FELIX is booked for Thursday 3 September at 19:30. Order a taxi from the Corinthia for about 18:55–19:00 to leave a comfortable traffic margin.',
+  'For other timed Buda reservations such as Déryné or Stand25, a taxi is usually the cleanest choice. Tram 4/6 is the useful public-transport spine from the hotel.',
   'Price conversions use the 28 August 2026 MNB rate of 425.37 Ft to £1. Allow for card conversion spread and check whether a 12–15% service charge is already included.',
 ]
 
@@ -46,6 +47,14 @@ const SHEFFIELD_NEW_IDS = [
   'bench-la-cave-sheffield',
   'barks-wine-sheffield',
   'grub-records-sheffield',
+]
+
+const BUDAPEST_HERO_IDS = [
+  'felix-budapest',
+  'stand25-budapest',
+  'salt-budapest',
+  'kadarka-wine-bar-budapest',
+  'szimpla-kert-budapest',
 ]
 
 function formatVenueWinePrice(price, venueWineInfo) {
@@ -383,6 +392,9 @@ export default function Places() {
   const visibleVenueWineItems = filteredVenueWineItems.slice(0, venueWineLimit)
   const hasMoreVenueWineItems = filteredVenueWineItems.length > visibleVenueWineItems.length
   const sheffieldVenueCount = VENUES.filter(v => v.town === 'Sheffield').length
+  const budapestVenueCount = VENUES.filter(v => v.town === 'Budapest').length
+  const isBudapestView = town === 'Budapest'
+  const heroVenueIds = isBudapestView ? BUDAPEST_HERO_IDS : SHEFFIELD_NEW_IDS
   function handleVenueSelect(nextVenueId) {
     setVenueId(nextVenueId)
     setScrollToDetail(true)
@@ -399,6 +411,12 @@ export default function Places() {
     setRegion('UK')
     setTown('Sheffield')
     setVenueId('gillsons-brasserie-sheffield')
+  }
+
+  function showBudapestEdit() {
+    setRegion('Europe')
+    setTown('Budapest')
+    setVenueId('felix-budapest')
   }
 
   function markVenueImageFailed(nextVenueId) {
@@ -427,57 +445,72 @@ export default function Places() {
               <div className="flex items-center gap-3 mb-6">
                 <span className="places-live-dot" />
                 <p className="font-body text-[11px] font-semibold uppercase tracking-[0.25em] text-[#d7b968]">
-                  The Sheffield edit · August 2026
+                  {isBudapestView ? 'The Budapest edit · September 2026' : 'The Sheffield edit · August 2026'}
                 </p>
               </div>
               <h1 id="places-title" className="font-display text-[3.8rem] sm:text-7xl lg:text-[6.7rem] text-white leading-[0.82] tracking-[-0.055em] text-balance">
-                Drink the city
-                <span className="block pl-[0.12em] italic font-light text-[#d8e3df]">after dark.</span>
+                {isBudapestView ? 'Taste Budapest' : 'Drink the city'}
+                <span className="block pl-[0.12em] italic font-light text-[#d8e3df]">
+                  {isBudapestView ? 'from morning to midnight.' : 'after dark.'}
+                </span>
               </h1>
               <p className="font-body text-[#c7d3d1] max-w-2xl text-base sm:text-lg leading-relaxed mt-7">
-                A personal field guide to rooms worth crossing Sheffield for — from candlelit natural wine and vinyl to the city’s newest serious brasserie.
+                {isBudapestView
+                  ? 'Twenty considered places for breakfast, lunch, dinner, Hungarian wine, craft beer and a proper night out — planned from the Corinthia Budapest without a car.'
+                  : 'A personal field guide to rooms worth crossing Sheffield for — from candlelit natural wine and vinyl to the city’s newest serious brasserie.'}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button onClick={showSheffieldEdit} className="places-cta-primary">
-                  Explore {sheffieldVenueCount} Sheffield places <span aria-hidden="true">↘</span>
+                <button onClick={isBudapestView ? showBudapestEdit : showSheffieldEdit} className="places-cta-primary">
+                  Explore {isBudapestView ? budapestVenueCount : sheffieldVenueCount} {isBudapestView ? 'Budapest' : 'Sheffield'} places <span aria-hidden="true">↘</span>
                 </button>
-                <button onClick={showValenciaTripList} className="places-cta-ghost">Open Valencia edit</button>
+                <button onClick={isBudapestView ? showSheffieldEdit : showValenciaTripList} className="places-cta-ghost">
+                  {isBudapestView ? 'Back to Sheffield edit' : 'Open Valencia edit'}
+                </button>
               </div>
             </div>
 
             <div className="relative animate-fade-in">
               <div className="places-cover-card">
                 <img
-                  src="https://www.exposedmagazine.co.uk/wp-content/uploads/2026/08/Gillsons-brasserie-1000-feature.jpg"
-                  alt="Gillson's Brasserie on Ecclesall Road"
+                  src={isBudapestView
+                    ? 'https://welovebudapest.com/i/62/fe-lix-20190423-hirling-ba-lint-008.inbox1560x1170.jpg'
+                    : 'https://www.exposedmagazine.co.uk/wp-content/uploads/2026/08/Gillsons-brasserie-1000-feature.jpg'}
+                  alt={isBudapestView ? 'FELIX Kitchen and Bar historic gilded interior' : "Gillson's Brasserie on Ecclesall Road"}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,28,0.02)_15%,rgba(7,18,28,0.9)_100%)]" />
                 <div className="absolute left-5 top-5 flex gap-2">
-                  <span className="places-cover-label">Just opened</span>
-                  <span className="places-cover-label places-cover-label-muted">Ecclesall Road</span>
+                  <span className="places-cover-label">{isBudapestView ? 'Thursday booked' : 'Just opened'}</span>
+                  <span className="places-cover-label places-cover-label-muted">{isBudapestView ? '19:30 · 3 September' : 'Ecclesall Road'}</span>
                 </div>
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-7">
-                  <p className="font-body text-[10px] uppercase tracking-[0.24em] text-[#e9cd7a] mb-2">The new arrival</p>
-                  <p className="font-display text-4xl text-white leading-none">Gillson’s Brasserie</p>
-                  <p className="font-body text-sm text-white/70 mt-3">Classic cooking. Warm service. A cellar curated by Gills & Co.</p>
+                  <p className="font-body text-[10px] uppercase tracking-[0.24em] text-[#e9cd7a] mb-2">{isBudapestView ? 'The confirmed evening' : 'The new arrival'}</p>
+                  <p className="font-display text-4xl text-white leading-none">{isBudapestView ? 'FELIX Kitchen & Bar' : 'Gillson’s Brasserie'}</p>
+                  <p className="font-body text-sm text-white/70 mt-3">
+                    {isBudapestView ? 'Historic Buda setting. Josper cooking. One of the city’s deepest cellars.' : 'Classic cooking. Warm service. A cellar curated by Gills & Co.'}
+                  </p>
                 </div>
               </div>
-              <div className="places-issue-stamp" aria-label="Five new Sheffield discoveries">
-                <strong>05</strong>
-                <span>new finds</span>
+              <div className="places-issue-stamp" aria-label={isBudapestView ? 'Twenty Budapest places considered' : 'Five new Sheffield discoveries'}>
+                <strong>{isBudapestView ? '20' : '05'}</strong>
+                <span>{isBudapestView ? 'trip picks' : 'new finds'}</span>
               </div>
             </div>
           </div>
 
-          <div className="places-new-rail" aria-label="New Sheffield additions">
-            <p className="places-rail-intro"><span>New</span> to the guide</p>
-            {SHEFFIELD_NEW_IDS.map((id, index) => {
+          <div className="places-new-rail" aria-label={isBudapestView ? 'Budapest trip shortlist' : 'New Sheffield additions'}>
+            <p className="places-rail-intro"><span>{isBudapestView ? 'Trip' : 'New'}</span> {isBudapestView ? 'shortlist' : 'to the guide'}</p>
+            {heroVenueIds.map((id, index) => {
               const newVenue = VENUES.find(item => item.id === id)
               return (
                 <button
                   key={id}
-                  onClick={() => { showSheffieldEdit(); setVenueId(id); setScrollToDetail(true) }}
+                  onClick={() => {
+                    if (isBudapestView) showBudapestEdit()
+                    else showSheffieldEdit()
+                    setVenueId(id)
+                    setScrollToDetail(true)
+                  }}
                   className="places-rail-item"
                 >
                   <span>0{index + 1}</span>
@@ -763,6 +796,9 @@ export default function Places() {
                 <p className="font-body text-sm text-slate-lt mb-1"><strong className="text-slate">Town:</strong> {venue.town}</p>
                 <p className="font-body text-sm text-slate-lt mb-1"><strong className="text-slate">Typical spend:</strong> {venue.typicalSpend}</p>
                 <p className="font-body text-sm text-slate-lt"><strong className="text-slate">Booking tip:</strong> {venue.reserveTip}</p>
+                {venue.bookingNote && (
+                  <p className="font-body text-sm text-[#8f2d48] mt-1"><strong>Confirmed:</strong> {venue.bookingNote}</p>
+                )}
                 {venue.fromHotel && (
                   <p className="font-body text-sm text-slate-lt mt-1"><strong className="text-slate">From Corinthia Budapest:</strong> {venue.fromHotel}</p>
                 )}
@@ -794,6 +830,29 @@ export default function Places() {
                   ))}
                 </div>
               </div>
+              {venue.knownFor && (
+                <div className="card p-4 sm:p-5 mb-5 bg-[#fffaf1]">
+                  <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+                    <div>
+                      <p className="font-body text-xs uppercase tracking-[0.15em] text-gold mb-1">The informed order</p>
+                      <h4 className="font-display text-2xl sm:text-3xl text-slate">What this place does best</h4>
+                    </div>
+                    {venue.menuVerifiedOn && (
+                      <span className="chip bg-white border border-cream text-slate-lt">Menus checked {venue.menuVerifiedOn}</span>
+                    )}
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="rounded-2xl border border-cream bg-white/80 p-4">
+                      <p className="font-body text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f2d48] mb-2">Known for</p>
+                      <p className="font-body text-sm text-slate-lt leading-relaxed">{venue.knownFor}</p>
+                    </div>
+                    <div className="rounded-2xl border border-cream bg-white/80 p-4">
+                      <p className="font-body text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f2d48] mb-2">How we would order</p>
+                      <p className="font-body text-sm text-slate-lt leading-relaxed">{venue.orderStrategy}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               {venueMenuHighlights.length ? (
                 <div className="card p-4 mb-5">
                   <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
